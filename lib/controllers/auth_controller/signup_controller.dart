@@ -31,10 +31,11 @@ class SignupController extends GetxController {
       isLoading.value = true;
 
       try {
-        dio.Response response = await _apiServices.postRequest(
+        dio.Response? response = await _apiServices.requestPostForApi(
           authToken: false,
-          url: 'https://moments-wrap-backend.vercel.app/user/register',
-          data: {
+          url:
+              'https://moment-wrap-backend.vercel.app/api/customer/register-customer',
+          dictParameter: {
             'firstName': firstNameController.text.trim(),
             'lastName': lastNameController.text.trim(),
             'phone': phoneController.text.trim(),
@@ -42,20 +43,22 @@ class SignupController extends GetxController {
             'password': passwordController.text.trim(),
           },
         );
-        if (response.statusCode == 200 && response.data != null) {
+        if (response != null &&
+            response.statusCode == 201 &&
+            response.data != null) {
           final responseData = LoginModel.fromJson(response.data);
-          if (responseData.success == true) {
+          if (responseData.message == true) {
             Get.snackbar(
               'Login Success',
-              'Welcome ${responseData.user.firstName} ${responseData.user.lastName}!',
+              'Welcome ${responseData.customer.firstName} ${responseData.customer.lastName}!',
             );
             String userToken = responseData.token;
-            String userId = responseData.user.id;
-            String userEmail = responseData.user.email;
-            String userProfileImage = responseData.user.profileImage;
+            String userId = responseData.customer.id;
+            String userEmail = responseData.customer.email;
+            String userProfileImage = responseData.customer.profileImage;
             String userName =
-                '${responseData.user.firstName} ${responseData.user.lastName}';
-            String userPhone = responseData.user.phone;
+                '${responseData.customer.firstName} ${responseData.customer.lastName}';
+            String userPhone = responseData.customer.phone;
             await SharedPreferencesServices.setJwtToken(userToken);
             await SharedPreferencesServices.setUserName(userName);
             await SharedPreferencesServices.setIsLoggedIn(true);
@@ -75,7 +78,7 @@ class SignupController extends GetxController {
         } else {
           Get.snackbar(
             'Login Error',
-            response.statusMessage ?? 'Unknown error',
+            response!.statusMessage ?? 'Unknown error',
           );
         }
       } catch (e) {

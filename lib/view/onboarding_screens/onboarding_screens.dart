@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:momentswrap/controllers/onbroding_controller/onbroding_controller.dart';
+import 'package:momentswrap/util/common/coustom_curve.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
 import 'package:momentswrap/util/constants/app_images_string.dart';
 import 'package:momentswrap/util/constants/app_sizes.dart';
@@ -61,6 +62,8 @@ class OnboardingScreens extends StatelessWidget {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(16),
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
                 shape: CircleBorder(),
               ),
               onPressed: () {
@@ -93,7 +96,7 @@ class OnBoardingIndicator extends StatelessWidget {
         effect: WormEffect(
           dotHeight: 10,
           dotWidth: 10,
-          activeDotColor: AppColors.primaryColor,
+          activeDotColor: Colors.white,
           dotColor: Colors.grey,
         ),
       ),
@@ -141,28 +144,40 @@ class OnBoardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(AppSizes.defaultSpacing),
-      child: Column(
+    return Scaffold(
+          backgroundColor: Color(0xFFE60023),
+
+      body: Column(
         children: [
-          Image.asset(
-            image,
-            width: HelperFunctions.screenWidth() * 0.8,
-            height: HelperFunctions.screenHeight() * 0.6,
+          ClipPath(
+         clipper: CustomCurve(),
+            child: Container(
+              color: Colors.white,
+              width: double.infinity,
+              height: HelperFunctions.screenHeight() * 0.4,
+              child: Image.asset(
+                image,
+                width: HelperFunctions.screenWidth() * 0.8,
+                height: HelperFunctions.screenHeight() * 0.6,
+              ),
+            ),
           ),
-
+      
           const SizedBox(height: AppSizes.spaceBtwItems),
-
+      
           Text(
             title,
-            style: Theme.of(context).textTheme.headlineMedium,
+            // style: Theme.of(context).textTheme.headlineMedium,
+            style: TextStyle(fontSize: 25,color: Colors.white, fontWeight: FontWeight.w600),
+
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSizes.spaceBtwItems),
-
+      
           Text(
             subtitle,
-            style: Theme.of(context).textTheme.bodyMedium,
+            // style: Theme.of(context).textTheme.bodyMedium,
+            style: TextStyle(fontSize: 17,color: Colors.white,fontWeight: FontWeight.w400),
             textAlign: TextAlign.center,
           ),
         ],

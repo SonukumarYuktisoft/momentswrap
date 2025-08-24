@@ -7,7 +7,9 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
+import 'package:lottie/lottie.dart';
 import 'package:momentswrap/controllers/location_controller/location_controller.dart';
+import 'package:momentswrap/util/common/full_loader_screens.dart';
 import 'package:momentswrap/util/helpers/share_helper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -43,10 +45,6 @@ class _TestState extends State<Test> {
     super.dispose();
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,93 +54,101 @@ class _TestState extends State<Test> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              TypeAheadField<String>(
-                // Suggestions ka source
-                suggestionsCallback: (pattern) {
-                  return fruits
-                      .where(
-                        (fruit) =>
-                            fruit.toLowerCase().startsWith(pattern.toLowerCase()),
-                      )
-                      .toList();
-                },
-          
-                // TextField ka UI
-                builder: (context, textEditingController, focusNode) {
-                  return TextField(
-                    controller: controller,
-                    focusNode: focusNode,
-                    decoration: const InputDecoration(
-                      hintText: "Search fruits...",
-                      border: OutlineInputBorder(),
-                    ),
-                  );
-                },
-          
-                // Suggestion list item UI
-                itemBuilder: (context, suggestion) {
-                  return ListTile(
-                    leading: const Icon(Icons.search),
-                    title: Text(suggestion),
-                  );
-                },
-          
-                // Jab suggestion select ho
-                onSelected: (suggestion) {
-                  controller.text = suggestion;
-                  debugPrint("Selected: $suggestion");
-                },
-          
-                // Agar kuch nahi mila
-                emptyBuilder: (context) => const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text("No items found"),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  ShareHelper.shareProduct(
-                    name: "Wooden Personalized Frame",
-                    price: "499",
-                    currency: "INR",
-                    offer: "50% OFF for limited time!",
-                    imageUrl:
-                        "https://m.media-amazon.com/images/I/41THqgXO0ML._SX300_SY300_QL70_FMwebp_.jpg",
-                    // shareUrl: "https://myecom.com/product/123",
-                  );
-                },
-                child: Text("Share Product"),
-              ),
-              ElevatedButton(
-                onPressed: () => (),
-                child: Text('tekeAddress'),
-              ),
-              Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      locationController.getAddress();
-                    },
-                    child: Text('Address Picker'),
-                  ),
-                  Text(
-                    locationController.city.value,
-                    style: const TextStyle(fontSize: 16, color: Colors.black),
-                  ),
-                  Text(locationController.address.value),
-                  Text(locationController.isAddressSelected.string),
-                ],
-              ),
-          
-              Shimmer.fromColors(
-                baseColor: Colors.grey.shade300,
-                highlightColor: Colors.grey.shade100,
-                child: Container(
-                  width: 100, // shimmer length
-                  height: 60,
-                  color: const Color.fromARGB(255, 195, 24, 24),
-                ),
-              ),
+              // TypeAheadField<String>(
+              //   // Suggestions ka source
+              //   suggestionsCallback: (pattern) {
+              //     return fruits
+              //         .where(
+              //           (fruit) =>
+              //               fruit.toLowerCase().startsWith(pattern.toLowerCase()),
+              //         )
+              //         .toList();
+              //   },
+
+              //   // TextField ka UI
+              //   builder: (context, textEditingController, focusNode) {
+              //     return TextField(
+              //       controller: controller,
+              //       focusNode: focusNode,
+              //       decoration: const InputDecoration(
+              //         hintText: "Search fruits...",
+              //         border: OutlineInputBorder(),
+              //       ),
+              //     );
+              //   },
+
+              //   // Suggestion list item UI
+              //   itemBuilder: (context, suggestion) {
+              //     return ListTile(
+              //       leading: const Icon(Icons.search),
+              //       title: Text(suggestion),
+              //     );
+              //   },
+
+              //   // Jab suggestion select ho
+              //   onSelected: (suggestion) {
+              //     controller.text = suggestion;
+              //     debugPrint("Selected: $suggestion");
+              //   },
+
+              //   // Agar kuch nahi mila
+              //   emptyBuilder: (context) => const Padding(
+              //     padding: EdgeInsets.all(16.0),
+              //     child: Text("No items found"),
+              //   ),
+              // ),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     ShareHelper.shareProduct(
+              //       name: "Wooden Personalized Frame",
+              //       price: "499",
+              //       currency: "INR",
+              //       offer: "50% OFF for limited time!",
+              //       imageUrl:
+              //           "https://m.media-amazon.com/images/I/41THqgXO0ML._SX300_SY300_QL70_FMwebp_.jpg",
+              //       // shareUrl: "https://myecom.com/product/123",
+              //     );
+              //   },
+              //   child: Text("Share Product"),
+              // ),
+              // ElevatedButton(
+              //   onPressed: () => (),
+              //   child: Text('tekeAddress'),
+              // ),
+              // Column(
+              //   children: [
+              //     ElevatedButton(
+              //       onPressed: () {
+              //         locationController.getAddress();
+              //       },
+              //       child: Text('Address Picker'),
+              //     ),
+              //     Text(
+              //       locationController.city.value,
+              //       style: const TextStyle(fontSize: 16, color: Colors.black),
+              //     ),
+              //     Text(locationController.address.value),
+              //     Text(locationController.isAddressSelected.string),
+              //   ],
+              // ),
+
+              // Shimmer.fromColors(
+              //   baseColor: Colors.grey.shade300,
+              //   highlightColor: Colors.grey.shade100,
+              //   child: Container(
+              //     width: 100, // shimmer length
+              //     height: 60,
+              //     color: Colors.white,
+              //   ),
+              // ),
+               Lottie.asset(
+        'assets/animations/addtocart.json', // Your animation path
+        width: 24,
+        height: 24,
+        fit: BoxFit.contain,
+      ),
+
+      FullLoaderScreens(animationPath: 'assets/animations/addtocart.json')
             ],
           ),
         ),

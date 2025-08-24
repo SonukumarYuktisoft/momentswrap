@@ -30,7 +30,8 @@ class LoginController extends GetxController {
       try {
         dio.Response response = await _apiServices.postRequest(
           authToken: false,
-          url: 'https://moments-wrap-backend.vercel.app/user/login',
+          url:
+              'https://moment-wrap-backend.vercel.app/api/customer/login-customer',
           data: {
             'email': emailController.text.trim(),
             'password': passwordController.text.trim(),
@@ -38,20 +39,19 @@ class LoginController extends GetxController {
         );
         if (response.statusCode == 200 && response.data != null) {
           final responseData = LoginModel.fromJson(response.data);
-          if (responseData.success == true) {
+          if (responseData.message == 'Login successful') {
             Get.snackbar(
-              
               'Login Success',
-              'Welcome ${responseData.user.firstName} ${responseData.user.lastName}!',
+              'Welcome ${responseData.customer.firstName} ${responseData.customer.lastName}!',
               backgroundColor: Colors.green.withOpacity(0.5),
             );
             String userToken = responseData.token;
-            String userId = responseData.user.id;
-            String userEmail = responseData.user.email;
-            String userProfileImage = responseData.user.profileImage;
+            String userId = responseData.customer.id;
+            String userEmail = responseData.customer.email;
+            String userProfileImage = responseData.customer.profileImage;
             String userName =
-                '${responseData.user.firstName} ${responseData.user.lastName}';
-            String userPhone = responseData.user.phone;
+                '${responseData.customer.firstName} ${responseData.customer.lastName}';
+            String userPhone = responseData.customer.phone;
             await SharedPreferencesServices.setJwtToken(userToken);
             await SharedPreferencesServices.setUserName(userName);
             await SharedPreferencesServices.setIsLoggedIn(true);
@@ -75,11 +75,61 @@ class LoginController extends GetxController {
           );
         }
       } catch (e) {
-        // Handle error
-        Get.snackbar('Login Error', e.toString());
+        Get.snackbar(
+          'Login Error',
+          e.toString(),
+          backgroundColor: Colors.red.withOpacity(0.5),
+        );
+        print(e);
       } finally {
         isLoading.value = false;
       }
+    }
+  }
+
+  Future<void> logout() async {
+    isLoading.value = true;
+    try {
+      final token = await SharedPreferencesServices.getJwtToken();
+      dio.Response response = await _apiServices.postRequest(
+        authToken: true,
+        url:
+            'https://moment-wrap-backend.vercel.app/api/customer/logout-customer',
+        data: {},
+      );
+      if (response.statusCode == 200 && response.data != null) {
+        final success = response.data['success'] == true;
+        if (success) {
+          await SharedPreferencesServices.clearAll();
+          Get.snackbar(
+            'Logout Success',
+            response.data['message'] ?? 'Logged out successfully',
+            backgroundColor: Colors.green.withOpacity(0.5),
+          );
+          Get.offAllNamed(AppRoutes.login);
+        } else {
+          Get.snackbar(
+            'Logout Error',
+            response.data['message'] ?? 'Unknown error',
+            backgroundColor: Colors.red.withOpacity(0.5),
+          );
+        }
+      } else {
+        Get.snackbar(
+          'Logout Error',
+          response.statusMessage ?? 'Unknown error',
+          backgroundColor: Colors.red.withOpacity(0.5),
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Logout Error',
+        e.toString(),
+        backgroundColor: Colors.red.withOpacity(0.5),
+      );
+      print(e);
+    } finally {
+      isLoading.value = false;
     }
   }
 }

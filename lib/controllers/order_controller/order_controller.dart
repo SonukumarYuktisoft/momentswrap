@@ -1,73 +1,310 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-
+import 'package:get/get.dart';
+import 'package:dio/dio.dart' as dio;
+import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
+import 'package:momentswrap/models/order_model/order_model.dart';
 import 'package:momentswrap/services/api_services.dart';
 import 'package:momentswrap/util/helpers/helper_functions.dart';
-import 'package:dio/dio.dart' as dio;
 
 class OrderController extends GetxController {
   final ApiServices _apiServices = ApiServices();
+  final CartController cartController = Get.put(CartController());
 
   final RxBool isLoading = false.obs;
+  final RxBool isBuyProductLoading = false.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
+  final RxList<OrderModel> myOrders = <OrderModel>[].obs;
+  final Rx<OrderModel?> selectedOrder = Rx<OrderModel?>(null);
 
-  Future<void> placeOrder(
-    {
-      required String user,
-      required double  totalPrice, 
-      required String  shippingAddress, 
-      required String  paymentMethod, 
-      required List  items, 
-    }
-  ) async {
+  Future<void> buyProduct({
+    required String productId,
+    required int quantity,
+  }) async {
     try {
-  isLoading.value = true;
+      isBuyProductLoading.value = true;
+
+      final Map<String, dynamic> requestBody = {
+        "productId": productId,
+        "quantity": quantity,
+      };
+
       dio.Response? response = await _apiServices.requestPostForApi(
         authToken: true,
-        url: 'https://moments-wrap-backend.vercel.app/order/addOrder',
-        dictParameter: {
-          'user': user,
-          'totalPrice': totalPrice.toString(),
-          'shippingAddress': shippingAddress,
-          'paymentMethod': paymentMethod,
-          'items': items,
-        },
+        url: 'https://moment-wrap-backend.vercel.app/api/customer/buy-product',
+        dictParameter: requestBody,
+      );
+
+      if (response != null && response.statusCode == 201) {
+        final data = response.data;
+
+        HelperFunctions.showSnackbar(
+          'Success',
+          'Order placed successfully',
+          title: 'Success',
+          message: data['message'] ?? 'Order placed successfully',
+          backgroundColor: Colors.green,
+        );
+
+        // Refresh orders after successful purchase
+        await fetchMyOrders();
+        cartController.itemCount.value -= quantity;
+      } else {
+        HelperFunctions.showSnackbar(
+          'Error',
+          'Failed to place order',
+          title: 'Error',
+          message: 'Unexpected response from server',
+          backgroundColor: Colors.red,
+        );
+      }
+    } catch (e) {
+      HelperFunctions.showSnackbar(
+        'Error',
+        'Failed to place order',
+        title: 'Error',
+        message: e.toString(),
+        backgroundColor: Colors.red,
+      );
+      print('Buy product error: $e');
+    } finally {
+      isBuyProductLoading.value = false;
+    }
+  }
+
+  Future<void> fetchMyOrders() async {
+    try {
+      isLoading.value = true;
+
+      dio.Response? response = await _apiServices.getRequest(
+        authToken: true,
+        url: 'https://moment-wrap-backend.vercel.app/api/customer/list-my-orders',
       );
 
       if (response != null && response.statusCode == 200) {
+        final data = response.data;
+        print('API Response: ${data.toString()}');
 
+        // The API returns a direct array, not wrapped in a data object
+        if (data is List) {
+          final List<dynamic> ordersJson = data;
+          final List<OrderModel> parsedOrders = [];
 
-           HelperFunctions.showSnackbar(
-          'Success',
-          ' Place Order',
-          title: 'Success',
-          message: 'Place Order Successfull',
-          backgroundColor: Colors.green,
-        );
-      } 
-  
+          for (var orderJson in ordersJson) {
+            try {
+              if (orderJson is Map<String, dynamic>) {
+                final order = OrderModel.fromJson(orderJson);
+                parsedOrders.add(order);
+              }
+            } catch (e, stackTrace) {
+              print('Error parsing individual order: $e');
+              print('Stack trace: $stackTrace');
+              print('Order JSON: $orderJson');
+            }
+          }
 
-      
-    } catch (e) {
+          myOrders.value = parsedOrders;
+          print('Successfully parsed ${parsedOrders.length} orders');
+        } else if (data is Map<String, dynamic> && data['success'] == true && data['data'] is List) {
+          // Fallback for wrapped response format
+          final List<dynamic> ordersJson = data['data'];
+          final List<OrderModel> parsedOrders = [];
 
- HelperFunctions.showSnackbar(
+          for (var orderJson in ordersJson) {
+            try {
+              if (orderJson is Map<String, dynamic>) {
+                final order = OrderModel.fromJson(orderJson);
+                parsedOrders.add(order);
+              }
+            } catch (e, stackTrace) {
+              print('Error parsing individual order: $e');
+              print('Stack trace: $stackTrace');
+              print('Order JSON: $orderJson');
+            }
+          }
+
+          myOrders.value = parsedOrders;
+          print('Successfully parsed ${parsedOrders.length} orders');
+        }
+      }
+    } catch (e, stackTrace) {
+      print('Fetch orders error: $e');
+      print('Stack trace: $stackTrace');
+      HelperFunctions.showSnackbar(
         'Error',
-        'Failed to Order',
+        'Failed to fetch orders',
         title: 'Error',
-        message: 'Failed to Order',
+        message: 'Could not load your orders',
         backgroundColor: Colors.red,
       );
- print(e);
-
     } finally {
-      isLoading.value = true;
+      isLoading.value = false;
     }
+  }
+
+  Future<void> getOrderDetails(String orderId) async {
+    try {
+      isLoading.value = true;
+
+      dio.Response? response = await _apiServices.getRequest(
+        authToken: true,
+        url: 'https://moment-wrap-backend.vercel.app/api/customer/get-order-details/$orderId',
+      );
+
+      if (response != null && response.statusCode == 200) {
+        final data = response.data;
+        
+        // Handle both direct order response and wrapped response
+        if (data is Map<String, dynamic>) {
+          if (data['success'] == true && data['data'] != null) {
+            selectedOrder.value = OrderModel.fromJson(data['data']);
+          } else if (data['_id'] != null) {
+            // Direct order object response
+            selectedOrder.value = OrderModel.fromJson(data);
+          } else {
+            HelperFunctions.showSnackbar(
+              'Error',
+              'Failed to fetch order details',
+              title: 'Error',
+              message: data['message'] ?? 'Order not found',
+              backgroundColor: Colors.red,
+            );
+          }
+        }
+      } else {
+        HelperFunctions.showSnackbar(
+          'Error',
+          'Failed to fetch order details',
+          title: 'Error',
+          message: 'Unexpected response from server',
+          backgroundColor: Colors.red,
+        );
+      }
+    } catch (e) {
+      HelperFunctions.showSnackbar(
+        'Error',
+        'Failed to fetch order details',
+        title: 'Error',
+        message: e.toString(),
+        backgroundColor: Colors.red,
+      );
+      print('Get order details error: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> cancelOrder(String orderId) async {
+    try {
+      isLoading.value = true;
+
+      final url = 'https://moment-wrap-backend.vercel.app/api/customer/cancel-order/$orderId';
+
+      dio.Response? response = await _apiServices.requestPutForApi(
+        authToken: true,
+        url: url,
+        dictParameter: {},
+      );
+
+      if (response != null && response.statusCode == 200) {
+        final data = response.data;
+        if (data['success'] == true) {
+          HelperFunctions.showSnackbar(
+            'Success',
+            'Order cancelled successfully',
+            title: 'Success',
+            message: data['message'] ?? 'Order cancelled successfully',
+            backgroundColor: Colors.green,
+          );
+
+          // Update the order status locally
+          final orderIndex = myOrders.indexWhere((order) => order.id == orderId);
+          if (orderIndex != -1) {
+            final updatedOrder = myOrders[orderIndex].copyWith(
+              orderStatus: 'cancelled',
+              updatedAt: DateTime.now(),
+            );
+            myOrders[orderIndex] = updatedOrder;
+            
+          }
+
+          // Update selected order if it's the same
+          if (selectedOrder.value?.id == orderId) {
+            selectedOrder.value = selectedOrder.value!.copyWith(
+              orderStatus: 'cancelled',
+              updatedAt: DateTime.now(),
+            );
+          }
+        } else {
+          HelperFunctions.showSnackbar(
+            'Error',
+            'Failed to cancel order',
+            title: 'Error',
+            message: data['message'] ?? 'Something went wrong',
+            backgroundColor: Colors.red,
+          );
+        }
+      } else {
+        HelperFunctions.showSnackbar(
+          'Error',
+          'Failed to cancel order',
+          title: 'Error',
+          message: 'Unexpected response from server',
+          backgroundColor: Colors.red,
+        );
+      }
+    } catch (e) {
+      HelperFunctions.showSnackbar(
+        'Error',
+        'Failed to cancel order',
+        title: 'Error',
+        message: e.toString(),
+        backgroundColor: Colors.red,
+      );
+      print('Cancel order error: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Helper methods for UI
+  String getFormattedOrderId(String orderId) {
+    return orderId.length >= 8 ? orderId.substring(orderId.length - 8) : orderId;
+  }
+
+  String getFormattedDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year}';
+  }
+
+  String getFormattedDateTime(DateTime date) {
+    return '${date.day}/${date.month}/${date.year} at ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+  }
+
+  Color getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return Colors.orange;
+      case 'confirmed':
+        return Colors.blue;
+      case 'shipped':
+        return Colors.purple;
+      case 'delivered':
+        return Colors.green;
+      case 'cancelled':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  void clearSelectedOrder() {
+    selectedOrder.value = null;
+  }
+
+  int getTotalQuantity(OrderModel order) {
+    return order.products.fold(0, (sum, product) => sum + product.quantity);
+  }
+
+  OrderProduct? getMainProduct(OrderModel order) {
+    return order.products.isNotEmpty ? order.products.first : null;
   }
 }

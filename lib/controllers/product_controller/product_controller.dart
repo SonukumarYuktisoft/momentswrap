@@ -13,7 +13,9 @@ import 'dart:async';
 class ProductController extends GetxController {
   final ApiServices _apiServices = ApiServices();
   final RxBool isLoading = false.obs;
-  final Rx<ProductModel?> products = Rx<ProductModel?>(null);
+  final RxBool isFiltering = false.obs;
+  final Rx<ProductResponse?> products = Rx<ProductResponse?>(null);
+  final Rx<ProductResponse?> allProducts = Rx<ProductResponse?>(null); // Store all products
   final RxList<String> categories = <String>[].obs;
   final RxList<String> selectedTags = <String>[].obs;
   final Rx<String?> selectedCategory = Rx<String?>(null);
@@ -31,9 +33,11 @@ class ProductController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchProducts();
-    fetchCategories();
+    fetchAllProducts(); // Fetch all products first
     Get.put(CartController());
+    
+    // Listen to search query changes for debouncing
+    ever(searchQuery, (_) => _debounceSearch());
   }
 
   @override
@@ -42,148 +46,280 @@ class ProductController extends GetxController {
     super.onClose();
   }
 
-  Future<void> fetchCategories() async {
+  // Fetch all products and extract categories
+  Future<void> fetchAllProducts() async {
     isLoading.value = true;
     try {
-      // if (inStockOnly.value) {
-      //   queryParameters['inStock'] = true;
-      // }
-
       final dio.Response response = await _apiServices.getRequest(
         authToken: false,
-        url: 'https://moments-wrap-backend.vercel.app/product/getAllProducts',
-        // queryParameters: queryParameters,
+        url: 'https://moment-wrap-backend.vercel.app/api/customer/list-all-products',
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        print("Response Data: ${response.data}");
-        final responseData = ProductModel.fromJson(response.data);
-        products.value = responseData;
-        categories.value =
-            responseData.data
-                ?.map((product) => product.category ?? '')
-                .where((category) => category.isNotEmpty)
-                .toSet()
-                .toList() ??
-            [];
-
-        print(categories.value.length.toString());
-        print(products.value);
+        final List<dynamic> responseData = response.data;
+        final productResponse = ProductResponse(
+          data: responseData
+              .map((json) => ProductModel.fromJson(json))
+              .toList(),
+        );
+        
+        // Store all products
+        allProducts.value = productResponse;
+        products.value = productResponse;
+        
+        // Extract categories from all products
+        extractCategories();
       }
     } catch (e) {
-      print('Error fetching products: $e');
+      print('Error fetching all products: $e');
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> fetchProducts() async {
-    isLoading.value = true;
-    try {
-      final Map<String, dynamic> queryParameters = {};
+  // Extract unique categories from products
+  void extractCategories() {
+    if (allProducts.value != null) {
+      final categoriesList = allProducts.value!.data
+          .map((product) => product.category)
+          .where((category) => category.isNotEmpty)
+          .toSet()
+          .toList();
+      
+      categories.value = categoriesList;
+      print('Categories extracted: ${categories.value}');
+    }
+  }
 
-      if (searchQuery.value.isNotEmpty) {
-        queryParameters['search'] = searchQuery.value;
+  // Get product details by ID
+  Future<ProductModel?> getProductDetails(String productId) async {
+    try {
+      final dio.Response response = await _apiServices.getRequest(
+        authToken: false,
+        url: 'https://moment-wrap-backend.vercel.app/api/customer/get-product-details/$productId',
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        return ProductModel.fromJson(response.data['data']);
       }
-      if (selectedCategory.value != null &&
-          selectedCategory.value!.isNotEmpty) {
+    } catch (e) {
+      print('Error fetching product details: $e');
+    }
+    return null;
+  }
+
+  // Get products by category
+  Future<void> getProductsByCategory(String category) async {
+    isFiltering.value = true;
+    try {
+      final dio.Response response = await _apiServices.getRequest(
+        authToken: false,
+        url: 'https://moment-wrap-backend.vercel.app/api/customer/list-products-by-category/$category',
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        final List<dynamic> responseData = response.data;
+        products.value = ProductResponse(
+          data: responseData
+              .map((json) => ProductModel.fromJson(json))
+              .toList(),
+        );
+      }
+    } catch (e) {
+      print('Error fetching products by category: $e');
+    } finally {
+      isFiltering.value = false;
+    }
+  }
+
+  // Filter products using API
+  Future<void> filterProducts() async {
+    isFiltering.value = true;
+    try {
+      Map<String, dynamic> queryParameters = {};
+      
+      // Add price range if not default
+      if (minPrice.value > 0) {
+        queryParameters['minPrice'] = minPrice.value.toInt();
+      }
+      if (maxPrice.value < 10000) {
+        queryParameters['maxPrice'] = maxPrice.value.toInt();
+      }
+      
+      // Add category filter
+      if (selectedCategory.value != null && selectedCategory.value!.isNotEmpty) {
         queryParameters['category'] = selectedCategory.value;
       }
-
-      queryParameters['price'] = {'min': minPrice.value, 'max': maxPrice.value};
-
-      // if (inStockOnly.value) {
-      //   queryParameters['inStock'] = true;
-      // }
+      
+      // Add stock filter
+      if (inStockOnly.value) {
+        queryParameters['inStock'] = true;
+      }
 
       final dio.Response response = await _apiServices.getRequest(
         authToken: false,
-        url: 'https://moments-wrap-backend.vercel.app/product/getAllProducts',
+        url: 'https://moment-wrap-backend.vercel.app/api/customer/filter-products',
         queryParameters: queryParameters,
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        print("Response Data: ${response.data}");
-        final responseData = ProductModel.fromJson(response.data);
-        products.value = responseData;
-        // categories.value =
-        //     responseData.data
-        //         ?.map((product) => product.category ?? '')
-        //         .where((category) => category.isNotEmpty)
-        //         .toSet()
-        //         .toList() ??
-        //     [];
+        final List<dynamic> responseData = response.data;
+        products.value = ProductResponse(
+          data: responseData
+              .map((json) => ProductModel.fromJson(json))
+              .toList(),
+        );
       }
     } catch (e) {
-      print('Error fetching products: $e');
+      print('Error filtering products: $e');
+      // Fallback to local filtering if API fails
+      applyLocalFilters();
     } finally {
-      isLoading.value = false;
+      isFiltering.value = false;
     }
   }
 
-  void updateSearchQuery(String query) {
-    searchQuery.value = query;
+  // Apply local filters as fallback
+  void applyLocalFilters() {
+    if (allProducts.value == null) return;
 
-    // Cancel previous debouncer if active
+    List<ProductModel> filteredProducts = List.from(allProducts.value!.data);
+
+    // Apply search query filter
+    if (searchQuery.value.isNotEmpty) {
+      filteredProducts = filteredProducts.where((product) {
+        return product.name.toLowerCase().contains(searchQuery.value.toLowerCase()) ||
+               product.shortDescription.toLowerCase().contains(searchQuery.value.toLowerCase()) ||
+               product.category.toLowerCase().contains(searchQuery.value.toLowerCase());
+      }).toList();
+    }
+
+    // Apply category filter
+    if (selectedCategory.value != null && selectedCategory.value!.isNotEmpty) {
+      filteredProducts = filteredProducts.where((product) {
+        return product.category == selectedCategory.value;
+      }).toList();
+    }
+
+    // Apply price range filter
+    filteredProducts = filteredProducts.where((product) {
+      return product.price >= minPrice.value && product.price <= maxPrice.value;
+    }).toList();
+
+    // Apply stock filter
+    if (inStockOnly.value) {
+      filteredProducts = filteredProducts.where((product) {
+        return product.stock > 0;
+      }).toList();
+    }
+
+    products.value = ProductResponse(data: filteredProducts);
+  }
+
+  // Debounced search functionality
+  void _debounceSearch() {
     _searchDebouncer?.cancel();
-
-    // Start new debouncer
     _searchDebouncer = Timer(_searchDebounceDelay, () {
-      if (query.isEmpty) {
-        searchSuggestions.clear();
+      if (searchQuery.value.isNotEmpty) {
+        generateSearchSuggestions();
+        applyLocalFilters();
       } else {
-        updateSearchSuggestions(query);
+        searchSuggestions.clear();
+        if (hasActiveFilters()) {
+          applyLocalFilters();
+        } else {
+          products.value = allProducts.value;
+        }
       }
-      fetchProducts();
     });
   }
 
-  void updateSearchSuggestions(String query) {
-    if (products.value?.data == null) return;
+  // Generate search suggestions
+  void generateSearchSuggestions() {
+    if (allProducts.value == null || searchQuery.value.isEmpty) {
+      searchSuggestions.clear();
+      return;
+    }
 
-    searchSuggestions.value = products.value!.data!
-        .where(
-          (product) =>
-              product.name?.toLowerCase().contains(query.toLowerCase()) ??
-              false,
-        )
-        .map((product) => product.name!)
-        .take(5)
-        .toList();
+    final query = searchQuery.value.toLowerCase();
+    final suggestions = <String>{};
+    
+    for (var product in allProducts.value!.data) {
+      if (product.name.toLowerCase().contains(query)) {
+        suggestions.add(product.name);
+      }
+      if (product.category.toLowerCase().contains(query)) {
+        suggestions.add(product.category);
+      }
+    }
+    
+    searchSuggestions.value = suggestions.take(5).toList();
   }
 
-  void applyFilters({
-    String? search,
-    String? category,
-    double? min,
-    double? max,
-    // bool? inStock,
-  }) {
-    // Cancel any pending search debounce
-    _searchDebouncer?.cancel();
-
-    if (search != null) searchQuery.value = search;
-    if (category != null) selectedCategory.value = category;
-    if (min != null) minPrice.value = min;
-    if (max != null) maxPrice.value = max;
-    // if (inStock != null) inStockOnly.value = inStock;
-
-    fetchProducts();
+  // Check if any filters are active
+  bool hasActiveFilters() {
+    return selectedCategory.value != null ||
+           minPrice.value > 0 ||
+           maxPrice.value < 10000 ||
+           inStockOnly.value ||
+           searchQuery.value.isNotEmpty;
   }
 
+  // Update search query
+  void updateSearchQuery(String query) {
+    searchQuery.value = query;
+  }
+
+  // Apply suggestion
+  void applySuggestion(String suggestion) {
+    searchQuery.value = suggestion;
+    searchSuggestions.clear();
+  }
+
+  // Clear all filters
   void clearFilters() {
-    // Cancel any pending search debounce
-    _searchDebouncer?.cancel();
-
+    selectedCategory.value = null;
     searchQuery.value = '';
-    selectedCategory.value = '';
     minPrice.value = 0.0;
     maxPrice.value = 10000.0;
     inStockOnly.value = false;
+    selectedTags.clear();
     searchSuggestions.clear();
-    fetchProducts();
+    products.value = allProducts.value;
   }
-  void clearCategories() {
-    categories.clear();
+
+  // Apply filters (called from UI)
+  void applyFilters() {
+    if (hasActiveFilters()) {
+      filterProducts(); // Use API filtering first
+    } else {
+      products.value = allProducts.value;
+    }
+  }
+
+  // Category selection handler
+  void selectCategory(String? category) {
+    selectedCategory.value = category;
+    if (category != null && category.isNotEmpty) {
+      getProductsByCategory(category);
+    } else {
+      applyFilters();
+    }
+  }
+
+  // Price range update
+  void updatePriceRange(double min, double max) {
+    minPrice.value = min;
+    maxPrice.value = max;
+  }
+
+  // Toggle stock filter
+  void toggleStockFilter() {
+    inStockOnly.value = !inStockOnly.value;
+  }
+
+  // Refresh products
+  Future<void> refreshProducts() async {
+    await fetchAllProducts();
   }
 }

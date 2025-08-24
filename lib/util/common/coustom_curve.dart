@@ -25,8 +25,8 @@ class CustomCurve extends CustomClipper<Path> {
       secondLastCurve.dy,
     );
 
-    final thirdFastCurve = Offset(size.width , size.height - 20);
-    final thirdLastCurve = Offset(size.width , size.height);
+    final thirdFastCurve = Offset(size.width, size.height - 20);
+    final thirdLastCurve = Offset(size.width, size.height);
 
     path.quadraticBezierTo(
       thirdFastCurve.dx,

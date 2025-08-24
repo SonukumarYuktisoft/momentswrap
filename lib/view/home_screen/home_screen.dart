@@ -5,7 +5,9 @@ import 'package:get/utils.dart';
 import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
 import 'package:momentswrap/controllers/location_controller/location_controller.dart';
 import 'package:momentswrap/controllers/product_controller/product_controller.dart';
+import 'package:momentswrap/models/product_models/product_model.dart';
 import 'package:momentswrap/util/common/coustom_curve.dart';
+import 'package:momentswrap/util/common/full_loader_screens.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
 import 'package:momentswrap/util/constants/app_images_string.dart';
 import 'package:momentswrap/util/constants/app_sizes.dart';
@@ -26,158 +28,174 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final ProductController controller = Get.put(ProductController());
-    // final ProductController controller = Get.find<ProductController>();
-    final LocationController locationController =
-        Get.find<LocationController>();
-    // LocationController locationController = Get.put(LocationController());
+    final LocationController locationController = Get.put(LocationController());
+    final CartController cartController = Get.put(CartController());
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: SafeArea(
-          // margin: const EdgeInsets.only(top: 30.0),
-          child: Column(
-            children: [
-              // Top image section
-              ClipPath(
-                clipper: CustomCurve(),
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 0.4,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 234, 184, 184),
-                  ),
-                  child: Column(
-                    children: [
-                      SearchAndFiltersBar(),
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              locationController.getAddress();
-                            },
-                            icon: Icon(
-                              Icons.location_on_outlined,
-                              color: Colors.black,
-                              size: 30,
+      body: Stack(
+        children: [
+          // Main Content
+          RefreshIndicator(
+            onRefresh: () async {
+              controller.clearFilters();
+              await locationController.getAddress();
+            },
+            child: SingleChildScrollView(
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    // Top image section
+                    ClipPath(
+                      clipper: CustomCurve(),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 234, 184, 184),
+                        ),
+                        child: Column(
+                          children: [
+                            SearchAndFiltersBar(),
+                            Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    locationController.getAddress();
+                                  },
+                                  icon: Icon(
+                                    Icons.location_on_outlined,
+                                    color: Colors.black,
+                                    size: 30,
+                                  ),
+                                ),
+                                SizedBox(height: 16),
+                                Obx(() {
+                                  return Text(locationController.address.value);
+                                }),
+                              ],
                             ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: AppSizes.spaceBtwItems),
+
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CarouselSlider(
+                        options: CarouselOptions(
+                          height: 200,
+                          autoPlay: true,
+                          enlargeCenterPage: true,
+                          scrollPhysics: BouncingScrollPhysics(),
+                          viewportFraction: 1.0,
+                        ),
+                        items: [
+                          RoundedImage(
+                            imageUrl: AppImagesString.offerBanner1,
+                            height: 200,
+                            fit: BoxFit.cover,
                           ),
-                          SizedBox(height: 16),
-                          Obx(
-                             () {
-                              return Text(locationController.address.value);
-                            }
+                          RoundedImage(
+                            imageUrl: AppImagesString.offerBanner2,
+                            height: 200,
+                            fit: BoxFit.cover,
+                          ),
+                          RoundedImage(
+                            imageUrl: AppImagesString.offerBanner3,
+                            height: 200,
+                            fit: BoxFit.cover,
+                          ),
+                          RoundedImage(
+                            imageUrl: AppImagesString.offerBanner4,
+                            height: 200,
+                            fit: BoxFit.cover,
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-              ),
+                    ),
 
-              SizedBox(height: AppSizes.spaceBtwItems),
+                    CartItemCard(
+                      imageUrl: AppImagesString.productImage1,
+                      title: 'apple',
+                      price: 200.0,
+                      quantity: 2,
+                      onIncrease: () {},
+                      onDecrease: () {},
+                      onDelete: () {},
+                    ),
+                    SizedBox(height: 16),
 
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CarouselSlider(
-                  options: CarouselOptions(
-                    height: 200,
-                    autoPlay: true,
-                    enlargeCenterPage: true,
-                    scrollPhysics: BouncingScrollPhysics(),
-                    viewportFraction: 1.0,
-                  ),
-                  items: [
-                    RoundedImage(
-                      imageUrl: AppImagesString.offerBanner1,
-                      height: 200,
-                      fit: BoxFit.cover,
-                    ),
-                    RoundedImage(
-                      imageUrl: AppImagesString.offerBanner2,
-                      height: 200,
-                      fit: BoxFit.cover,
-                    ),
-                    RoundedImage(
-                      imageUrl: AppImagesString.offerBanner3,
-                      height: 200,
-                      fit: BoxFit.cover,
-                    ),
-                    RoundedImage(
-                      imageUrl: AppImagesString.offerBanner4,
-                      height: 200,
-                      fit: BoxFit.cover,
-                    ),
+                    Obx(() {
+                      final productResponse = controller.products.value;
+
+                      if (controller.isLoading.value) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (productResponse == null ||
+                          productResponse.data.isEmpty) {
+                        return Center(child: Text("No products available"));
+                      }
+
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.7,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                        ),
+                        itemCount: productResponse.data.length,
+                        itemBuilder: (context, index) {
+                          final item = productResponse.data[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Get.to(ProductDetailScreen(product: item));
+                            },
+                            child: ProductCard(
+                              image: item.images.isNotEmpty
+                                  ? item.images.first
+                                  : '',
+                              title: item.name,
+                              subtitle: item.shortDescription,
+                              price: "₹${item.price}",
+                              offers: item.offers,
+                              addToCart: () async {
+                                await cartController.addToCart(
+                                  productId: item.id,
+                                  quantity: 1,
+                                  image: item.images.isNotEmpty
+                                      ? item.images.first
+                                      : '',
+                                  totalPrice: item.price.toDouble(),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    }),
+                    SizedBox(height: AppSizes.spaceBtwItems),
                   ],
                 ),
               ),
-              CartItemCard(
-                imageUrl: AppImagesString.productImage1,
-                title: 'apple',
-                price: 200.0,
-                quantity: 2,
-                onIncrease: () {},
-                onDecrease: () {},
-                onDelete: () {},
-              ),
-              SizedBox(height: 16),
-
-              // // product cards
-              Obx(() {
-                final productModel = controller.products.value;
-
-                if (controller.isLoading.value) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (productModel == null ||
-                    productModel.data == null ||
-                    productModel.data!.isEmpty) {
-                  return Center(child: Text("No products available"));
-                }
-
-                return GridView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.7,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                  ),
-                  itemCount: productModel.data!.length,
-                  itemBuilder: (context, index) {
-                    final item = productModel.data![index];
-                    return GestureDetector(
-                      onTap: () {
-                        Get.to(ProductDetailScreen(product: item));
-                      },
-                      child: ProductCard(
-                        image: (item.image?.isNotEmpty ?? false)
-                            ? item.image!.first
-                            : '',
-                        title: item.name ?? '',
-                        subtitle: item.shortDescription ?? '',
-                        price: "₹${item.price ?? 0}",
-                        productId: item.id ?? '',
-                        addToCart: () {
-                          Get.find<CartController>().addToCart(
-                            productId: item.id ?? '',
-                            quantity: 1,
-                            image: item.image?.first ?? '',
-                            price: item.price!.toDouble(),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                );
-              }),
-
-              SizedBox(height: AppSizes.spaceBtwItems),
-
-              // bottom image section
-            ],
+            ),
           ),
-        ),
+
+          // Single Global Full Screen Loader
+          Obx(() {
+            if (cartController.isAddCartLoading.value) {
+              return Positioned.fill(
+                child: FullLoaderScreens(
+                  animationPath: 'assets/animations/addtocart.json',
+                ),
+              );
+            }
+            return SizedBox.shrink();
+          }),
+        ],
       ),
     );
   }
@@ -219,7 +237,6 @@ class RoundedImage extends StatelessWidget {
         padding: padding,
         height: height,
         width: width,
-
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radius),
           color: backgroundColor,

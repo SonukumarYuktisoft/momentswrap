@@ -1,120 +1,166 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:get/get_connect/connect.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:get/route_manager.dart';
-import 'package:momentswrap/models/cart_models/addto_cart_model.dart';
-import 'package:momentswrap/models/cart_models/cart_models.dart';
-import 'package:momentswrap/models/cart_models/get_all_cart_model.dart';
+import 'package:momentswrap/models/cart_models/allcarts_models.dart';
 import 'package:momentswrap/services/api_services.dart';
 import 'package:momentswrap/util/helpers/helper_functions.dart';
 import 'package:dio/dio.dart' as dio;
-import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 class CartController extends GetxController {
   final ApiServices _apiServices = ApiServices();
-  final RxList<Product> cartItems = <Product>[].obs;
-  final RxList<AddToCartModel> addToCartModel = <AddToCartModel>[].obs;
   final RxBool isLoading = false.obs;
+  final RxBool isAddCartLoading = false.obs;
+  final RxBool isRemoveFromCartLoading = false.obs;
   final RxInt itemCount = 1.obs;
 
+  final Rx<AllCartsModels?> carts = Rx<AllCartsModels?>(null);
+  final RxString errorMessage = ''.obs;
+  final RxBool isCartLoading = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchCarts();
+  }
   
+  @override
+  onClose() {
+    super.onClose();
+    itemCount.value = 1;
+  }
+
+  ///fatch all carts
+
+  Future<void> fetchCarts() async {
+    isCartLoading.value = true;
+    errorMessage.value = '';
+
+    try {
+      final dio.Response response = await _apiServices.getRequest(
+        authToken: true, // Assuming carts require authentication
+        url: 'https://moments-wrap-backend.vercel.app/cart/getAllCarts',
+        queryParameters: {},
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        print("Cart Response Data: ${response.data}");
+        final responseData = AllCartsModels.fromJson(response.data);
+        carts.value = responseData;
+        log('${carts.toString()}');
+        isCartLoading.value = false;
+      } else {
+        errorMessage.value = 'Failed to load cart data';
+      }
+    } catch (e) {
+      print('Error fetching carts: $e');
+      errorMessage.value = 'Error loading cart: $e';
+    } finally {
+      isCartLoading.value = false;
+    }
+  }
 
   Future<void> addToCart({
     required String productId,
     required int quantity,
+    required double totalPrice,
     required String image,
-    required double price,
   }) async {
     try {
-      isLoading.value = true;
+      isAddCartLoading.value = true;
       dio.Response? response = await _apiServices.requestPostForApi(
         authToken: true,
-        url: 'https://moments-wrap-backend.vercel.app/cart/addToCart',
+        url: 'https://moment-wrap-backend.vercel.app/api/customer/add-to-cart',
         dictParameter: {
           'productId': productId,
           'quantity': quantity,
+          'price': totalPrice, // Changed from 'totalPrice' to 'price'
           'image': image,
-          'price': price,
         },
       );
+
       log('${response!.data}');
+
       if (response.statusCode == 201) {
-        final responseData = AddToCartModel.fromJson(response.data);
-
-        // itemCount.value = responseData.data?.quantity ?? 1;
-        // addToCartModel;
-
-        log(itemCount.toString());
-
+        // The API returns the updated cart items, not a message
         HelperFunctions.showSnackbar(
           'Success',
           'Item added to cart',
           title: 'Success',
-          message: 'Item added to cart',
+          message: 'Item added to cart successfully', // Use a fixed message
           backgroundColor: Colors.green,
         );
+
+        // fetchCarts(); // Refresh cart data
+        itemCount.value -= quantity;
+      } else {
+        // Handle other status codes
+        HelperFunctions.showSnackbar(
+          'Error',
+          'Failed to add item to cart',
+          title: 'Error',
+          message: 'Unexpected response from server',
+          backgroundColor: Colors.red,
+        );
       }
-      print('Item added to cart: ${response.data}');
     } catch (e) {
       HelperFunctions.showSnackbar(
         'Error',
         'Failed to add item to cart',
         title: 'Error',
-        message: 'Failed to add item to cart',
+        message: 'Network error occurred',
         backgroundColor: Colors.red,
       );
       print(e);
     } finally {
-      isLoading.value = false;
+      isAddCartLoading.value = false;
     }
   }
-  //  int get totalQuantity =>
 
+  //  int get totalQuantity =>
   Future<void> removeFromCart(String productId) async {
     try {
-      isLoading.value = true;
-      dio.Response? response = await _apiServices.requestPostForApi(
+      isRemoveFromCartLoading.value = true;
+      final dio.Response response = await _apiServices.deleteRequest(
         authToken: true,
-        url: 'https://moments-wrap-backend.vercel.app/cart/removeCart',
-        dictParameter: {
-          'productId': productId,
-        },
+        url:
+            'https://moment-wrap-backend.vercel.app/api/customer/remove-from-cart/$productId',
       );
-      log('${response!.data}');
+      log('${response.data}');
       if (response.statusCode == 200) {
-        
-
-        log(itemCount.toString());
-
         HelperFunctions.showSnackbar(
           'Success',
-          'Item remove to cart',
+          'Item removed from cart',
           title: 'Success',
-          message: 'Item added to cart',
+          message: response.data['message'] ?? 'Item removed from cart',
           backgroundColor: Colors.green,
         );
+        // fetchCarts(); // Refresh cart data
+      } else {
+        HelperFunctions.showSnackbar(
+          'Error',
+          'Failed to remove item from cart',
+          title: 'Error',
+          message:
+              response.data['message'] ?? 'Failed to remove item from cart',
+          backgroundColor: Colors.red,
+        );
       }
-      print('Item added to cart: ${response.data}');
+      log('Item removed from cart: ${response.data}');
     } catch (e) {
       HelperFunctions.showSnackbar(
         'Error',
-        'Failed to remove item to cart',
+        'Failed to remove item from cart',
         title: 'Error',
-        message: 'Failed to add item to cart',
+        message: 'Failed to remove item from cart',
         backgroundColor: Colors.red,
       );
-      print(e);
+      log('Error removing item from cart: $e');
     } finally {
-      isLoading.value = false;
+      isRemoveFromCartLoading.value = false;
     }
   }
-
-
-
-
 
   void addItems() {
     itemCount.value++;
@@ -126,37 +172,5 @@ class CartController extends GetxController {
     }
   }
 
-
-  /// 
-  /// 
-  Future<void> fetchGetAllCartItems() async {
-    isLoading.value = true;
-    try {
-      // if (inStockOnly.value) {
-      //   queryParameters['inStock'] = true;
-      // }
-
-      final dio.Response response = await _apiServices.getRequest(
-        authToken: true,
-        url: 'https://moments-wrap-backend.vercel.app/product/getAllProducts',
-        // queryParameters: queryParameters,
-      );
-
-      if (response.statusCode == 200 && response.data != null) {
-        print("Response Data: ${response.data}");
-        final responseData = GetAllCartModel.fromJson(response.data);
-
-       
-
-      }
-    } catch (e) {
-      print('Error fetching products: $e');
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-
+  ///
 }
-
-

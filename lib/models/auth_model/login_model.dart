@@ -1,37 +1,32 @@
 class LoginModel {
-  final bool success;
   final String message;
-  final User user;
   final String token;
+  final Customer customer;
 
   LoginModel({
-    required this.success,
     required this.message,
-    required this.user,
     required this.token,
+    required this.customer,
   });
 
   factory LoginModel.fromJson(Map<String, dynamic> json) {
     return LoginModel(
-      success: json['success'] ?? false,
       message: json['message'] ?? '',
-      user: User.fromJson(json['user']),
       token: json['token'] ?? '',
+      customer: Customer.fromJson(json['customer'] ?? {}),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'success': success,
-      'message': message,
-      'user': user.toJson(),
-      'token': token,
+      "message": message,
+      "token": token,
+      "customer": customer.toJson(),
     };
   }
 }
 
-class User {
-  final Address address;
+class Customer {
   final SocialMedia socialMedia;
   final String id;
   final String firstName;
@@ -39,16 +34,20 @@ class User {
   final String email;
   final String phone;
   final String password;
-  final String role;
-  final String helplineNumber;
   final String profileImage;
+  final List<dynamic> addresses;
   final bool isActive;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final bool isVerified;
+  final String role;
+  final List<dynamic> wishlist;
+  final List<dynamic> orderHistory;
+  final List<Cart> cart;
+  final String createdAt;
+  final String updatedAt;
   final int v;
+  final String lastLogin;
 
-  User({
-    required this.address,
+  Customer({
     required this.socialMedia,
     required this.id,
     required this.firstName,
@@ -56,88 +55,67 @@ class User {
     required this.email,
     required this.phone,
     required this.password,
-    required this.role,
-    required this.helplineNumber,
     required this.profileImage,
+    required this.addresses,
     required this.isActive,
+    required this.isVerified,
+    required this.role,
+    required this.wishlist,
+    required this.orderHistory,
+    required this.cart,
     required this.createdAt,
     required this.updatedAt,
     required this.v,
+    required this.lastLogin,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      address: Address.fromJson(json['address']),
-      socialMedia: SocialMedia.fromJson(json['socialMedia']),
+  factory Customer.fromJson(Map<String, dynamic> json) {
+    return Customer(
+      socialMedia: SocialMedia.fromJson(json['socialMedia'] ?? {}),
       id: json['_id'] ?? '',
       firstName: json['firstName'] ?? '',
       lastName: json['lastName'] ?? '',
       email: json['email'] ?? '',
       phone: json['phone'] ?? '',
       password: json['password'] ?? '',
-      role: json['role'] ?? '',
-      helplineNumber: json['helplineNumber'] ?? '',
       profileImage: json['profileImage'] ?? '',
+      addresses: List<dynamic>.from(json['addresses'] ?? []),
       isActive: json['isActive'] ?? false,
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      isVerified: json['isVerified'] ?? false,
+      role: json['role'] ?? '',
+      wishlist: List<dynamic>.from(json['wishlist'] ?? []),
+      orderHistory: List<dynamic>.from(json['orderHistory'] ?? []),
+      cart: (json['cart'] as List<dynamic>? ?? [])
+          .map((e) => Cart.fromJson(e))
+          .toList(),
+      createdAt: json['createdAt'] ?? '',
+      updatedAt: json['updatedAt'] ?? '',
       v: json['__v'] ?? 0,
+      lastLogin: json['lastLogin'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'address': address.toJson(),
-      'socialMedia': socialMedia.toJson(),
-      '_id': id,
-      'firstName': firstName,
-      'lastName': lastName,
-      'email': email,
-      'phone': phone,
-      'password': password,
-      'role': role,
-      'helplineNumber': helplineNumber,
-      'profileImage': profileImage,
-      'isActive': isActive,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
-      '__v': v,
-    };
-  }
-}
-
-class Address {
-  final String street;
-  final String city;
-  final String state;
-  final String zipCode;
-  final String country;
-
-  Address({
-    required this.street,
-    required this.city,
-    required this.state,
-    required this.zipCode,
-    required this.country,
-  });
-
-  factory Address.fromJson(Map<String, dynamic> json) {
-    return Address(
-      street: json['street'] ?? '',
-      city: json['city'] ?? '',
-      state: json['state'] ?? '',
-      zipCode: json['zipCode'] ?? '',
-      country: json['country'] ?? '',
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'street': street,
-      'city': city,
-      'state': state,
-      'zipCode': zipCode,
-      'country': country,
+      "socialMedia": socialMedia.toJson(),
+      "_id": id,
+      "firstName": firstName,
+      "lastName": lastName,
+      "email": email,
+      "phone": phone,
+      "password": password,
+      "profileImage": profileImage,
+      "addresses": addresses,
+      "isActive": isActive,
+      "isVerified": isVerified,
+      "role": role,
+      "wishlist": wishlist,
+      "orderHistory": orderHistory,
+      "cart": cart.map((e) => e.toJson()).toList(),
+      "createdAt": createdAt,
+      "updatedAt": updatedAt,
+      "__v": v,
+      "lastLogin": lastLogin,
     };
   }
 }
@@ -166,10 +144,38 @@ class SocialMedia {
 
   Map<String, dynamic> toJson() {
     return {
-      'facebook': facebook,
-      'twitter': twitter,
-      'instagram': instagram,
-      'linkedin': linkedin,
+      "facebook": facebook,
+      "twitter": twitter,
+      "instagram": instagram,
+      "linkedin": linkedin,
+    };
+  }
+}
+
+class Cart {
+  final String product;
+  final int quantity;
+  final String id;
+
+  Cart({
+    required this.product,
+    required this.quantity,
+    required this.id,
+  });
+
+  factory Cart.fromJson(Map<String, dynamic> json) {
+    return Cart(
+      product: json['product'] ?? '',
+      quantity: json['quantity'] ?? 0,
+      id: json['_id'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "product": product,
+      "quantity": quantity,
+      "_id": id,
     };
   }
 }

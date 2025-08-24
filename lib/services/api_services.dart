@@ -64,7 +64,6 @@ class ApiServices {
     }
   }
 
-
   /// POST
   Future<Response?> requestPostForApi({
     required String url,
@@ -85,6 +84,7 @@ class ApiServices {
       Response response = await _dio.post(
         url,
         data: dictParameter,
+
         options: Options(
           followRedirects: false,
           validateStatus: (status) => true,
@@ -102,8 +102,6 @@ class ApiServices {
       return null;
     }
   }
-
-
 
   // Method to handle PUT requests
   Future<Response> putRequest({
@@ -132,6 +130,74 @@ class ApiServices {
     } catch (e) {
       log("putRequest error = $e");
       rethrow;
+    }
+  }
+
+  // Method to handle DELETE requests
+  Future<Response> deleteRequest({
+    required String url,
+    Map<String, dynamic>? queryParameters,
+    required bool authToken,
+    Map<String, dynamic>? data,
+  }) async {
+    try {
+      final response = await _dio.delete(
+        url,
+        data: data,
+        queryParameters: queryParameters,
+        options: Options(
+          headers: await getHeader(authToken),
+          sendTimeout: const Duration(minutes: 1),
+          receiveTimeout: const Duration(minutes: 1),
+        ),
+      );
+      log("deleteRequest response = ${response.data}");
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        throw Exception('Failed to delete data: ${response.statusCode}');
+      }
+    } catch (e) {
+      log("deleteRequest error = $e");
+      rethrow;
+    }
+  }
+
+  //put
+  Future<Response?> requestPutForApi({
+    required String url,
+    required Map<String, dynamic> dictParameter,
+    required bool authToken,
+  }) async {
+    try {
+      print("Url:  $url");
+      print("DictParameter: $dictParameter");
+
+      BaseOptions options = BaseOptions(
+        receiveTimeout: const Duration(minutes: 1),
+        connectTimeout: const Duration(minutes: 1),
+        headers: await getHeader(authToken),
+      );
+      _dio.options = options;
+
+      Response response = await _dio.put(
+        url,
+        data: dictParameter,
+        options: Options(
+          followRedirects: false,
+          validateStatus: (status) => true,
+          headers: await getHeader(authToken),
+        ),
+      );
+
+      print("Response: $response");
+      print("Response_headers: ${response.headers}");
+      print("Response_real_url: ${response.realUri}");
+
+      return response;
+    } catch (error) {
+      print("Exception_Main: $error");
+      return null;
     }
   }
 

@@ -78,6 +78,7 @@ class AppPages {
       page: () => AddToCartScreen(),
       transition: Transition.fadeIn,
       binding: CartBinding(),
+      
     ),
 
     /// Profile Screen

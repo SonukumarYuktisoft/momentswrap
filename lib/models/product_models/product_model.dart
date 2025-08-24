@@ -1,109 +1,161 @@
-class ProductModel {
-  bool? success;
-  List<Product>? data; // 👈 API me "data" hai, not "products"
+class ProductResponse {
+  final List<ProductModel> data;
 
-  ProductModel({this.success, this.data});
+  ProductResponse({required this.data});
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) {
-    return ProductModel(
-      success: json['success'] as bool?,
-      data: (json['data'] as List<dynamic>?)
-          ?.map((e) => Product.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  factory ProductResponse.fromJson(List<dynamic> json) {
+    return ProductResponse(
+      data: json.map((e) => ProductModel.fromJson(e)).toList(),
     );
   }
 }
 
-class Product {
-  String? id;
-  String? name;
-  String? shortDescription;
-  String? longDescription;
-  String? material;
-  List<String>? isSafeFor;
-  String? usageInstructions;
-  List<TechnicalSpecification>? technicalSpecifications;
-  List<String>? certifications;
-  String? warranty;
-  int? price;
-  int? stock;
-  String? category;
-  List<String>? tags;
-  List<String>? image;
-  List<String>? additionalImages;
-  String? shop;
-  List<dynamic>? offers;
-  String? createdAt;
-  String? updatedAt;
-  int? v;
+class ProductModel {
+  final String id;
+  final String name;
+  final String category;
+  final String shortDescription;
+  final String longDescription;
+  final int price;
+  final List<String> images;
+  final int stock;
+  final double averageRating;
+  final String material;
+  final List<String> saleFor;
+  final String warranty;
+  final String usageInstructions;
+  final List<Offer> offers;
+  final List<TechnicalSpecification> technicalSpecifications;
+  final String shop;
+  final List<Review> reviews;
+  final bool isActive;
+  final String productId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
-  Product({
-    this.id,
-    this.name,
-    this.shortDescription,
-    this.longDescription,
-    this.material,
-    this.isSafeFor,
-    this.usageInstructions,
-    this.technicalSpecifications,
-    this.certifications,
-    this.warranty,
-    this.price,
-    this.stock,
-    this.category,
-    this.tags,
-    this.image,
-    this.additionalImages,
-    this.shop,
-    this.offers,
-    this.createdAt,
-    this.updatedAt,
-    this.v,
+  ProductModel({
+    required this.id,
+    required this.name,
+    required this.category,
+    required this.shortDescription,
+    required this.longDescription,
+    required this.price,
+    required this.images,
+    required this.stock,
+    required this.averageRating,
+    required this.material,
+    required this.saleFor,
+    required this.warranty,
+    required this.usageInstructions,
+    required this.offers,
+    required this.technicalSpecifications,
+    required this.shop,
+    required this.reviews,
+    required this.isActive,
+    required this.productId,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
-  factory Product.fromJson(Map<String, dynamic> json) {
-    return Product(
-      id: json['_id'] as String?,
-      name: json['name'] as String?,
-      shortDescription: json['shortDescription'] as String?,
-      longDescription: json['longDescription'] as String?,
-      material: json['material'] as String?,
-      isSafeFor: (json['isSafeFor'] as List<dynamic>?)?.cast<String>(),
-      usageInstructions: json['usageInstructions'] as String?,
-      technicalSpecifications: (json['technicalSpecifications'] as List<dynamic>?)
-          ?.map((e) => TechnicalSpecification.fromJson(e))
-          .toList(),
-      certifications: (json['certifications'] as List<dynamic>?)?.cast<String>(),
-      warranty: json['warranty'] as String?,
-      price: json['price'] as int?,
-      stock: json['stock'] as int?,
-      category: json['category'] as String?,
-      tags: (json['tags'] as List<dynamic>?)?.cast<String>(),
-      image: (json['image'] as List<dynamic>?)?.cast<String>(),
-      additionalImages: (json['additionalImages'] as List<dynamic>?)?.cast<String>(),
-      shop: json['shop'] as String?,
-      offers: json['offers'] as List<dynamic>?,
-      createdAt: json['createdAt'] as String?,
-      updatedAt: json['updatedAt'] as String?,
-      v: json['__v'] as int?,
+  factory ProductModel.fromJson(Map<String, dynamic> json) {
+    return ProductModel(
+      id: json['_id'] ?? '',
+      name: json['name'] ?? '',
+      category: json['category'] ?? '',
+      shortDescription: json['shortDescription'] ?? '',
+      longDescription: json['longDescription'] ?? '',
+      price: json['price'] ?? 0,
+      images: List<String>.from(json['images'] ?? []),
+      stock: json['stock'] ?? 0,
+      averageRating: (json['averageRating'] ?? 0.0).toDouble(),
+      material: json['material'] ?? '',
+      saleFor: List<String>.from(json['saleFor'] ?? []),
+      warranty: json['warranty'] ?? '',
+      usageInstructions: json['usageInstructions'] ?? '',
+      offers: List<Offer>.from(
+          (json['offers'] ?? []).map((x) => Offer.fromJson(x))),
+      technicalSpecifications: List<TechnicalSpecification>.from(
+          (json['technicalSpecifications'] ?? [])
+              .map((x) => TechnicalSpecification.fromJson(x))),
+      shop: json['shop'] ?? '',
+      reviews: List<Review>.from(
+          (json['reviews'] ?? []).map((x) => Review.fromJson(x))),
+      isActive: json['isActive'] ?? false,
+      productId: json['productId'] ?? '',
+      createdAt: DateTime.parse(json['createdAt'] ?? '2025-01-01T00:00:00.000Z'),
+      updatedAt: DateTime.parse(json['updatedAt'] ?? '2025-01-01T00:00:00.000Z'),
+    );
+  }
+}
+
+class Offer {
+  final String id;
+  final String offerTitle;
+  final String offerDescription;
+  final int discountPercentage;
+  final DateTime validTill;
+
+  Offer({
+    required this.id,
+    required this.offerTitle,
+    required this.offerDescription,
+    required this.discountPercentage,
+    required this.validTill,
+  });
+
+  factory Offer.fromJson(Map<String, dynamic> json) {
+    return Offer(
+      id: json['_id'] ?? '',
+      offerTitle: json['offerTitle'] ?? '',
+      offerDescription: json['offerDescription'] ?? '',
+      discountPercentage: json['discountPercentage'] ?? 0,
+      validTill: DateTime.parse(json['validTill'] ?? '2025-01-01T00:00:00.000Z'),
     );
   }
 }
 
 class TechnicalSpecification {
-  String? id;
-  String? weight;
-  String? dimensions;
-  String? color;
+  final String id;
+  final String specName;
+  final String specValue;
 
-  TechnicalSpecification({this.id, this.weight, this.dimensions, this.color});
+  TechnicalSpecification({
+    required this.id,
+    required this.specName,
+    required this.specValue,
+  });
 
   factory TechnicalSpecification.fromJson(Map<String, dynamic> json) {
     return TechnicalSpecification(
-      id: json['_id'] as String?,
-      weight: json['weight'] as String?,
-      dimensions: json['dimensions'] as String?,
-      color: json['color'] as String?,
+      id: json['_id'] ?? '',
+      specName: json['specName'] ?? '',
+      specValue: json['specValue'] ?? '',
+    );
+  }
+}
+
+class Review {
+  final String id;
+  final String customer;
+  final int rating;
+  final String comment;
+  final DateTime createdAt;
+
+  Review({
+    required this.id,
+    required this.customer,
+    required this.rating,
+    required this.comment,
+    required this.createdAt,
+  });
+
+  factory Review.fromJson(Map<String, dynamic> json) {
+    return Review(
+      id: json['_id'] ?? '',
+      customer: json['customer'] ?? '',
+      rating: json['rating'] ?? 0,
+      comment: json['comment'] ?? '',
+      createdAt: DateTime.parse(json['createdAt'] ?? '2025-01-01T00:00:00.000Z'),
     );
   }
 }

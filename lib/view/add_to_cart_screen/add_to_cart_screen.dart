@@ -1,39 +1,105 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:momentswrap/models/cart_models/get_all_cart_model.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/get_core.dart';
+import 'package:get/instance_manager.dart';
+import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
+import 'package:momentswrap/controllers/order_controller/order_controller.dart';
 import 'package:momentswrap/util/constants/app_images_string.dart';
 import 'package:momentswrap/util/constants/app_sizes.dart';
 import 'package:momentswrap/util/helpers/date_time_helper.dart';
 import 'package:momentswrap/view/add_to_cart_screen/cart_Item_card.dart';
 
 class AddToCartScreen extends StatelessWidget {
-  
-  const  AddToCartScreen({super.key});
+  const AddToCartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // OrderController orderController = Get.find<OrderController>();
+    OrderController orderController = Get.put(OrderController());
+    final CartController cartController = Get.put(CartController());
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(AppSizes.defaultSpacing),
           child: Column(
             children: [
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: 3,
-                itemBuilder: (context, index) {
-                  return CartItemCard(
-                    imageUrl: AppImagesString.productImage1,
-                    title: "LED Starry Sky",
-                    price: 4.9,
-                    quantity: 1,
-                    onIncrease: () {},
-                    onDecrease: () {},
-                    onDelete: () {},
+                
+                // ElevatedButton(onPressed: () => cartController.fetchCarts(), child:Text('chake cart')),
+               
+              Obx(() {
+                if (cartController.isCartLoading.value) {
+                  return const CircularProgressIndicator();
+                } else if (cartController.carts.value == null ||
+                    cartController.carts.value!.data.isEmpty) {
+                  return Center(child: Text(cartController.errorMessage.value));
+                }
+
+                if (cartController.carts.value == null ||
+                    cartController.carts.value!.data.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.shopping_cart_outlined,
+                          size: 64,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          'Your cart is empty',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Add some items to get started',
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                      ],
+                    ),
                   );
-                },
-              ),
+                }
+                return Column(
+                  children: [
+                    // Cart Items List
+                    RefreshIndicator(
+                      onRefresh: () async {
+                        await cartController.fetchCarts();
+                      },
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                        child: ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          itemCount: cartController.carts.value!.data.length,
+                          itemBuilder: (context, index) {
+                            final cartItem =
+                                cartController.carts.value!.data[index];
+                            final product = cartItem.product;
+                            
+
+                            return CartItemCard(
+                              imageUrl: cartItem.image ?? '',
+                              title: product?.name ?? 'Unknown Product',
+                              price: cartItem.price,
+                              quantity: cartItem.quantity,
+                              onIncrease: () {},
+                              onDecrease: () {},
+                              onDelete: () {},
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }),
+
               ShippingCard(
                 shippingPrice: 10,
                 deliveryDate: 'Pick delivery date',
@@ -47,7 +113,11 @@ class AddToCartScreen extends StatelessWidget {
               VoucherCard(controller: TextEditingController(), onApply: () {}),
               const SizedBox(height: 10),
               CartSummary(subtotal: 34.9, shipping: 10, total: 44.9),
-              PlaceOrderButton(onPressed: () {}),
+              PlaceOrderButton(
+                onPressed: () {
+                  
+                },
+              ),
             ],
           ),
         ),

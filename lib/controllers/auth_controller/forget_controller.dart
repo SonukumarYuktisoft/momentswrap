@@ -35,10 +35,10 @@ class ForgetController extends GetxController {
         );
         if (response.statusCode == 200 && response.data != null) {
           final responseData = LoginModel.fromJson(response.data);
-          if (responseData.success == true) {
+          if (responseData.message == ["Login successful"]) {
             Get.snackbar(
               'Forget Password',
-              'Welcome ${responseData.user.firstName} ${responseData.user.lastName}!',
+              'Welcome ${responseData.customer.firstName} ${responseData.customer.lastName}!',
             );
             // String userToken = responseData.token;
             // String userId = responseData.user.id;
