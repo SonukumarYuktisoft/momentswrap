@@ -13,6 +13,7 @@ class SharedPreferencesServices {
   static const String _userIdKey = 'userId';
   static const String _userEmailKey = 'userEmail';
   static const String _userProfileImageKey = 'userProfileImage';
+  static const String _keyAddresses = 'addresses';
 
   static Future<void> setIsLoggedIn(bool isLoggedIn) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -109,6 +110,29 @@ class SharedPreferencesServices {
   static Future<String?> getUserProfileImage() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(_userProfileImageKey);
+  }
+// Addresses
+  static Future<void> saveAddresses(List<Map<String, dynamic>> addresses) async {
+    final prefs = await SharedPreferences.getInstance();
+    // Convert List<Map> → JSON String
+    String jsonString = jsonEncode(addresses);
+    await prefs.setString(_keyAddresses, jsonString);
+  }
+
+  static Future<List<Map<String, dynamic>>> getAddresses() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? jsonString = prefs.getString(_keyAddresses);
+    if (jsonString != null) {
+      // Convert JSON String → List<Map>
+      List<dynamic> jsonList = jsonDecode(jsonString);
+      return List<Map<String, dynamic>>.from(jsonList);
+    }
+    return [];
+  }
+
+ static Future<bool> hasAddresses() async {
+    final addresses = await getAddresses();
+    return addresses.isNotEmpty;
   }
 
   static Future<void> clearAll() async {

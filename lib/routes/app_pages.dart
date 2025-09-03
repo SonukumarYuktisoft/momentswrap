@@ -12,6 +12,7 @@ import 'package:momentswrap/view/auth/login_screen.dart';
 import 'package:momentswrap/view/auth/signup_screen.dart';
 import 'package:momentswrap/view/home_screen/home_screen.dart';
 import 'package:momentswrap/view/onboarding_screens/onboarding_screens.dart';
+import 'package:momentswrap/view/profile_screen/edit_profile_screen.dart';
 import 'package:momentswrap/view/profile_screen/profile_screen.dart';
 import 'package:momentswrap/view/splash_screen/splash_screen.dart';
 
@@ -96,5 +97,14 @@ class AppPages {
       transition: Transition.fadeIn,
       binding: ProfileBinding(),
     ),
+///EditProfileScreen
+
+    GetPage(
+      name: AppRoutes.profile,
+      page: () => const EditProfileScreen(),
+      transition: Transition.fadeIn,
+      binding: ProfileBinding(),
+    ),
+
   ];
 }

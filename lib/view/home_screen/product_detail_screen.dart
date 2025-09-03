@@ -272,7 +272,7 @@
 // }
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:momentswrap/util/common/auth_utils.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
 import 'package:momentswrap/controllers/order_controller/order_controller.dart';
@@ -364,9 +364,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ShareHelper.shareProduct(
                       name: widget.product.name ?? "",
                       price: widget.product.price?.toString() ?? "0",
-                      imageUrl: hasValidImages
-                          ? widget.product.images.first
-                          : "",
+                      imageUrl: hasValidImages? widget.product.images.first: "",
+                      shareUrl: 'https://moment-wrap-frontend.vercel.app/product/${widget.product.id}',
                     );
                   },
                 ),
@@ -1168,14 +1167,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 onPressed: cartController.isAddCartLoading.value
                     ? null
                     : () {
-                        cartController.addToCart(
-                          image: widget.product.images.isNotEmpty
-                              ? widget.product.images.first
-                              : '',
-                          productId: widget.product.id,
-                          quantity: 1,
-                          totalPrice: widget.product.price.toDouble(),
-                        );
+                        AuthUtils.runIfLoggedIn(() {
+                          cartController.addToCart(
+                            image: widget.product.images.isNotEmpty
+                                ? widget.product.images.first
+                                : '',
+                            productId: widget.product.id,
+                            quantity: 1,
+                            totalPrice: widget.product.price.toDouble(),
+                          );
+                        });
                       },
                 icon: cartController.isAddCartLoading.value
                     ? SizedBox(
@@ -1234,10 +1235,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 onPressed: orderController.isBuyProductLoading.value
                     ? null
                     : () {
-                        orderController.buyProduct(
-                          productId: widget.product.id,
-                          quantity: 1,
-                        );
+                        AuthUtils.runIfLoggedInAndHasAddress(() {
+                          orderController.buyProduct(
+                            productId: widget.product.id,
+                            quantity: 1,
+                          );
+                        });
                       },
                 icon: orderController.isBuyProductLoading.value
                     ? SizedBox(

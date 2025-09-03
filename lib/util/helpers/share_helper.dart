@@ -33,7 +33,7 @@ class ShareHelper {
         buffer.writeln("🎁 Offer: $offer");
       }
       if (shareUrl != null) {
-        buffer.writeln("🔗 Buy here: $shareUrl");
+        buffer.writeln("$shareUrl");
       }
 
       // open share sheet

@@ -74,7 +74,7 @@ class LocationController extends GetxController {
         pincode.value = place.postalCode ?? "";
 
         address.value =
-            " ${place.locality ?? ""}, ${state.value}, ${pincode.value}, ${country.value}";
+            " ${place.locality ?? ""}, ${state.value}, ${pincode.value}, ${country.value}, ${place.street}, ${place.locality ?? ""}, ${place.subLocality ?? ""}, ${place.subAdministrativeArea ?? ""}, ${place.thoroughfare ?? ""}, ${place.subThoroughfare ?? ""}";
 
         location.value = "${place.street ?? ""}, ${place.locality ?? ""}";
         isAddressSelected.value = true;

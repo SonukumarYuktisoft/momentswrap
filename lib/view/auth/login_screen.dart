@@ -41,6 +41,10 @@ class LoginScreen extends GetView<LoginController> {
                     Stack(
                       children: [
                         Positioned(
+                          top: 20,
+                          right: 20,
+                          child: TextButton(onPressed: () => Get.offAllNamed(AppRoutes.bottomNavigation), child:Text('skip'))),
+                        Positioned(
                           top: 50,
                           left: 100,
                           child: Image.asset(

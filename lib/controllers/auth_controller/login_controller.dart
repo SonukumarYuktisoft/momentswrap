@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -51,15 +50,17 @@ class LoginController extends GetxController {
             String userProfileImage = responseData.customer.profileImage;
             String userName =
                 '${responseData.customer.firstName} ${responseData.customer.lastName}';
+            List<Map<String, dynamic>> addresses = (responseData.customer.addresses as List).cast<Map<String, dynamic>>();    
             String userPhone = responseData.customer.phone;
             await SharedPreferencesServices.setJwtToken(userToken);
             await SharedPreferencesServices.setUserName(userName);
             await SharedPreferencesServices.setIsLoggedIn(true);
             await SharedPreferencesServices.setUserId(userId);
             await SharedPreferencesServices.setUserEmail(userEmail);
-            await SharedPreferencesServices.setUserProfileImage(
-              userProfileImage,
-            );
+            await SharedPreferencesServices.setUserProfileImage(userProfileImage,);
+            await SharedPreferencesServices.setLoginDate(DateTime.now());
+            await SharedPreferencesServices.setUserId(userId);
+            await SharedPreferencesServices.saveAddresses(addresses);
             await SharedPreferencesServices.setPhoneNumber(userPhone);
             Get.offAllNamed(AppRoutes.bottomNavigation);
           } else {

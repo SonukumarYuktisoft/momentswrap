@@ -51,14 +51,28 @@ class ProfileController extends GetxController {
   static const String _deleteProfileEndpoint =
       '$_baseUrl/delete-customer-profile';
 
-  @override
-  void onInit() {
-    super.onInit();
-    fetchUserDataFromLocal();
-    getCustomerProfile();
-  }
+@override
+void onInit() {
+  super.onInit();
+  checkLoginAndFetchData();
+}
+// Removed erroneous isLoggedIn method; use SharedPreferencesServices.getIsLoggedIn() directly.
 
-  islogin() {}
+
+Future<void> checkLoginAndFetchData() async {
+  final  isLoggedIn = await SharedPreferencesServices.getIsLoggedIn();
+    final  isAddress = await SharedPreferencesServices.hasAddresses();
+    final showAddresses = await SharedPreferencesServices.getAddresses();
+  print('Is user logged in? $isLoggedIn');
+  print('Is user isAddress in? $isAddress');
+  print('Is user showAddresses in? $showAddresses');
+  if (isLoggedIn == true) {
+    await getCustomerProfile();
+    await fetchUserDataFromLocal();
+  } else {
+    debugPrint("User not logged in, skipping profile fetch.");
+  }
+}
 
   // Get profile from API
   Future<void> getCustomerProfile() async {
@@ -334,9 +348,15 @@ class ProfileController extends GetxController {
 
   Future<void> _updateLocalStorage(CustomerProfile profile) async {
     try {
-      // await SharedPreferencesServices.saveUserName(profile.fullName);
-      // await SharedPreferencesServices.saveUserEmail(profile.email);
-      // await SharedPreferencesServices.savePhoneNumber(profile.phone);
+         List<Map<String, dynamic>> addresses = (profile.addresses as List).cast<Map<String, dynamic>>();
+            await SharedPreferencesServices.setUserName(profile.fullName);
+            await SharedPreferencesServices.setIsLoggedIn(true);
+            await SharedPreferencesServices.setUserId(profile.id);
+            await SharedPreferencesServices.setUserEmail(profile.email);
+            await SharedPreferencesServices.setUserProfileImage(profile.profileImage,);
+            await SharedPreferencesServices.setUserId(profile.customerId);
+            await SharedPreferencesServices.saveAddresses(addresses);
+            await SharedPreferencesServices.setPhoneNumber(profile.phone);
       print('Updated local storage with latest profile data');
     } catch (e) {
       print('Error updating local storage: $e');

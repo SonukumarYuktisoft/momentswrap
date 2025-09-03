@@ -391,7 +391,8 @@ class ProfileScreen extends GetView<ProfileController> {
         }
 
         return RefreshIndicator(
-          onRefresh: () => controller.getCustomerProfile(),
+          // onRefresh: () => controller.getCustomerProfile(),
+          onRefresh: () => controller.checkLoginAndFetchData(),
           color: AppColors.primaryColor,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
@@ -552,6 +553,7 @@ class ProfileScreen extends GetView<ProfileController> {
                           ),
                           child: Column(
                             children: [
+                            
                               _buildModernProfileItem(
                                 icon: Icons.edit_outlined,
                                 title: "Edit Profile",

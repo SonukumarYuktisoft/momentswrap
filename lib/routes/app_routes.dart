@@ -28,6 +28,8 @@ class AppRoutes {
 
   /// Profile Screen
   static const String profile = '/profile-screen';
+  //EditProfileScreen
+  static const String editProfile = '/edit-profile-screen';
 
   /// Not Found
   static const String notFound = '/not-found';
