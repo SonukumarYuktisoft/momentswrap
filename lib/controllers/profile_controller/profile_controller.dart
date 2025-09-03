@@ -1,63 +1,8 @@
-// import 'dart:io';
-
-// import 'package:get/get.dart';
-// import 'package:get/get_core/src/get_main.dart';
-// import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:momentswrap/routes/app_routes.dart';
-// import 'package:momentswrap/services/shared_preferences_services.dart';
-
-// class ProfileController extends GetxController {
-//   var profileImage = Rxn<File>(); // Stores selected image file
-
-//     RxString fullName = ''.obs;
-//   RxString email = ''.obs;
-//   RxString phoneNumber = ''.obs;
-
-//   final ImagePicker _picker = ImagePicker();
-
-//   Future<void> pickImage(ImageSource source) async {
-//     try {
-//       final XFile? pickedFile = await _picker.pickImage(source: source);
-//       if (pickedFile != null) {
-//         profileImage.value = File(pickedFile.path);
-//       }
-//     } catch (e) {
-//       print("Error picking image: $e");
-//     }
-//   }
-
-//   void removeImage() {
-//     profileImage.value = null;
-//   }
-
-//   void logOut() async {
-//     // Implement your logout logic here
-//     await SharedPreferencesServices.clearAll();
-//     Get.offAllNamed(AppRoutes.login);
-//   }
-
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     // Fetch user data from shared preferences and update the variables
-//     fetchUserData();
-//   }
-
-//   Future<void> fetchUserData() async {
-//     fullName.value = (await SharedPreferencesServices.getUserName()) ?? '';
-//     email.value = (await SharedPreferencesServices.getUserEmail()) ?? '';
-//     phoneNumber.value = (await SharedPreferencesServices.getPhoneNumber()) ?? '';
-
-//   }
-
-// }
-
-// 1. Updated Profile Controller with API Integration
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:momentswrap/models/profile_models/customer_profile_model.dart';
 import 'package:momentswrap/routes/app_routes.dart';
 import 'package:momentswrap/services/shared_preferences_services.dart';
 import 'package:momentswrap/services/api_services.dart';
@@ -65,13 +10,30 @@ import 'package:momentswrap/services/api_services.dart';
 class ProfileController extends GetxController {
   final ApiServices _apiServices = ApiServices();
 
+  // Profile data using model
+  Rxn<CustomerProfile> profile = Rxn<CustomerProfile>();
   var profileImage = Rxn<File>();
-  RxString firstName = ''.obs;
-  RxString lastName = ''.obs;
-  RxString fullName = ''.obs;
-  RxString email = ''.obs;
-  RxString phoneNumber = ''.obs;
-  RxString userId = ''.obs;
+
+  // Convenience getters for UI binding
+  String get firstName => profile.value?.firstName ?? '';
+  String get lastName => profile.value?.lastName ?? '';
+  String get fullName => profile.value?.fullName ?? '';
+  String get email => profile.value?.email ?? '';
+  String get phoneNumber => profile.value?.phone ?? '';
+  String get userId => profile.value?.id ?? '';
+  String get customerId => profile.value?.customerId ?? '';
+  String get profileImageUrl => profile.value?.profileImage ?? '';
+  String? get gender => profile.value?.gender;
+  String? get dateOfBirth => profile.value?.dateOfBirth;
+  bool get isVerified => profile.value?.isVerified ?? false;
+  bool get isActive => profile.value?.isActive ?? true;
+  int get cartItemsCount => profile.value?.cart.length ?? 0;
+  int get wishlistCount => profile.value?.wishlist.length ?? 0;
+  int get orderHistoryCount => profile.value?.orderHistory.length ?? 0;
+  DateTime? get lastLogin => profile.value?.lastLogin;
+  DateTime? get createdAt => profile.value?.createdAt;
+  DateTime? get updatedAt => profile.value?.updatedAt;
+  List<Address> get addresses => profile.value?.addresses ?? [];
 
   // Loading states
   RxBool isLoading = false.obs;
@@ -80,14 +42,23 @@ class ProfileController extends GetxController {
 
   final ImagePicker _picker = ImagePicker();
 
+  // API endpoints
+  static const String _baseUrl =
+      'https://moment-wrap-backend.vercel.app/api/customer';
+  static const String _getProfileEndpoint = '$_baseUrl/get-customer-profile';
+  static const String _updateProfileEndpoint =
+      '$_baseUrl/update-customer-profile';
+  static const String _deleteProfileEndpoint =
+      '$_baseUrl/delete-customer-profile';
+
   @override
   void onInit() {
     super.onInit();
-    fetchUserData();
+    fetchUserDataFromLocal();
     getCustomerProfile();
   }
 
-  // Get profile from API
+  islogin() {}
 
   // Get profile from API
   Future<void> getCustomerProfile() async {
@@ -95,128 +66,137 @@ class ProfileController extends GetxController {
       isLoading.value = true;
 
       final response = await _apiServices.getRequest(
-        url:
-            'https://moment-wrap-backend.vercel.app/api/customer/get-customer-profile',
+        url: _getProfileEndpoint,
         authToken: true,
       );
 
       print('API Response: ${response.data}');
-      print('Response type: ${response.data.runtimeType}');
 
-      // Check if response and response.data are not null
-      if (response.data != null && response.data is Map<String, dynamic>) {
-        final responseData = response.data as Map<String, dynamic>;
-
-        if (responseData['success'] == 200 && responseData['data'] != null) {
-          final data = responseData['data'] as Map<String, dynamic>;
-
-          userId.value = data['_id']?.toString() ?? '';
-          firstName.value = data['firstName']?.toString() ?? '';
-          lastName.value = data['lastName']?.toString() ?? '';
-          fullName.value = '${firstName.value} ${lastName.value}'.trim();
-          email.value = data['email']?.toString() ?? '';
-          phoneNumber.value = data['phone']?.toString() ?? '';
+      if (response.data != null) {
+        // Handle the direct profile response
+        if (response.data.containsKey('_id')) {
+          profile.value = CustomerProfile.fromJson(response.data);
 
           // Update local storage
-          // await SharedPreferencesServices.saveUserName(fullName.value);
-          // await SharedPreferencesServices.saveUserEmail(email.value);
-          // await SharedPreferencesServices.savePhoneNumber(phoneNumber.value);
+          await _updateLocalStorage(profile.value!);
 
           print('Profile data loaded successfully');
+          print('Full Name: ${profile.value!.fullName}');
+          print('Customer ID: ${profile.value!.customerId}');
+          print('Cart Items: ${profile.value!.cart.length}');
+          print('Is Verified: ${profile.value!.isVerified}');
+          print('Gender: ${profile.value!.gender}');
+          print('Date of Birth: ${profile.value!.dateOfBirth}');
+
+          _showSuccess('Profile data loaded successfully');
         } else {
-          print('API returned success=false or data is null');
-          Get.snackbar(
-            'Error',
-            responseData['message'] ?? 'Failed to fetch profile data',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
+          print('Invalid response structure');
+          _showError('Invalid response from server');
         }
       } else {
-        print('Response data is null or not a Map');
-        Get.snackbar(
-          'Error',
-          'Invalid response from server',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        print('Response data is null');
+        _showError('No data received from server');
       }
     } catch (e) {
       print('Error fetching profile: $e');
-      Get.snackbar(
-        'Error',
-        'Something went wrong: ${e.toString()}',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      _showError('Something went wrong: ${e.toString()}');
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Update profile API
+  // Update profile API - Fixed to match the API documentation exactly
   Future<void> updateCustomerProfile({
     required String newFirstName,
     required String newLastName,
     required String newPhone,
+    String? profileImageUrl,
+    String? gender,
+    String? dateOfBirth,
+    List<Map<String, dynamic>>? addresses,
   }) async {
     try {
       isUpdating.value = true;
 
-      final Map<String, dynamic> requestData = {
-        "firstName": newFirstName,
-        "lastName": newLastName,
-        "phone": newPhone,
+      // Prepare the request body according to API documentation
+      Map<String, dynamic> requestData = {
+        'firstName': newFirstName,
+        'lastName': newLastName,
+        'phone': newPhone,
       };
 
+      // Add optional fields if provided
+      if (profileImageUrl != null && profileImageUrl.isNotEmpty) {
+        requestData['profileImage'] = profileImageUrl;
+      }
+
+      if (gender != null && gender.isNotEmpty) {
+        requestData['gender'] = gender;
+      }
+
+      if (dateOfBirth != null && dateOfBirth.isNotEmpty) {
+        requestData['dateOfBirth'] = dateOfBirth;
+      }
+
+      if (addresses != null && addresses.isNotEmpty) {
+        requestData['addresses'] = addresses;
+      }
+
+      print('Update request data: $requestData');
+
       final response = await _apiServices.putRequest(
-        url:
-            'https://moment-wrap-backend.vercel.app/api/customer/update-customer-profile',
+        url: _updateProfileEndpoint,
         data: requestData,
         authToken: true,
       );
 
-      if (response.data['success'] == true) {
-        final data = response.data['data'];
+      print('Update Response: ${response.data}');
 
-        firstName.value = data['firstName'] ?? '';
-        lastName.value = data['lastName'] ?? '';
-        fullName.value = '${firstName.value} ${lastName.value}'.trim();
-        phoneNumber.value = data['phone'] ?? '';
+      if (response.data != null) {
+        // Check if the response indicates success
+        bool isSuccess = false;
+        String? message;
+        CustomerProfile? updatedProfile;
 
-        // // Update local storage
-        // await SharedPreferencesServices.saveUserName(fullName.value);
-        // await SharedPreferencesServices.savePhoneNumber(phoneNumber.value);
+        if (response.data.containsKey('success')) {
+          // Response has success wrapper
+          isSuccess = response.data['success'] == true;
+          message = response.data['message'];
 
-        Get.snackbar(
-          'Success',
-          'Profile updated successfully',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+          if (response.data.containsKey('data') &&
+              response.data['data'] != null) {
+            updatedProfile = CustomerProfile.fromJson(response.data['data']);
+          }
+        } else if (response.data.containsKey('_id')) {
+          // Direct profile data response (assuming success if profile returned)
+          isSuccess = true;
+          message = 'Profile updated successfully';
+          updatedProfile = CustomerProfile.fromJson(response.data);
+        }
 
-        Get.back(); // Go back to profile screen
+        if (isSuccess && updatedProfile != null) {
+          // Update the profile data
+          profile.value = updatedProfile;
+
+          // Update local storage
+          await _updateLocalStorage(updatedProfile);
+
+          _showSuccess(message ?? 'Profile updated successfully');
+
+          // Refresh the profile data to ensure consistency
+          await getCustomerProfile();
+
+          Get.back(); // Go back to profile screen
+        } else {
+          _showError(message ?? 'Failed to update profile');
+        }
       } else {
-        Get.snackbar(
-          'Error',
-          response.data['message'] ?? 'Failed to update profile',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        _showError('Invalid response from server');
       }
     } catch (e) {
       print('Error updating profile: $e');
-      Get.snackbar(
-        'Error',
-        'Something went wrong',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+      _showError(
+        'Something went wrong while updating profile: ${e.toString()}',
       );
     } finally {
       isUpdating.value = false;
@@ -229,93 +209,302 @@ class ProfileController extends GetxController {
       isDeleting.value = true;
 
       final response = await _apiServices.deleteRequest(
-        url:
-            'https://moment-wrap-backend.vercel.app/api/customer/delete-customer-profile',
+        url: _deleteProfileEndpoint,
         authToken: true,
       );
 
-      if (response.data['success'] == true) {
-        Get.snackbar(
-          'Success',
-          'Account deleted successfully',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+      print('Delete Response: ${response.data}');
 
-        // Clear all data and redirect to login
-        await SharedPreferencesServices.clearAll();
-        Get.offAllNamed(AppRoutes.login);
+      if (response.data != null) {
+        bool isSuccess = false;
+        String? message;
+
+        if (response.data.containsKey('success')) {
+          isSuccess = response.data['success'] == true;
+          message = response.data['message'];
+        } else if (response.statusCode == 200) {
+          // Assume success if status code is 200
+          isSuccess = true;
+          message = 'Account deleted successfully';
+        }
+
+        if (isSuccess) {
+          _showSuccess(message ?? 'Account deleted successfully');
+
+          // Clear all data and redirect to login
+          await SharedPreferencesServices.clearAll();
+          Get.offAllNamed(AppRoutes.login);
+        } else {
+          _showError(message ?? 'Failed to delete account');
+        }
       } else {
-        Get.snackbar(
-          'Error',
-          response.data['message'] ?? 'Failed to delete account',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        _showError('Invalid response from server');
       }
     } catch (e) {
       print('Error deleting profile: $e');
-      Get.snackbar(
-        'Error',
-        'Something went wrong',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+      _showError(
+        'Something went wrong while deleting account: ${e.toString()}',
       );
     } finally {
       isDeleting.value = false;
     }
   }
 
+  // Image picker methods
   Future<void> pickImage(ImageSource source) async {
     try {
-      final XFile? pickedFile = await _picker.pickImage(source: source);
+      final XFile? pickedFile = await _picker.pickImage(
+        source: source,
+        imageQuality: 70,
+        maxWidth: 1024,
+        maxHeight: 1024,
+      );
       if (pickedFile != null) {
         profileImage.value = File(pickedFile.path);
+        // TODO: Implement image upload to server if you have an endpoint for it
+        // For now, just store locally - you'll need to handle image upload separately
+        _showSuccess('Profile image selected');
       }
     } catch (e) {
       print("Error picking image: $e");
+      _showError("Error picking image: ${e.toString()}");
     }
   }
 
   void removeImage() {
     profileImage.value = null;
+    // Also clear the profile image URL if updating profile
+    if (profile.value != null) {
+      profile.value = profile.value!.copyWith(profileImage: '');
+    }
+    _showSuccess('Profile image removed');
   }
 
+  // Future image upload method (implement when API is ready)
+  Future<String?> uploadProfileImage(File imageFile) async {
+    try {
+      // TODO: Implement image upload to your API
+      // This would typically involve multipart/form-data upload
+      // Return the uploaded image URL
+      print('Image upload not implemented yet');
+      return null;
+    } catch (e) {
+      print('Error uploading image: $e');
+      _showError('Failed to upload profile image');
+      return null;
+    }
+  }
+
+  // Authentication methods
   void logOut() async {
-    await SharedPreferencesServices.clearAll();
-    Get.offAllNamed(AppRoutes.login);
+    try {
+      await SharedPreferencesServices.clearAll();
+      Get.offAllNamed(AppRoutes.login);
+    } catch (e) {
+      print('Error during logout: $e');
+      _showError('Error during logout');
+    }
   }
 
-  Future<void> fetchUserData() async {
-    fullName.value = (await SharedPreferencesServices.getUserName()) ?? '';
-    email.value = (await SharedPreferencesServices.getUserEmail()) ?? '';
-    phoneNumber.value =
-        (await SharedPreferencesServices.getPhoneNumber()) ?? '';
+  // Local data methods - Enhanced
+  Future<void> fetchUserDataFromLocal() async {
+    try {
+      final localFirstName =
+          await SharedPreferencesServices.getUserName() ?? '';
+      final localEmail = await SharedPreferencesServices.getUserEmail() ?? '';
+      final localPhone = await SharedPreferencesServices.getPhoneNumber() ?? '';
+
+      // Create temporary profile from local data if available
+      if (localFirstName.isNotEmpty || localEmail.isNotEmpty) {
+        final nameParts = localFirstName.split(' ');
+        profile.value = CustomerProfile(
+          id: '',
+          firstName: nameParts.isNotEmpty ? nameParts.first : '',
+          lastName: nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '',
+          email: localEmail,
+          phone: localPhone,
+          role: 'customer',
+        );
+        print('Loaded local profile data for: ${profile.value!.fullName}');
+      }
+    } catch (e) {
+      print('Error fetching local user data: $e');
+    }
+  }
+
+  Future<void> _updateLocalStorage(CustomerProfile profile) async {
+    try {
+      // await SharedPreferencesServices.saveUserName(profile.fullName);
+      // await SharedPreferencesServices.saveUserEmail(profile.email);
+      // await SharedPreferencesServices.savePhoneNumber(profile.phone);
+      print('Updated local storage with latest profile data');
+    } catch (e) {
+      print('Error updating local storage: $e');
+    }
   }
 
   // Show delete confirmation dialog
   void showDeleteConfirmation() {
     Get.dialog(
       AlertDialog(
-        title: Text('Delete Account'),
-        content: Text(
-          'Are you sure you want to delete your account? This action cannot be undone.',
+        title: const Text('Delete Account'),
+        content: const Text(
+          'Are you sure you want to delete your account? This action cannot be undone and will remove all your data including orders, cart items, and wishlist.',
         ),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: Text('Cancel')),
-          TextButton(
-            onPressed: () {
-              Get.back();
-              deleteCustomerProfile();
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: Text('Delete'),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          Obx(
+            () => TextButton(
+              onPressed: isDeleting.value
+                  ? null
+                  : () {
+                      Get.back();
+                      deleteCustomerProfile();
+                    },
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: isDeleting.value
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Delete'),
+            ),
           ),
         ],
       ),
     );
+  }
+
+  // Refresh profile data
+  Future<void> refreshProfile() async {
+    await getCustomerProfile();
+  }
+
+  // Helper methods for showing messages
+  void _showSuccess(String message) {
+    Get.snackbar(
+      'Success',
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 3),
+    );
+  }
+
+  void _showError(String message) {
+    Get.snackbar(
+      'Error',
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 4),
+    );
+  }
+
+  // Enhanced validation methods
+  bool validateUpdateData({
+    required String firstName,
+    required String lastName,
+    required String phone,
+  }) {
+    if (firstName.trim().isEmpty) {
+      _showError('First name is required');
+      return false;
+    }
+
+    if (firstName.trim().length < 2) {
+      _showError('First name must be at least 2 characters long');
+      return false;
+    }
+
+    if (lastName.trim().isEmpty) {
+      _showError('Last name is required');
+      return false;
+    }
+
+    if (lastName.trim().length < 2) {
+      _showError('Last name must be at least 2 characters long');
+      return false;
+    }
+
+    if (phone.trim().isEmpty) {
+      _showError('Phone number is required');
+      return false;
+    }
+
+    // Enhanced phone validation - Handle +91- prefix
+    String cleanPhone = phone.replaceAll(RegExp(r'[\s\-\(\)\+]'), '');
+    if (cleanPhone.startsWith('91') && cleanPhone.length == 12) {
+      cleanPhone = cleanPhone.substring(2); // Remove country code
+    }
+
+    if (!RegExp(r'^[0-9]{10}$').hasMatch(cleanPhone)) {
+      _showError('Please enter a valid 10-digit phone number');
+      return false;
+    }
+
+    return true;
+  }
+
+  // Check if profile data has changed
+  bool hasProfileChanged({
+    required String firstName,
+    required String lastName,
+    required String phone,
+    String? gender,
+    String? dateOfBirth,
+    List<Map<String, dynamic>>? addresses,
+  }) {
+    return profile.value?.firstName != firstName.trim() ||
+        profile.value?.lastName != lastName.trim() ||
+        profile.value?.phone != phone.trim() ||
+        profile.value?.gender != gender ||
+        profile.value?.dateOfBirth != dateOfBirth ||
+        _hasAddressChanged(addresses);
+  }
+
+  bool _hasAddressChanged(List<Map<String, dynamic>>? newAddresses) {
+    if (newAddresses == null || newAddresses.isEmpty) {
+      return addresses.isNotEmpty;
+    }
+
+    if (addresses.isEmpty) {
+      return true;
+    }
+
+    final currentAddress = addresses.first;
+    final newAddress = newAddresses.first;
+
+    return currentAddress.street != newAddress['street'] ||
+        currentAddress.city != newAddress['city'] ||
+        currentAddress.state != newAddress['state'] ||
+        currentAddress.zipCode != newAddress['postalCode'] ||
+        currentAddress.country != newAddress['country'];
+  }
+
+  // Get profile summary for debugging
+  Map<String, dynamic> getProfileSummary() {
+    if (profile.value == null) return {'status': 'No profile data'};
+
+    return {
+      'id': profile.value!.id,
+      'customerId': profile.value!.customerId,
+      'fullName': profile.value!.fullName,
+      'email': profile.value!.email,
+      'phone': profile.value!.phone,
+      'gender': profile.value!.gender,
+      'dateOfBirth': profile.value!.dateOfBirth,
+      'isActive': profile.value!.isActive,
+      'isVerified': profile.value!.isVerified,
+      'cartItems': profile.value!.cart.length,
+      'wishlistItems': profile.value!.wishlist.length,
+      'orderHistory': profile.value!.orderHistory.length,
+      'addressCount': profile.value!.addresses.length,
+      'lastLogin': profile.value!.lastLogin?.toString() ?? 'Never',
+      'createdAt': profile.value!.createdAt?.toString() ?? 'Unknown',
+    };
   }
 }

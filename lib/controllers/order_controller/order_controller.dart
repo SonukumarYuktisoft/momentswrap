@@ -38,8 +38,6 @@ class OrderController extends GetxController {
         final data = response.data;
 
         HelperFunctions.showSnackbar(
-          'Success',
-          'Order placed successfully',
           title: 'Success',
           message: data['message'] ?? 'Order placed successfully',
           backgroundColor: Colors.green,
@@ -50,8 +48,6 @@ class OrderController extends GetxController {
         cartController.itemCount.value -= quantity;
       } else {
         HelperFunctions.showSnackbar(
-          'Error',
-          'Failed to place order',
           title: 'Error',
           message: 'Unexpected response from server',
           backgroundColor: Colors.red,
@@ -59,8 +55,6 @@ class OrderController extends GetxController {
       }
     } catch (e) {
       HelperFunctions.showSnackbar(
-        'Error',
-        'Failed to place order',
         title: 'Error',
         message: e.toString(),
         backgroundColor: Colors.red,
@@ -71,13 +65,54 @@ class OrderController extends GetxController {
     }
   }
 
+  // Alternative bulk order method if API supports it
+  Future<void> buyProductsBulk(List<Map<String, dynamic>> productsToBuy) async {
+    try {
+      // This would be for a bulk order API endpoint
+      final response = await _apiServices.requestPostonlyOrdersApi(
+        authToken: true,
+        url: 'https://moment-wrap-backend.vercel.app/api/customer/buy-product',
+        dictParameter: productsToBuy, // Send array directly
+      );
+
+      if (response != null && response.statusCode == 201) {
+        final data = response.data;
+
+        HelperFunctions.showSnackbar(
+          title: 'Success',
+          message: data['message'] ?? 'Orders placed successfully',
+          backgroundColor: Colors.green,
+        );
+
+        // Refresh orders
+        await fetchMyOrders();
+      } else {
+        HelperFunctions.showSnackbar(
+          title: 'Error',
+          message: '',
+          backgroundColor: Colors.red,
+        );
+        throw Exception('Unexpected response from server');
+      }
+    } catch (e) {
+      HelperFunctions.showSnackbar(
+        title: 'Error',
+        message: e.toString(),
+        backgroundColor: Colors.red,
+      );
+      print('Bulk order error: $e');
+      rethrow;
+    }
+  }
+
   Future<void> fetchMyOrders() async {
     try {
       isLoading.value = true;
 
       dio.Response? response = await _apiServices.getRequest(
         authToken: true,
-        url: 'https://moment-wrap-backend.vercel.app/api/customer/list-my-orders',
+        url:
+            'https://moment-wrap-backend.vercel.app/api/customer/list-my-orders',
       );
 
       if (response != null && response.statusCode == 200) {
@@ -104,7 +139,9 @@ class OrderController extends GetxController {
 
           myOrders.value = parsedOrders;
           print('Successfully parsed ${parsedOrders.length} orders');
-        } else if (data is Map<String, dynamic> && data['success'] == true && data['data'] is List) {
+        } else if (data is Map<String, dynamic> &&
+            data['success'] == true &&
+            data['data'] is List) {
           // Fallback for wrapped response format
           final List<dynamic> ordersJson = data['data'];
           final List<OrderModel> parsedOrders = [];
@@ -130,8 +167,6 @@ class OrderController extends GetxController {
       print('Fetch orders error: $e');
       print('Stack trace: $stackTrace');
       HelperFunctions.showSnackbar(
-        'Error',
-        'Failed to fetch orders',
         title: 'Error',
         message: 'Could not load your orders',
         backgroundColor: Colors.red,
@@ -147,12 +182,13 @@ class OrderController extends GetxController {
 
       dio.Response? response = await _apiServices.getRequest(
         authToken: true,
-        url: 'https://moment-wrap-backend.vercel.app/api/customer/get-order-details/$orderId',
+        url:
+            'https://moment-wrap-backend.vercel.app/api/customer/get-order-details/$orderId',
       );
 
       if (response != null && response.statusCode == 200) {
         final data = response.data;
-        
+
         // Handle both direct order response and wrapped response
         if (data is Map<String, dynamic>) {
           if (data['success'] == true && data['data'] != null) {
@@ -162,8 +198,6 @@ class OrderController extends GetxController {
             selectedOrder.value = OrderModel.fromJson(data);
           } else {
             HelperFunctions.showSnackbar(
-              'Error',
-              'Failed to fetch order details',
               title: 'Error',
               message: data['message'] ?? 'Order not found',
               backgroundColor: Colors.red,
@@ -172,8 +206,6 @@ class OrderController extends GetxController {
         }
       } else {
         HelperFunctions.showSnackbar(
-          'Error',
-          'Failed to fetch order details',
           title: 'Error',
           message: 'Unexpected response from server',
           backgroundColor: Colors.red,
@@ -181,8 +213,6 @@ class OrderController extends GetxController {
       }
     } catch (e) {
       HelperFunctions.showSnackbar(
-        'Error',
-        'Failed to fetch order details',
         title: 'Error',
         message: e.toString(),
         backgroundColor: Colors.red,
@@ -197,7 +227,8 @@ class OrderController extends GetxController {
     try {
       isLoading.value = true;
 
-      final url = 'https://moment-wrap-backend.vercel.app/api/customer/cancel-order/$orderId';
+      final url =
+          'https://moment-wrap-backend.vercel.app/api/customer/cancel-order/$orderId';
 
       dio.Response? response = await _apiServices.requestPutForApi(
         authToken: true,
@@ -209,22 +240,21 @@ class OrderController extends GetxController {
         final data = response.data;
         if (data['success'] == true) {
           HelperFunctions.showSnackbar(
-            'Success',
-            'Order cancelled successfully',
             title: 'Success',
             message: data['message'] ?? 'Order cancelled successfully',
             backgroundColor: Colors.green,
           );
 
           // Update the order status locally
-          final orderIndex = myOrders.indexWhere((order) => order.id == orderId);
+          final orderIndex = myOrders.indexWhere(
+            (order) => order.id == orderId,
+          );
           if (orderIndex != -1) {
             final updatedOrder = myOrders[orderIndex].copyWith(
               orderStatus: 'cancelled',
               updatedAt: DateTime.now(),
             );
             myOrders[orderIndex] = updatedOrder;
-            
           }
 
           // Update selected order if it's the same
@@ -236,8 +266,6 @@ class OrderController extends GetxController {
           }
         } else {
           HelperFunctions.showSnackbar(
-            'Error',
-            'Failed to cancel order',
             title: 'Error',
             message: data['message'] ?? 'Something went wrong',
             backgroundColor: Colors.red,
@@ -245,8 +273,6 @@ class OrderController extends GetxController {
         }
       } else {
         HelperFunctions.showSnackbar(
-          'Error',
-          'Failed to cancel order',
           title: 'Error',
           message: 'Unexpected response from server',
           backgroundColor: Colors.red,
@@ -254,8 +280,6 @@ class OrderController extends GetxController {
       }
     } catch (e) {
       HelperFunctions.showSnackbar(
-        'Error',
-        'Failed to cancel order',
         title: 'Error',
         message: e.toString(),
         backgroundColor: Colors.red,
@@ -268,7 +292,9 @@ class OrderController extends GetxController {
 
   // Helper methods for UI
   String getFormattedOrderId(String orderId) {
-    return orderId.length >= 8 ? orderId.substring(orderId.length - 8) : orderId;
+    return orderId.length >= 8
+        ? orderId.substring(orderId.length - 8)
+        : orderId;
   }
 
   String getFormattedDate(DateTime date) {

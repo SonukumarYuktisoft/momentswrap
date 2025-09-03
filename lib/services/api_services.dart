@@ -102,6 +102,44 @@ class ApiServices {
       return null;
     }
   }
+/// POST
+  Future<Response?> requestPostonlyOrdersApi({
+    required String url,
+    required dynamic dictParameter,
+    required bool authToken,
+  }) async {
+    try {
+      print("Url:  $url");
+      print("DictParameter: $dictParameter");
+
+      BaseOptions options = BaseOptions(
+        receiveTimeout: const Duration(minutes: 1),
+        connectTimeout: const Duration(minutes: 1),
+        headers: await getHeader(authToken),
+      );
+      _dio.options = options;
+
+      Response response = await _dio.post(
+        url,
+        data: dictParameter,
+
+        options: Options(
+          followRedirects: false,
+          validateStatus: (status) => true,
+          headers: await getHeader(authToken),
+        ),
+      );
+
+      print("Response: $response");
+      print("Response_headers: ${response.headers}");
+      print("Response_real_url: ${response.realUri}");
+
+      return response;
+    } catch (error) {
+      print("Exception_Main: $error");
+      return null;
+    }
+  }
 
   // Method to handle PUT requests
   Future<Response> putRequest({

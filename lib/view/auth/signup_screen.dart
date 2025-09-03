@@ -5,6 +5,7 @@ import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:momentswrap/controllers/auth_controller/signup_controller.dart';
 import 'package:momentswrap/util/common/coustom_curve.dart';
 import 'package:momentswrap/util/common/widgets/app_widgets.dart';
+import 'package:momentswrap/util/constants/app_colors.dart';
 import 'package:momentswrap/util/constants/app_images_string.dart';
 import 'package:momentswrap/util/constants/app_sizes.dart';
 import 'package:momentswrap/util/constants/app_text_theme.dart';
@@ -15,7 +16,7 @@ class SignupScreen extends GetView<SignupController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFE60023),
+      backgroundColor: AppColors.secondaryColor,
 
       body: SingleChildScrollView(
         child: Column(
@@ -23,59 +24,67 @@ class SignupScreen extends GetView<SignupController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //header
-          
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipPath(
-              clipper: CustomCurve(),
-              child: Container(
-                height: HelperFunctions.screenHeight() * 0.4,
-                width: double.infinity,
-                color: Colors.white,
-                child: // Logo
-              Stack(
-                  children: [
-                    Positioned(
-                      top: 100,
-                      left: 50,
-                      child: const Text(
-                        "Moments Wrap",
-                        style: TextStyle(
-                          fontSize: 42,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFE60023),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipPath(
+                  clipper: CustomCurve(),
+                  child: Container(
+                    height: HelperFunctions.screenHeight() * 0.4,
+                    width: double.infinity,
+                    color: AppColors.primaryColor,
+                    child: // Logo
+                    Stack(
+                      children: [
+                        Positioned(
+                          top: 50,
+                          left: 100,
+                          child: Image.asset(
+                            AppImagesString.appLogo,
+                            height: 200,
+                            width: 200,
+                          ),
                         ),
-                      ),
-                    ),
-              
-                    // Subtitle
-                    Positioned(
-                      top: 160,
-                      left: 50,
-                      child: const Text(
-                        "Log in or Sign up to continue into \n access your account.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Color(0xFFE60023),
-                          fontWeight: FontWeight.bold,
+                        // Positioned(
+                        //   top: 100,
+                        //   left: 50,
+                        //   child: const Text(
+                        //     "Moments Wrap",
+                        //     style: TextStyle(
+                        //       fontSize: 42,
+                        //       fontWeight: FontWeight.bold,
+                        //       color: Color(0xFFE60023),
+                        //     ),
+                        //   ),
+                        // ),
+
+                        // Subtitle
+                        Positioned(
+                          top: 255,
+                          left: 50,
+                          child: const Text(
+                            "Log in or Sign up to continue into \n access your account.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
             const SizedBox(height: AppSizes.defaultSpacing),
-              
+
             // Signup Form
             Form(
               key: controller.signupFormKey,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0,),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
                   children: [
                     Row(
@@ -102,16 +111,16 @@ class SignupScreen extends GetView<SignupController> {
                       ],
                     ),
                     const SizedBox(height: AppSizes.spaceBtwInputField),
-                     AppWidgets.buildTextFormField(
+                    AppWidgets.buildTextFormField(
                       label: 'Phone',
                       validator: AppValidator.validatePhoneNumber,
                       prefixIcon: Icon(Icons.phone_outlined),
                       keyboardType: TextInputType.phone,
                       controller: controller.phoneController,
                     ),
-                
+
                     const SizedBox(height: AppSizes.spaceBtwInputField),
-                
+
                     AppWidgets.buildTextFormField(
                       label: 'Email',
                       validator: AppValidator.validateEmail,
@@ -119,7 +128,7 @@ class SignupScreen extends GetView<SignupController> {
                       keyboardType: TextInputType.emailAddress,
                       controller: controller.emailController,
                     ),
-                
+
                     const SizedBox(height: AppSizes.spaceBtwInputField),
                     Obx(() {
                       return AppWidgets.buildTextFormField(
@@ -139,12 +148,11 @@ class SignupScreen extends GetView<SignupController> {
                         controller: controller.passwordController,
                       );
                     }),
-                  
                   ],
                 ),
               ),
             ),
-              
+
             /// login button
             SizedBox(height: AppSizes.spaceBtwItems),
             Row(

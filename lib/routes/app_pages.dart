@@ -13,6 +13,7 @@ import 'package:momentswrap/view/auth/signup_screen.dart';
 import 'package:momentswrap/view/home_screen/home_screen.dart';
 import 'package:momentswrap/view/onboarding_screens/onboarding_screens.dart';
 import 'package:momentswrap/view/profile_screen/profile_screen.dart';
+import 'package:momentswrap/view/splash_screen/splash_screen.dart';
 
 class AppPages {
   static const initial = AppRoutes.bottomNavigation;
@@ -22,6 +23,13 @@ class AppPages {
   static final routes = [
 
 
+///splashScreen
+/// Splash_Screen
+    // GetPage(
+    //   name: AppRoutes.splashScreen,
+    //   page: () => const SplashScreen(),
+    //   transition: Transition.native,
+    // ),
 
     /// Onboarding_Screens
     GetPage(

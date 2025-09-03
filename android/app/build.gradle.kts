@@ -15,7 +15,7 @@ android {
     }
     // Explicitly set minSdkVersion (overrides if needed)
     defaultConfig {
-        minSdk = 21
+        minSdk = flutter.minSdkVersion
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

@@ -16,7 +16,7 @@ class HelperFunctions {
     return "${time.hour}:${time.minute.toString().padLeft(2, '0')}";
   }
 
-  static void showSnackbar(String s, String m, {
+  static void showSnackbar( {
     required String title,
     required String message,
     Color? backgroundColor,

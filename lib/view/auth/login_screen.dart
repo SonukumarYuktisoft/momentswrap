@@ -21,7 +21,7 @@ class LoginScreen extends GetView<LoginController> {
     // This widget builds the login screen UI.
     // final LoginController loginController = Get.put(LoginController());
     return Scaffold(
-      backgroundColor: Color(0xFFE60023),
+      backgroundColor: AppColors.secondaryColor,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -36,33 +36,38 @@ class LoginScreen extends GetView<LoginController> {
                   child: Container(
                     height: HelperFunctions.screenHeight() * 0.4,
                     width: double.infinity,
-                    color: Colors.white,
+                    color: AppColors.primaryColor,
                     child: // Logo
-                  Stack(
+                    Stack(
                       children: [
                         Positioned(
-                          top: 100,
-                          left: 50,
-                          child: const Text(
-                            "Moments Wrap",
-                            style: TextStyle(
-                              fontSize: 42,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFFE60023),
-                            ),
+                          top: 50,
+                          left: 100,
+                          child: Image.asset(
+                            AppImagesString.appLogo,
+                            height: 200,
+                            width: 200,
                           ),
+                          // child: const Text(
+                          //   "Moments Wrap",
+                          //   style: TextStyle(
+                          //     fontSize: 42,
+                          //     fontWeight: FontWeight.bold,
+                          //     color: Color(0xFFE60023),
+                          //   ),
                         ),
 
                         // Subtitle
                         Positioned(
-                          top: 160,
+                          top: 255,
                           left: 50,
                           child: const Text(
-                            "Log in or Sign up to continue into \n access your account.",
+                            "Log in or Sign up to continue into",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 20,
-                              color: Color(0xFFE60023),
+                              // color: Color(0xFFE60023),
+                              color: Color(0xFFFFFFFF),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -122,8 +127,6 @@ class LoginScreen extends GetView<LoginController> {
                         controller: controller.passwordController,
                       );
                     }),
-
-                    
                   ],
                 ),
               ),
@@ -147,7 +150,6 @@ class LoginScreen extends GetView<LoginController> {
                 Obx(() {
                   return Expanded(
                     child: AppWidgets.buildButton(
-                     
                       isLoading: controller.isLoading.value,
                       title: 'Login',
                       onPressed: () => controller.login(),
@@ -173,58 +175,58 @@ class LoginScreen extends GetView<LoginController> {
                 ),
               ],
             ),
-            const SizedBox(height: AppSizes.spaceBtwItems),
-               // OR divider
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Expanded(
-                      child: Divider(
-                        indent: 40,
-                        endIndent: 10,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text("OR",style: TextStyle(color: Colors.white,fontSize: 18),),
-                    Expanded(
-                      child: Divider(
-                        indent: 10,
-                        endIndent: 40,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
+            // const SizedBox(height: AppSizes.spaceBtwItems),
+            //    // OR divider
+            //     Row(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: const [
+            //         Expanded(
+            //           child: Divider(
+            //             indent: 40,
+            //             endIndent: 10,
+            //             color: Colors.white,
+            //           ),
+            //         ),
+            //         Text("OR",style: TextStyle(color: Colors.white,fontSize: 18),),
+            //         Expanded(
+            //           child: Divider(
+            //             indent: 10,
+            //             endIndent: 40,
+            //             color: Colors.white,
+            //           ),
+            //         ),
+            //       ],
+            //     ),
 
-            const SizedBox(height: AppSizes.spaceBtwItems),
+            // const SizedBox(height: AppSizes.spaceBtwItems),
 
-                // Social buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 28,
-                      backgroundColor: Colors.white,
-                      child: IconButton(onPressed: () {}, icon:  Icon(
-                        Icons.g_mobiledata,
-                        size: 40,
-                        color: Colors.red,
-                      ),)
-                    ),
-                    const SizedBox(width: 30),
-                    CircleAvatar(
-                      radius: 28,
-                      backgroundColor: Colors.white,
-                      child: IconButton(onPressed: () {
-                        
-                      }, icon: Icon(
-                        Icons.facebook,
-                        size: 32,
-                        color: Colors.blue,
-                      ),)
-                    ),
-                  ],
-                )
+            //     // Social buttons
+            //     Row(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: [
+            //         CircleAvatar(
+            //           radius: 28,
+            //           backgroundColor: Colors.white,
+            //           child: IconButton(onPressed: () {}, icon:  Icon(
+            //             Icons.g_mobiledata,
+            //             size: 40,
+            //             color: Colors.red,
+            //           ),)
+            //         ),
+            //         const SizedBox(width: 30),
+            //         CircleAvatar(
+            //           radius: 28,
+            //           backgroundColor: Colors.white,
+            //           child: IconButton(onPressed: () {
+
+            //           }, icon: Icon(
+            //             Icons.facebook,
+            //             size: 32,
+            //             color: Colors.blue,
+            //           ),)
+            //         ),
+            //       ],
+            //     )
           ],
         ),
       ),

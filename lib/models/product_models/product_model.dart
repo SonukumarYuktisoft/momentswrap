@@ -16,7 +16,7 @@ class ProductModel {
   final String category;
   final String shortDescription;
   final String longDescription;
-  final int price;
+  final double price; // Changed from int to double
   final List<String> images;
   final int stock;
   final double averageRating;
@@ -64,26 +64,48 @@ class ProductModel {
       category: json['category'] ?? '',
       shortDescription: json['shortDescription'] ?? '',
       longDescription: json['longDescription'] ?? '',
-      price: json['price'] ?? 0,
+      // Handle both int and double for price
+      price: (json['price'] is int) 
+          ? (json['price'] as int).toDouble() 
+          : (json['price'] ?? 0.0).toDouble(),
       images: List<String>.from(json['images'] ?? []),
-      stock: json['stock'] ?? 0,
+      stock: (json['stock'] ?? 0) is int 
+          ? json['stock'] ?? 0 
+          : (json['stock'] ?? 0.0).toInt(),
       averageRating: (json['averageRating'] ?? 0.0).toDouble(),
       material: json['material'] ?? '',
       saleFor: List<String>.from(json['saleFor'] ?? []),
       warranty: json['warranty'] ?? '',
       usageInstructions: json['usageInstructions'] ?? '',
-      offers: List<Offer>.from(
-          (json['offers'] ?? []).map((x) => Offer.fromJson(x))),
-      technicalSpecifications: List<TechnicalSpecification>.from(
-          (json['technicalSpecifications'] ?? [])
-              .map((x) => TechnicalSpecification.fromJson(x))),
+      offers: (json['offers'] != null) 
+          ? List<Offer>.from(json['offers'].map((x) => Offer.fromJson(x)))
+          : [],
+      technicalSpecifications: (json['technicalSpecifications'] != null)
+          ? List<TechnicalSpecification>.from(json['technicalSpecifications']
+              .map((x) => TechnicalSpecification.fromJson(x)))
+          : [],
       shop: json['shop'] ?? '',
-      reviews: List<Review>.from(
-          (json['reviews'] ?? []).map((x) => Review.fromJson(x))),
+      reviews: (json['reviews'] != null)
+          ? List<Review>.from(json['reviews'].map((x) => Review.fromJson(x)))
+          : [],
       isActive: json['isActive'] ?? false,
       productId: json['productId'] ?? '',
-      createdAt: DateTime.parse(json['createdAt'] ?? '2025-01-01T00:00:00.000Z'),
-      updatedAt: DateTime.parse(json['updatedAt'] ?? '2025-01-01T00:00:00.000Z'),
+      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
+    );
+  }
+
+  // Helper method to get formatted price
+  String get formattedPrice => "₹${price.toStringAsFixed(2)}";
+  
+  // Helper method to check if product is in stock
+  bool get isInStock => stock > 0;
+  
+  // Helper method to get discount percentage
+  double get maxDiscountPercentage {
+    if (offers.isEmpty) return 0.0;
+    return offers.map((offer) => offer.discountPercentage.toDouble()).reduce(
+      (max, current) => current > max ? current : max,
     );
   }
 }
@@ -108,10 +130,15 @@ class Offer {
       id: json['_id'] ?? '',
       offerTitle: json['offerTitle'] ?? '',
       offerDescription: json['offerDescription'] ?? '',
-      discountPercentage: json['discountPercentage'] ?? 0,
-      validTill: DateTime.parse(json['validTill'] ?? '2025-01-01T00:00:00.000Z'),
+      discountPercentage: (json['discountPercentage'] ?? 0) is int
+          ? json['discountPercentage'] ?? 0
+          : (json['discountPercentage'] ?? 0.0).toInt(),
+      validTill: DateTime.tryParse(json['validTill'] ?? '') ?? DateTime.now(),
     );
   }
+
+  // Helper method to check if offer is still valid
+  bool get isValid => DateTime.now().isBefore(validTill);
 }
 
 class TechnicalSpecification {
@@ -153,9 +180,11 @@ class Review {
     return Review(
       id: json['_id'] ?? '',
       customer: json['customer'] ?? '',
-      rating: json['rating'] ?? 0,
+      rating: (json['rating'] ?? 0) is int 
+          ? json['rating'] ?? 0 
+          : (json['rating'] ?? 0.0).toInt(),
       comment: json['comment'] ?? '',
-      createdAt: DateTime.parse(json['createdAt'] ?? '2025-01-01T00:00:00.000Z'),
+      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
     );
   }
 }

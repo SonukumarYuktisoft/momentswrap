@@ -2,17 +2,15 @@ class AllCartsModels {
   final bool success;
   final List<CartItem> data;
 
-  AllCartsModels({
-    required this.success,
-    required this.data,
-  });
+  AllCartsModels({required this.success, required this.data});
 
   factory AllCartsModels.fromJson(Map<String, dynamic> json) {
     return AllCartsModels(
       success: json['success'] ?? false,
-      data: (json['data'] as List<dynamic>?)
-          ?.map((item) => CartItem.fromJson(item))
-          .toList() ??
+      data:
+          (json['data'] as List<dynamic>?)
+              ?.map((item) => CartItem.fromJson(item))
+              .toList() ??
           [],
     );
   }
@@ -27,248 +25,68 @@ class AllCartsModels {
 
 class CartItem {
   final String id;
-  final User? user;
-  final Product? product;
+  final Product product;
   final int quantity;
-  final String image;
-  final double price;
-  final DateTime addedAt;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final int v;
 
-  CartItem({
-    required this.id,
-    this.user,
-    this.product,
-    required this.quantity,
-    required this.image,
-    required this.price,
-    required this.addedAt,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.v,
-  });
+  CartItem({required this.id, required this.product, required this.quantity});
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
     return CartItem(
       id: json['_id'] ?? '',
-      user: json['user'] != null ? User.fromJson(json['user']) : null,
-      product: json['product'] != null ? Product.fromJson(json['product']) : null,
+      product: Product.fromJson(json['product'] ?? {}),
       quantity: json['quantity'] ?? 0,
-      image: json['image'] ?? '',
-      price: (json['price'] as num?)?.toDouble() ?? 0.0,
-      addedAt: DateTime.parse(json['addedAt'] ?? DateTime.now().toIso8601String()),
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
-      v: json['__v'] ?? 0,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      '_id': id,
-      'user': user?.toJson(),
-      'product': product?.toJson(),
-      'quantity': quantity,
-      'image': image,
-      'price': price,
-      'addedAt': addedAt.toIso8601String(),
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
-      '__v': v,
-    };
-  }
-}
-
-class User {
-  final Address address;
-  final SocialMedia socialMedia;
-  final String id;
-  final String firstName;
-  final String lastName;
-  final String email;
-  final String phone;
-  final String password;
-  final String role;
-  final String helplineNumber;
-  final String profileImage;
-  final bool isActive;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final int v;
-
-  User({
-    required this.address,
-    required this.socialMedia,
-    required this.id,
-    required this.firstName,
-    required this.lastName,
-    required this.email,
-    required this.phone,
-    required this.password,
-    required this.role,
-    required this.helplineNumber,
-    required this.profileImage,
-    required this.isActive,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.v,
-  });
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      address: Address.fromJson(json['address'] ?? {}),
-      socialMedia: SocialMedia.fromJson(json['socialMedia'] ?? {}),
-      id: json['_id'] ?? '',
-      firstName: json['firstName'] ?? '',
-      lastName: json['lastName'] ?? '',
-      email: json['email'] ?? '',
-      phone: json['phone'] ?? '',
-      password: json['password'] ?? '',
-      role: json['role'] ?? '',
-      helplineNumber: json['helplineNumber'] ?? '',
-      profileImage: json['profileImage'] ?? '',
-      isActive: json['isActive'] ?? false,
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
-      v: json['__v'] ?? 0,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'address': address.toJson(),
-      'socialMedia': socialMedia.toJson(),
-      '_id': id,
-      'firstName': firstName,
-      'lastName': lastName,
-      'email': email,
-      'phone': phone,
-      'password': password,
-      'role': role,
-      'helplineNumber': helplineNumber,
-      'profileImage': profileImage,
-      'isActive': isActive,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
-      '__v': v,
-    };
-  }
-}
-
-class Address {
-  final String street;
-  final String city;
-  final String state;
-  final String zipCode;
-  final String country;
-
-  Address({
-    required this.street,
-    required this.city,
-    required this.state,
-    required this.zipCode,
-    required this.country,
-  });
-
-  factory Address.fromJson(Map<String, dynamic> json) {
-    return Address(
-      street: json['street'] ?? '',
-      city: json['city'] ?? '',
-      state: json['state'] ?? '',
-      zipCode: json['zipCode'] ?? '',
-      country: json['country'] ?? '',
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'street': street,
-      'city': city,
-      'state': state,
-      'zipCode': zipCode,
-      'country': country,
-    };
-  }
-}
-
-class SocialMedia {
-  final String facebook;
-  final String twitter;
-  final String instagram;
-  final String linkedin;
-
-  SocialMedia({
-    required this.facebook,
-    required this.twitter,
-    required this.instagram,
-    required this.linkedin,
-  });
-
-  factory SocialMedia.fromJson(Map<String, dynamic> json) {
-    return SocialMedia(
-      facebook: json['facebook'] ?? '',
-      twitter: json['twitter'] ?? '',
-      instagram: json['instagram'] ?? '',
-      linkedin: json['linkedin'] ?? '',
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'facebook': facebook,
-      'twitter': twitter,
-      'instagram': instagram,
-      'linkedin': linkedin,
-    };
+    return {'_id': id, 'product': product.toJson(), 'quantity': quantity};
   }
 }
 
 class Product {
-  final List<dynamic> saleFor;
   final String id;
   final String name;
+  final String category;
   final String shortDescription;
   final String longDescription;
-  final String material;
-  final List<String> isSafeFor;
-  final String usageInstructions;
-  final List<TechnicalSpecification> technicalSpecifications;
-  final List<String> certifications;
-  final String warranty;
-  final int price;
+  final double price; // Changed from int to double
   final int stock;
-  final String category;
-  final List<String> tags;
-  final List<String> image;
-  final List<String> additionalImages;
-  final String shop;
+  final List<String> images;
+  final String material;
+  final List<String> saleFor;
+  final String warranty;
+  final String usageInstructions;
   final List<dynamic> offers;
+  final List<dynamic> technicalSpecifications;
+  final String shop;
+  final double averageRating;
+  final bool isActive;
+  final String productId;
+  final List<dynamic> reviews;
   final DateTime createdAt;
   final DateTime updatedAt;
   final int v;
 
   Product({
-    required this.saleFor,
     required this.id,
     required this.name,
+    required this.category,
     required this.shortDescription,
     required this.longDescription,
-    required this.material,
-    required this.isSafeFor,
-    required this.usageInstructions,
-    required this.technicalSpecifications,
-    required this.certifications,
-    required this.warranty,
     required this.price,
     required this.stock,
-    required this.category,
-    required this.tags,
-    required this.image,
-    required this.additionalImages,
-    required this.shop,
+    required this.images,
+    required this.material,
+    required this.saleFor,
+    required this.warranty,
+    required this.usageInstructions,
     required this.offers,
+    required this.technicalSpecifications,
+    required this.shop,
+    required this.averageRating,
+    required this.isActive,
+    required this.productId,
+    required this.reviews,
     required this.createdAt,
     required this.updatedAt,
     required this.v,
@@ -276,90 +94,63 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      saleFor: List<dynamic>.from(json['saleFor'] ?? []),
       id: json['_id'] ?? '',
       name: json['name'] ?? '',
+      category: json['category'] ?? '',
       shortDescription: json['shortDescription'] ?? '',
       longDescription: json['longDescription'] ?? '',
-      material: json['material'] ?? '',
-      isSafeFor: List<String>.from(json['isSafeFor'] ?? []),
-      usageInstructions: json['usageInstructions'] ?? '',
-      technicalSpecifications: (json['technicalSpecifications'] as List<dynamic>?)
-          ?.map((spec) => TechnicalSpecification.fromJson(spec))
-          .toList() ??
-          [],
-      certifications: List<String>.from(json['certifications'] ?? []),
-      warranty: json['warranty'] ?? '',
-      price: json['price'] ?? 0,
+      price:
+          (json['price'] as num?)?.toDouble() ??
+          0.0, // Fixed: Handle both int and double
       stock: json['stock'] ?? 0,
-      category: json['category'] ?? '',
-      tags: List<String>.from(json['tags'] ?? []),
-      image: List<String>.from(json['image'] ?? []),
-      additionalImages: List<String>.from(json['additionalImages'] ?? []),
-      shop: json['shop'] ?? '',
+      images: List<String>.from(json['images'] ?? []),
+      material: json['material'] ?? '',
+      saleFor: List<String>.from(json['saleFor'] ?? []),
+      warranty: json['warranty'] ?? '',
+      usageInstructions: json['usageInstructions'] ?? '',
       offers: List<dynamic>.from(json['offers'] ?? []),
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
+      technicalSpecifications: List<dynamic>.from(
+        json['technicalSpecifications'] ?? [],
+      ),
+      shop: json['shop'] ?? '',
+      averageRating: (json['averageRating'] as num?)?.toDouble() ?? 0.0,
+      isActive: json['isActive'] ?? false,
+      productId: json['productId'] ?? '',
+      reviews: List<dynamic>.from(json['reviews'] ?? []),
+      createdAt: DateTime.parse(
+        json['createdAt'] ?? DateTime.now().toIso8601String(),
+      ),
+      updatedAt: DateTime.parse(
+        json['updatedAt'] ?? DateTime.now().toIso8601String(),
+      ),
       v: json['__v'] ?? 0,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'saleFor': saleFor,
       '_id': id,
       'name': name,
+      'category': category,
       'shortDescription': shortDescription,
       'longDescription': longDescription,
-      'material': material,
-      'isSafeFor': isSafeFor,
-      'usageInstructions': usageInstructions,
-      'technicalSpecifications': technicalSpecifications.map((spec) => spec.toJson()).toList(),
-      'certifications': certifications,
-      'warranty': warranty,
       'price': price,
       'stock': stock,
-      'category': category,
-      'tags': tags,
-      'image': image,
-      'additionalImages': additionalImages,
-      'shop': shop,
+      'images': images,
+      'material': material,
+      'saleFor': saleFor,
+      'warranty': warranty,
+      'usageInstructions': usageInstructions,
       'offers': offers,
+      'technicalSpecifications': technicalSpecifications,
+      'shop': shop,
+      'averageRating': averageRating,
+      'isActive': isActive,
+      'productId': productId,
+      'reviews': reviews,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       '__v': v,
-    };
-  }
-}
-
-class TechnicalSpecification {
-  final String id;
-  final String? dimensions;
-  final String? color;
-  final String? weight;
-
-  TechnicalSpecification({
-    required this.id,
-    this.dimensions,
-    this.color,
-    this.weight,
-  });
-
-  factory TechnicalSpecification.fromJson(Map<String, dynamic> json) {
-    return TechnicalSpecification(
-      id: json['_id'] ?? '',
-      dimensions: json['dimensions'],
-      color: json['color'],
-      weight: json['weight'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      '_id': id,
-      'dimensions': dimensions,
-      'color': color,
-      'weight': weight,
     };
   }
 }

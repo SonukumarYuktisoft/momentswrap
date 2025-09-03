@@ -3,6 +3,9 @@ class AppRoutes {
 
 
 
+/// Splash Screen
+  static const String splashScreen = '/splash-screen';
+
   /// Onboarding_Screens
   static const String onboarding = '/onboarding';
 
@@ -31,6 +34,7 @@ class AppRoutes {
 
   // all routes
   static final List<String> allRoutes = [
+    splashScreen,
     login,
     signUp,
     bottomNavigation,

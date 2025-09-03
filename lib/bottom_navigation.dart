@@ -6,7 +6,7 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:momentswrap/view/add_to_cart_screen/add_to_cart_screen.dart';
-import 'package:momentswrap/view/favorite_screen/favorite_screens.dart';
+import 'package:momentswrap/view/events_screen/events_screens.dart';
 import 'package:momentswrap/view/home_screen/home_screen.dart';
 import 'package:momentswrap/view/profile_screen/profile_screen.dart';
 
@@ -21,7 +21,7 @@ class NavController extends GetxController {
   // Your actual pages
   final pages = const <Widget>[
     HomeScreen(),
-     FavoriteScreens(),
+     EventsScreens(),
     AddToCartScreen(),
     ProfileScreen(),
   ];
@@ -53,8 +53,8 @@ class BottomNavigation extends StatelessWidget {
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.favorite_rounded),
-              label: 'Favorite',
+              icon: Icon(Icons.event),
+              label: 'Events',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart_rounded),
