@@ -4,10 +4,14 @@ import 'package:dio/dio.dart' as dio;
 import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
 import 'package:momentswrap/models/order_model/order_model.dart';
 import 'package:momentswrap/services/api_services.dart';
+import 'package:momentswrap/util/constants/app_config.dart';
 import 'package:momentswrap/util/helpers/helper_functions.dart';
 
 class OrderController extends GetxController {
+
   final ApiServices _apiServices = ApiServices();
+  final AppConfig _appConfig = AppConfig();
+
   final CartController cartController = Get.put(CartController());
 
   final RxBool isLoading = false.obs;
@@ -30,7 +34,7 @@ class OrderController extends GetxController {
 
       dio.Response? response = await _apiServices.requestPostForApi(
         authToken: true,
-        url: 'https://moment-wrap-backend.vercel.app/api/customer/buy-product',
+        url: '$_appConfig/api/customer/buy-product',
         dictParameter: requestBody,
       );
 
@@ -71,7 +75,7 @@ class OrderController extends GetxController {
       // This would be for a bulk order API endpoint
       final response = await _apiServices.requestPostonlyOrdersApi(
         authToken: true,
-        url: 'https://moment-wrap-backend.vercel.app/api/customer/buy-product',
+        url: '$_appConfig/api/customer/buy-product',
         dictParameter: productsToBuy, // Send array directly
       );
 
@@ -112,7 +116,7 @@ class OrderController extends GetxController {
       dio.Response? response = await _apiServices.getRequest(
         authToken: true,
         url:
-            'https://moment-wrap-backend.vercel.app/api/customer/list-my-orders',
+            '$_appConfig/api/customer/list-my-orders',
       );
 
       if (response != null && response.statusCode == 200) {
@@ -183,7 +187,7 @@ class OrderController extends GetxController {
       dio.Response? response = await _apiServices.getRequest(
         authToken: true,
         url:
-            'https://moment-wrap-backend.vercel.app/api/customer/get-order-details/$orderId',
+            '$_appConfig/api/customer/get-order-details/$orderId',
       );
 
       if (response != null && response.statusCode == 200) {
@@ -228,7 +232,7 @@ class OrderController extends GetxController {
       isLoading.value = true;
 
       final url =
-          'https://moment-wrap-backend.vercel.app/api/customer/cancel-order/$orderId';
+          '$_appConfig/api/customer/cancel-order/$orderId';
 
       dio.Response? response = await _apiServices.requestPutForApi(
         authToken: true,

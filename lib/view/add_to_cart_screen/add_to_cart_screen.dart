@@ -755,9 +755,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
 import 'package:momentswrap/controllers/order_controller/order_controller.dart';
+import 'package:momentswrap/controllers/order_controller/place_order_controller.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
 import 'package:momentswrap/util/constants/app_sizes.dart';
 import 'package:momentswrap/util/helpers/date_time_helper.dart';
+import 'package:momentswrap/util/helpers/helper_functions.dart';
 import 'package:momentswrap/view/add_to_cart_screen/cart_Item_card.dart';
 
 class AddToCartScreen extends StatefulWidget {
@@ -770,6 +772,9 @@ class AddToCartScreen extends StatefulWidget {
 class _AddToCartScreenState extends State<AddToCartScreen> {
   final CartController cartController = Get.put(CartController());
   final OrderController orderController = Get.put(OrderController());
+  final PlaceOrderController placeOrderController = Get.put(
+    PlaceOrderController(),
+  );
   final TextEditingController voucherController = TextEditingController();
 
   String selectedDeliveryDate = 'Pick delivery date';
@@ -1185,65 +1190,54 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
                     ),
                   ],
                 ),
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    foregroundColor: AppColors.accentColor,
-                    padding: const EdgeInsets.symmetric(vertical: 18),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  onPressed: () {
-                    final finalCartData = cartController.getFinalCartData();
-
-                    final productsToBuy = finalCartData.map((item) {
-                      return {
-                        'productId': item['productId'],
-                        'quantity': item['quantity'],
-                      };
-                    }).toList();
-
-                    orderController.buyProductsBulk(productsToBuy);
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Container(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.check_circle,
-                                color: AppColors.accentColor,
-                              ),
-                              SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  'Order placed with ${cartController.totalItems} items totaling ₹${(cartController.totalPrice + shippingPrice).toStringAsFixed(2)}',
-                                  style: TextStyle(
-                                    color: AppColors.accentColor,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        backgroundColor: AppColors.successColor,
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        margin: EdgeInsets.all(16),
+                child: Obx(() {
+                  return ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      foregroundColor: AppColors.accentColor,
+                      padding: const EdgeInsets.symmetric(vertical: 18),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                    );
-                  },
-                  icon: const Icon(Icons.flash_on_outlined),
-                  label: const Text(
-                    "Place Order",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
+                    ),
+                    onPressed: placeOrderController.isPlacingOrder.value
+                        ? null
+                        : () {
+                            // Check if cart is not empty
+                            if (cartController.totalItems == 0) {
+                              HelperFunctions.showSnackbar(
+                                title: 'Cart Empty',
+                                message: 'Please add items to cart first',
+                                backgroundColor: Colors.orange,
+                              );
+                              return;
+                            }
+
+                            // Start the step-by-step order process
+                            placeOrderController.initiateOrderProcess();
+                          },
+                    icon: placeOrderController.isPlacingOrder.value
+                        ? SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.accentColor,
+                            ),
+                          )
+                        : const Icon(Icons.flash_on_outlined),
+                    label: Text(
+                      placeOrderController.isPlacingOrder.value
+                          ? "Processing..."
+                          : "Place Order",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  );
+                }),
               ),
             ),
 
