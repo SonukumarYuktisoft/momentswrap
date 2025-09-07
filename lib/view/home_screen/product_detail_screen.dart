@@ -516,7 +516,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ],
 
                     // Action Buttons
-                    _buildActionButtons(),
+                    // _buildActionButtons(),
                     SizedBox(height: 32),
                   ],
                 ),
@@ -525,6 +525,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ),
         ],
       ),
+      bottomNavigationBar:   SafeArea(child: _buildActionButtons()),
     );
   }
 
@@ -1147,138 +1148,141 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       );
     }
 
-    return Row(
-      children: [
-        // Add to Cart Button
-        Expanded(
-          child: Obx(() {
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.secondaryColor.withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: ElevatedButton.icon(
-                onPressed: cartController.isAddCartLoading.value
-                    ? null
-                    : () {
-                        AuthUtils.runIfLoggedIn(() {
-                          cartController.addToCart(
-                            image: widget.product.images.isNotEmpty
-                                ? widget.product.images.first
-                                : '',
-                            productId: widget.product.id,
-                            quantity: 1,
-                            totalPrice: widget.product.price.toDouble(),
-                          );
-                        });
-                      },
-                icon: cartController.isAddCartLoading.value
-                    ? SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          // Add to Cart Button
+          Expanded(
+            child: Obx(() {
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.secondaryColor.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: ElevatedButton.icon(
+                  onPressed: cartController.isAddCartLoading.value
+                      ? null
+                      : () {
+                          AuthUtils.runIfLoggedIn(() {
+                            cartController.addToCart(
+                              image: widget.product.images.isNotEmpty
+                                  ? widget.product.images.first
+                                  : '',
+                              productId: widget.product.id,
+                              quantity: 1,
+                              totalPrice: widget.product.price.toDouble(),
+                            );
+                          });
+                        },
+                  icon: cartController.isAddCartLoading.value
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.accentColor,
+                          ),
+                        )
+                      : Icon(
+                          Icons.shopping_cart_outlined,
+                          size: 20,
                           color: AppColors.accentColor,
                         ),
-                      )
-                    : Icon(
-                        Icons.shopping_cart_outlined,
-                        size: 20,
-                        color: AppColors.accentColor,
-                      ),
-                label: Text(
-                  "Add to Cart",
-                  style: TextStyle(
-                    color: AppColors.accentColor,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
+                  label: Text(
+                    "Add to Cart",
+                    style: TextStyle(
+                      color: AppColors.accentColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.secondaryColor,
+                    foregroundColor: AppColors.accentColor,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 0,
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.secondaryColor,
-                  foregroundColor: AppColors.accentColor,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 0,
+              );
+            }),
+          ),
+      
+          const SizedBox(width: 16),
+      
+          // Buy Now Button
+          Expanded(
+            child: Obx(() {
+              return Container(
+                decoration: BoxDecoration(
+                  gradient: AppColors.primaryGradient,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primaryColor.withOpacity(0.4),
+                      blurRadius: 8,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
                 ),
-              ),
-            );
-          }),
-        ),
-
-        const SizedBox(width: 16),
-
-        // Buy Now Button
-        Expanded(
-          child: Obx(() {
-            return Container(
-              decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primaryColor.withOpacity(0.4),
-                    blurRadius: 8,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: ElevatedButton.icon(
-                onPressed: orderController.isBuyProductLoading.value
-                    ? null
-                    : () {
-                        AuthUtils.runIfLoggedInAndHasAddress(() {
-                          orderController.buyProduct(
-                            productId: widget.product.id,
-                            quantity: 1,
-                          );
-                        });
-                      },
-                icon: orderController.isBuyProductLoading.value
-                    ? SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
+                child: ElevatedButton.icon(
+                  onPressed: orderController.isBuyProductLoading.value
+                      ? null
+                      : () {
+                          AuthUtils.runIfLoggedInAndHasAddress(() {
+                            orderController.buyProduct(
+                              productId: widget.product.id,
+                              quantity: 1,
+                            );
+                          });
+                        },
+                  icon: orderController.isBuyProductLoading.value
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.accentColor,
+                          ),
+                        )
+                      : Icon(
+                          Icons.flash_on_outlined,
+                          size: 20,
                           color: AppColors.accentColor,
                         ),
-                      )
-                    : Icon(
-                        Icons.flash_on_outlined,
-                        size: 20,
-                        color: AppColors.accentColor,
-                      ),
-                label: Text(
-                  "Buy Now",
-                  style: TextStyle(
-                    color: AppColors.accentColor,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
+                  label: Text(
+                    "Buy Now",
+                    style: TextStyle(
+                      color: AppColors.accentColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: AppColors.accentColor,
+                    shadowColor: Colors.transparent,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 0,
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: AppColors.accentColor,
-                  shadowColor: Colors.transparent,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 0,
-                ),
-              ),
-            );
-          }),
-        ),
-      ],
+              );
+            }),
+          ),
+        ],
+      ),
     );
   }
 

@@ -456,7 +456,7 @@ class PlaceOrderController extends GetxController {
 
       print('Request body: ${jsonEncode(requestBody)}'); // Debug log
 
-      final response = await _apiServices.requestPostonlyOrdersApi(
+      final response = await _apiServices.requestPostForApi(
         authToken: true,
         url: 'https://moment-wrap-backend.vercel.app/api/customer/buy-product',
         dictParameter: requestBody,

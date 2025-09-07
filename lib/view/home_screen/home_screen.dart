@@ -12,6 +12,7 @@ import 'package:momentswrap/util/constants/app_colors.dart';
 import 'package:momentswrap/util/constants/app_images_string.dart';
 import 'package:momentswrap/util/constants/app_sizes.dart';
 import 'package:momentswrap/view/events_screen/events_screens.dart';
+import 'package:momentswrap/view/home_screen/product_card.dart';
 import 'package:momentswrap/view/home_screen/product_detail_screen.dart';
 import 'package:momentswrap/view/home_screen/search_screen.dart';
 
@@ -373,11 +374,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
-                                childAspectRatio: 0.7,
+                                childAspectRatio: 0.68,
                                 crossAxisSpacing: 12,
                                 mainAxisSpacing: 12,
                               ),
-                          itemCount: productResponse.data.length,
+                          itemCount: 10,
                           itemBuilder: (context, index) {
                             final item = productResponse.data[index];
                             return GestureDetector(
@@ -787,245 +788,245 @@ class ModernBannerCard extends StatelessWidget {
   }
 }
 
-class ModernProductCard extends StatelessWidget {
-  final String image, title, subtitle, price;
-  final String? productId;
-  final List<Offer>? offers;
-  final void Function()? addToCart;
-  final int stock;
+// class ModernProductCard extends StatelessWidget {
+//   final String image, title, subtitle, price;
+//   final String? productId;
+//   final List<Offer>? offers;
+//   final void Function()? addToCart;
+//   final int stock;
 
-  const ModernProductCard({
-    super.key,
-    required this.image,
-    required this.title,
-    required this.subtitle,
-    required this.price,
-    this.productId,
-    this.offers,
-    this.addToCart,
-    required this.stock,
-  });
+//   const ModernProductCard({
+//     super.key,
+//     required this.image,
+//     required this.title,
+//     required this.subtitle,
+//     required this.price,
+//     this.productId,
+//     this.offers,
+//     this.addToCart,
+//     required this.stock,
+//   });
 
-  @override
-  Widget build(BuildContext context) {
-    CartController cartController = Get.put(CartController());
+//   @override
+//   Widget build(BuildContext context) {
+//     CartController cartController = Get.put(CartController());
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.accentColor,
-            AppColors.accentColor.withOpacity(0.98),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primaryColor.withOpacity(0.15),
-            blurRadius: 8,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Image with modern styling
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                child: Container(
-                  height: 120,
-                  width: double.infinity,
-                  color: AppColors.backgroundColor,
-                  child: Image.network(
-                    image,
-                    height: 120,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: AppColors.backgroundColor,
-                        child: Icon(
-                          Icons.image_outlined,
-                          size: 48,
-                          color: Colors.grey[400],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
+//     return Container(
+//       decoration: BoxDecoration(
+//         gradient: LinearGradient(
+//           begin: Alignment.topLeft,
+//           end: Alignment.bottomRight,
+//           colors: [
+//             AppColors.accentColor,
+//             AppColors.accentColor.withOpacity(0.98),
+//           ],
+//         ),
+//         borderRadius: BorderRadius.circular(16),
+//         boxShadow: [
+//           BoxShadow(
+//             color: AppColors.primaryColor.withOpacity(0.15),
+//             blurRadius: 8,
+//             offset: Offset(0, 4),
+//           ),
+//         ],
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           // Image with modern styling
+//           Stack(
+//             children: [
+//               ClipRRect(
+//                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+//                 child: Container(
+//                   height: 120,
+//                   width: double.infinity,
+//                   color: AppColors.backgroundColor,
+//                   child: Image.network(
+//                     image,
+//                     height: 120,
+//                     width: double.infinity,
+//                     fit: BoxFit.cover,
+//                     errorBuilder: (context, error, stackTrace) {
+//                       return Container(
+//                         color: AppColors.backgroundColor,
+//                         child: Icon(
+//                           Icons.image_outlined,
+//                           size: 48,
+//                           color: Colors.grey[400],
+//                         ),
+//                       );
+//                     },
+//                   ),
+//                 ),
+//               ),
 
-              // Product ID Badge
-              if (productId != null)
-                Positioned(
-                  top: 8,
-                  left: 8,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      '#${productId}',
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.accentColor,
-                      ),
-                    ),
-                  ),
-                ),
+//               // Product ID Badge
+//               if (productId != null)
+//                 Positioned(
+//                   top: 8,
+//                   left: 8,
+//                   child: Container(
+//                     padding: const EdgeInsets.symmetric(
+//                       horizontal: 8,
+//                       vertical: 4,
+//                     ),
+//                     decoration: BoxDecoration(
+//                       color: AppColors.primaryColor,
+//                       borderRadius: BorderRadius.circular(8),
+//                     ),
+//                     child: Text(
+//                       '#${productId}',
+//                       style: TextStyle(
+//                         fontSize: 10,
+//                         fontWeight: FontWeight.bold,
+//                         color: AppColors.accentColor,
+//                       ),
+//                     ),
+//                   ),
+//                 ),
 
-              // Favorite button
-              Positioned(
-                top: 8,
-                right: 8,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.accentColor.withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.favorite_border,
-                      size: 18,
-                      color: AppColors.primaryColor,
-                    ),
-                    padding: EdgeInsets.all(4),
-                    constraints: BoxConstraints(minWidth: 32, minHeight: 32),
-                  ),
-                ),
-              ),
-            ],
-          ),
+//               // Favorite button
+//               Positioned(
+//                 top: 8,
+//                 right: 8,
+//                 child: Container(
+//                   decoration: BoxDecoration(
+//                     color: AppColors.accentColor.withOpacity(0.9),
+//                     borderRadius: BorderRadius.circular(8),
+//                   ),
+//                   child: IconButton(
+//                     onPressed: () {},
+//                     icon: Icon(
+//                       Icons.favorite_border,
+//                       size: 18,
+//                       color: AppColors.primaryColor,
+//                     ),
+//                     padding: EdgeInsets.all(4),
+//                     constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
 
-          // Content section
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Title
-                  Text(
-                    title,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textColor,
-                    ),
-                  ),
-                  SizedBox(height: 4),
+//           // Content section
+//           Expanded(
+//             child: Padding(
+//               padding: const EdgeInsets.all(12),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   // Title
+//                   Text(
+//                     title,
+//                     maxLines: 2,
+//                     overflow: TextOverflow.ellipsis,
+//                     style: TextStyle(
+//                       fontSize: 14,
+//                       fontWeight: FontWeight.bold,
+//                       color: AppColors.textColor,
+//                     ),
+//                   ),
+//                   SizedBox(height: 4),
 
-                  // Subtitle
-                  Text(
-                    subtitle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: AppColors.textColor.withOpacity(0.6),
-                    ),
-                  ),
+//                   // Subtitle
+//                   Text(
+//                     subtitle,
+//                     maxLines: 1,
+//                     overflow: TextOverflow.ellipsis,
+//                     style: TextStyle(
+//                       fontSize: 11,
+//                       color: AppColors.textColor.withOpacity(0.6),
+//                     ),
+//                   ),
 
-                  Spacer(),
+//                   Spacer(),
 
-                  // Price and Add to Cart Row
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              price,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primaryColor,
-                              ),
-                            ),
-                            if (offers != null && offers!.isNotEmpty)
-                              Text(
-                                "${offers!.first.discountPercentage}% off",
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.green[600],
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
+//                   // Price and Add to Cart Row
+//                   Row(
+//                     children: [
+//                       Expanded(
+//                         child: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             Text(
+//                               price,
+//                               style: TextStyle(
+//                                 fontSize: 16,
+//                                 fontWeight: FontWeight.bold,
+//                                 color: AppColors.primaryColor,
+//                               ),
+//                             ),
+//                             if (offers != null && offers!.isNotEmpty)
+//                               Text(
+//                                 "${offers!.first.discountPercentage}% off",
+//                                 style: TextStyle(
+//                                   fontSize: 10,
+//                                   color: Colors.green[600],
+//                                   fontWeight: FontWeight.w600,
+//                                 ),
+//                               ),
+//                           ],
+//                         ),
+//                       ),
 
-                      // Modern Add to Cart Button
-                      if (stock > 0) ...[
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                AppColors.primaryColor,
-                                AppColors.primaryColor.withOpacity(0.8),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.primaryColor.withOpacity(0.3),
-                                blurRadius: 4,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: IconButton(
-                            onPressed: addToCart,
-                            icon: Icon(
-                              Icons.add_shopping_cart_outlined,
-                              size: 20,
-                              color: AppColors.accentColor,
-                            ),
-                            padding: EdgeInsets.all(8),
-                            constraints: BoxConstraints(
-                              minWidth: 36,
-                              minHeight: 36,
-                            ),
-                          ),
-                        ),
-                      ] else ...[
-                        Text(
-                          'Out of Stock',
-                          softWrap: true,
-                          style: TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                            color: AppColors.errorColor,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+//                       // Modern Add to Cart Button
+//                       if (stock > 0) ...[
+//                         Container(
+//                           decoration: BoxDecoration(
+//                             gradient: LinearGradient(
+//                               begin: Alignment.topLeft,
+//                               end: Alignment.bottomRight,
+//                               colors: [
+//                                 AppColors.primaryColor,
+//                                 AppColors.primaryColor.withOpacity(0.8),
+//                               ],
+//                             ),
+//                             borderRadius: BorderRadius.circular(12),
+//                             boxShadow: [
+//                               BoxShadow(
+//                                 color: AppColors.primaryColor.withOpacity(0.3),
+//                                 blurRadius: 4,
+//                                 offset: Offset(0, 2),
+//                               ),
+//                             ],
+//                           ),
+//                           child: IconButton(
+//                             onPressed: addToCart,
+//                             icon: Icon(
+//                               Icons.add_shopping_cart_outlined,
+//                               size: 20,
+//                               color: AppColors.accentColor,
+//                             ),
+//                             padding: EdgeInsets.all(8),
+//                             constraints: BoxConstraints(
+//                               minWidth: 36,
+//                               minHeight: 36,
+//                             ),
+//                           ),
+//                         ),
+//                       ] else ...[
+//                         Text(
+//                           'Out of Stock',
+//                           softWrap: true,
+//                           style: TextStyle(
+//                             overflow: TextOverflow.ellipsis,
+//                             color: AppColors.errorColor,
+//                           ),
+//                         ),
+//                       ],
+//                     ],
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class RoundedImage extends StatelessWidget {
   final double radius;
