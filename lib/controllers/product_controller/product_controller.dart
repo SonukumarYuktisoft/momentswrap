@@ -1,72 +1,27 @@
-import 'dart:ffi';
-
 import 'package:get/get.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:momentswrap/models/product_models/product_model.dart';
 import 'package:momentswrap/services/api_services.dart';
-import 'package:dio/dio.dart' as dio;
-
-import 'dart:async';
 
 class ProductController extends GetxController {
   final ApiServices _apiServices = ApiServices();
+
   final RxBool isLoading = false.obs;
-  final RxBool isFiltering = false.obs;
   final Rx<ProductResponse?> products = Rx<ProductResponse?>(null);
-  final Rx<ProductResponse?> allProducts = Rx<ProductResponse?>(null);
-  final RxList<String> categories = <String>[].obs;
-  final RxList<String> selectedTags = <String>[].obs;
-  final Rx<String?> selectedCategory = Rx<String?>(null);
-
-  final RxString searchQuery = ''.obs;
-  final RxDouble minPrice = 0.0.obs;
-  final RxDouble maxPrice = 10000.0.obs;
-  final RxBool inStockOnly = false.obs;
-  final RxList<String> searchSuggestions = <String>[].obs;
-
-  // Error handling
   final RxString errorMessage = ''.obs;
   final RxBool hasError = false.obs;
 
-  // Debouncer for search
-  Timer? _searchDebouncer;
-  final Duration _searchDebounceDelay = const Duration(milliseconds: 500);
+  // Categories for filtering
+  final RxList<String> categories = <String>[].obs;
+  final RxString selectedCategory = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
     fetchAllProducts();
-
-    // Initialize cart controller safely
-    if (!Get.isRegistered<CartController>()) {
-      Get.put(CartController());
-    }
-
-    // Listen to search query changes for debouncing
-    ever(searchQuery, (_) => _debounceSearch());
   }
 
-  @override
-  void onClose() {
-    _searchDebouncer?.cancel();
-    super.onClose();
-  }
-
-  // Clear error state
-  void clearError() {
-    hasError.value = false;
-    errorMessage.value = '';
-  }
-
-  // Set error state
-  void setError(String message) {
-    hasError.value = true;
-    errorMessage.value = message;
-  }
-
-  // Fetch all products and extract categories
+  // Fetch all products (without filter/search)
   Future<void> fetchAllProducts() async {
     try {
       clearError();
@@ -74,14 +29,12 @@ class ProductController extends GetxController {
 
       final dio.Response response = await _apiServices.getRequest(
         authToken: false,
-        url:
-            'https://moment-wrap-backend.vercel.app/api/customer/list-all-products',
+        url: 'https://moment-wrap-backend.vercel.app/api/customer/list-all-products',
       );
 
       if (response.statusCode == 200 && response.data != null) {
         final dynamic responseData = response.data;
 
-        // Handle both List and single object responses
         List<dynamic> productsData;
         if (responseData is List) {
           productsData = responseData;
@@ -91,359 +44,310 @@ class ProductController extends GetxController {
           throw Exception('Invalid response format');
         }
 
-        final productResponse = ProductResponse(
-          data: productsData
-              .map((json) {
-                try {
-                  return ProductModel.fromJson(json);
-                } catch (e) {
-                  print('Error parsing product: $e');
-                  print('Product JSON: $json');
-                  return null;
-                }
-              })
-              .where((product) => product != null)
-              .cast<ProductModel>()
-              .toList(),
-        );
+        final productsList = productsData
+            .map((json) {
+              try {
+                return ProductModel.fromJson(json);
+              } catch (e) {
+                print("Error parsing product: $e");
+                return null;
+              }
+            })
+            .where((product) => product != null)
+            .cast<ProductModel>()
+            .toList();
 
-        // Store all products
-        allProducts.value = productResponse;
-        products.value = productResponse;
-
-        // Extract categories from all products
-        extractCategories();
-
-        print('Successfully fetched ${productResponse.data.length} products');
+        products.value = ProductResponse(data: productsList);
+        
+        // Extract unique categories
+        _extractCategories(productsList);
+        
       } else {
-        throw Exception('Failed to load products: ${response.statusCode}');
+        throw Exception("Failed to load products: ${response.statusCode}");
       }
     } catch (e) {
-      print('Error fetching all products: $e');
-      setError('Failed to load products. Please try again.');
-
-      // Set empty response on error
-      allProducts.value = ProductResponse(data: []);
+      print("Error fetching all products: $e");
+      setError("Failed to load products. Please try again.");
       products.value = ProductResponse(data: []);
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Extract unique categories from products
-  void extractCategories() {
-    try {
-      if (allProducts.value != null && allProducts.value!.data.isNotEmpty) {
-        final categoriesList = allProducts.value!.data
-            .map((product) => product.category)
-            .where((category) => category.isNotEmpty)
-            .toSet()
-            .toList();
-
-        categories.value = categoriesList;
-        print('Categories extracted: ${categories.value}');
+  void _extractCategories(List<ProductModel> productsList) {
+    final Set<String> uniqueCategories = {};
+    for (var product in productsList) {
+      if (product.category.isNotEmpty) {
+        uniqueCategories.add(product.category);
       }
-    } catch (e) {
-      print('Error extracting categories: $e');
     }
+    categories.value = uniqueCategories.toList()..sort();
   }
 
-  // Get product details by ID
-  Future<ProductModel?> getProductDetails(String productId) async {
-    try {
-      clearError();
+  // Get similar products (same category, different product)
+  List<ProductModel> getSimilarProducts(String currentProductId, String category, {int limit = 10}) {
+    if (!hasProducts) return [];
+    
+    return productsList
+        .where((product) => 
+          product.category.toLowerCase() == category.toLowerCase() && 
+          product.id != currentProductId &&
+          product.isActive)
+        .take(limit)
+        .toList();
+  }
 
-      final dio.Response response = await _apiServices.getRequest(
-        authToken: false,
-        url:
-            'https://moment-wrap-backend.vercel.app/api/customer/get-product-details/$productId',
-      );
+  // Get products with valid offers/discounts
+  List<ProductModel> getDiscountProducts({int limit = 10}) {
+    if (!hasProducts) return [];
+    
+    return productsList
+        .where((product) => 
+          product.offers.any((offer) => offer.validTill.isAfter(DateTime.now())) &&
+          product.isActive)
+        .take(limit)
+        .toList();
+  }
 
-      if (response.statusCode == 200 && response.data != null) {
-        final dynamic responseData = response.data;
+  // Get high-rating products (4+ stars)
+  List<ProductModel> getHighRatingProducts({int limit = 10, double minRating = 4.0}) {
+    if (!hasProducts) return [];
+    
+    return productsList
+        .where((product) => 
+          product.averageRating >= minRating &&
+          product.isActive)
+        .toList()
+      ..sort((a, b) => b.averageRating.compareTo(a.averageRating))
+      ..take(limit);
+  }
 
-        if (responseData.containsKey('data')) {
-          return ProductModel.fromJson(responseData['data']);
-        } else {
-          return ProductModel.fromJson(responseData);
-        }
-      }
-    } catch (e) {
-      print('Error fetching product details: $e');
-      setError('Failed to load product details.');
-    }
-    return null;
+  // Get products with special offers
+  List<ProductModel> getSpecialOfferProducts({int limit = 10}) {
+    if (!hasProducts) return [];
+    
+    return productsList
+        .where((product) => 
+          product.offers.isNotEmpty &&
+          product.isActive)
+        .toList()
+      ..sort((a, b) => b.maxDiscountPercentage.compareTo(a.maxDiscountPercentage))
+      ..take(limit);
   }
 
   // Get products by category
-  Future<void> getProductsByCategory(String category) async {
-    try {
-      clearError();
-      isFiltering.value = true;
-
-      final dio.Response response = await _apiServices.getRequest(
-        authToken: false,
-        url:
-            'https://moment-wrap-backend.vercel.app/api/customer/list-products-by-category/$category',
-      );
-
-      if (response.statusCode == 200 && response.data != null) {
-        final dynamic responseData = response.data;
-
-        List<dynamic> productsData;
-        if (responseData is List) {
-          productsData = responseData;
-        } else if (responseData is Map && responseData.containsKey('data')) {
-          productsData = responseData['data'] as List<dynamic>;
-        } else {
-          throw Exception('Invalid response format');
-        }
-
-        products.value = ProductResponse(
-          data: productsData
-              .map((json) {
-                try {
-                  return ProductModel.fromJson(json);
-                } catch (e) {
-                  print('Error parsing product in category: $e');
-                  return null;
-                }
-              })
-              .where((product) => product != null)
-              .cast<ProductModel>()
-              .toList(),
-        );
-      }
-    } catch (e) {
-      print('Error fetching products by category: $e');
-      setError('Failed to load products for category: $category');
-      // Fallback to local filtering
-      applyLocalFilters();
-    } finally {
-      isFiltering.value = false;
-    }
+  List<ProductModel> getProductsByCategory(String category) {
+    if (!hasProducts) return [];
+    
+    return productsList
+        .where((product) => 
+          product.category.toLowerCase() == category.toLowerCase() &&
+          product.isActive)
+        .toList();
   }
 
-  // Filter products using API
-  Future<void> filterProducts() async {
-    try {
-      clearError();
-      isFiltering.value = true;
-
-      Map<String, dynamic> queryParameters = {};
-
-      // Add price range if not default
-      if (minPrice.value > 0) {
-        queryParameters['minPrice'] = minPrice.value.toInt();
-      }
-      if (maxPrice.value < 10000) {
-        queryParameters['maxPrice'] = maxPrice.value.toInt();
-      }
-
-      // Add category filter
-      if (selectedCategory.value != null &&
-          selectedCategory.value!.isNotEmpty) {
-        queryParameters['category'] = selectedCategory.value;
-      }
-
-      // Add stock filter
-      if (inStockOnly.value) {
-        queryParameters['inStock'] = true;
-      }
-
-      final dio.Response response = await _apiServices.getRequest(
-        authToken: false,
-        url:
-            'https://moment-wrap-backend.vercel.app/api/customer/filter-products',
-        queryParameters: queryParameters,
-      );
-
-      if (response.statusCode == 200 && response.data != null) {
-        final dynamic responseData = response.data;
-
-        List<dynamic> productsData;
-        if (responseData is List) {
-          productsData = responseData;
-        } else if (responseData is Map && responseData.containsKey('data')) {
-          productsData = responseData['data'] as List<dynamic>;
-        } else {
-          throw Exception('Invalid response format');
-        }
-
-        products.value = ProductResponse(
-          data: productsData
-              .map((json) {
-                try {
-                  return ProductModel.fromJson(json);
-                } catch (e) {
-                  print('Error parsing filtered product: $e');
-                  return null;
-                }
-              })
-              .where((product) => product != null)
-              .cast<ProductModel>()
-              .toList(),
-        );
-      }
-    } catch (e) {
-      print('Error filtering products: $e');
-      // Fallback to local filtering if API fails
-      applyLocalFilters();
-    } finally {
-      isFiltering.value = false;
-    }
+  // Get trending/popular products (based on reviews count and rating)
+  List<ProductModel> getTrendingProducts({int limit = 10}) {
+    if (!hasProducts) return [];
+    
+    return productsList
+        .where((product) => product.isActive)
+        .toList()
+      ..sort((a, b) {
+        // Sort by combination of review count and rating
+        double scoreA = (a.reviews.length * 0.3) + (a.averageRating * 0.7);
+        double scoreB = (b.reviews.length * 0.3) + (b.averageRating * 0.7);
+        return scoreB.compareTo(scoreA);
+      })
+      ..take(limit);
   }
 
-  // Apply local filters as fallback
-  void applyLocalFilters() {
-    try {
-      if (allProducts.value == null) return;
-
-      List<ProductModel> filteredProducts = List.from(allProducts.value!.data);
-
-      // Apply search query filter
-      if (searchQuery.value.isNotEmpty) {
-        final query = searchQuery.value.toLowerCase();
-        filteredProducts = filteredProducts.where((product) {
-          return product.name.toLowerCase().contains(query) ||
-              product.shortDescription.toLowerCase().contains(query) ||
-              product.category.toLowerCase().contains(query) ||
-              product.longDescription.toLowerCase().contains(query);
-        }).toList();
-      }
-
-      // Apply category filter
-      if (selectedCategory.value != null &&
-          selectedCategory.value!.isNotEmpty) {
-        filteredProducts = filteredProducts.where((product) {
-          return product.category == selectedCategory.value;
-        }).toList();
-      }
-
-      // Apply price range filter
-      filteredProducts = filteredProducts.where((product) {
-        return product.price >= minPrice.value &&
-            product.price <= maxPrice.value;
-      }).toList();
-
-      // Apply stock filter
-      if (inStockOnly.value) {
-        filteredProducts = filteredProducts.where((product) {
-          return product.stock > 0;
-        }).toList();
-      }
-
-      products.value = ProductResponse(data: filteredProducts);
-    } catch (e) {
-      print('Error applying local filters: $e');
-      setError('Error filtering products');
-    }
+  // Get recently added products
+  List<ProductModel> getRecentProducts({int limit = 10}) {
+    if (!hasProducts) return [];
+    
+    return productsList
+        .where((product) => product.isActive)
+        .toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt))
+      ..take(limit);
   }
 
-  // Debounced search functionality
-  void _debounceSearch() {
-    _searchDebouncer?.cancel();
-    _searchDebouncer = Timer(_searchDebounceDelay, () {
-      if (searchQuery.value.isNotEmpty) {
-        generateSearchSuggestions();
-        applyLocalFilters();
-      } else {
-        searchSuggestions.clear();
-        if (hasActiveFilters()) {
-          applyLocalFilters();
-        } else {
-          products.value = allProducts.value;
-        }
-      }
-    });
+  // Get products in stock
+  List<ProductModel> getInStockProducts({int limit = 10}) {
+    if (!hasProducts) return [];
+    
+    return productsList
+        .where((product) => 
+          product.stock > 0 &&
+          product.isActive)
+        .take(limit)
+        .toList();
   }
 
-  // Generate search suggestions
-  void generateSearchSuggestions() {
-    try {
-      if (allProducts.value == null || searchQuery.value.isEmpty) {
-        searchSuggestions.clear();
-        return;
-      }
-
-      final query = searchQuery.value.toLowerCase();
-      final suggestions = <String>{};
-
-      for (var product in allProducts.value!.data) {
-        if (product.name.toLowerCase().contains(query)) {
-          suggestions.add(product.name);
-        }
-        if (product.category.toLowerCase().contains(query)) {
-          suggestions.add(product.category);
-        }
-      }
-
-      searchSuggestions.value = suggestions.take(5).toList();
-    } catch (e) {
-      print('Error generating search suggestions: $e');
-    }
+  // Get low stock products (for admin/alerts)
+  List<ProductModel> getLowStockProducts({int threshold = 5}) {
+    if (!hasProducts) return [];
+    
+    return productsList
+        .where((product) => 
+          product.stock > 0 && 
+          product.stock <= threshold &&
+          product.isActive)
+        .toList();
   }
 
-  bool hasActiveFilters() {
-    return selectedCategory.value != null ||
-        minPrice.value > 0 ||
-        maxPrice.value < 10000 ||
-        inStockOnly.value ||
-        searchQuery.value.isNotEmpty;
+  // Search products by name, description, or category
+  List<ProductModel> searchProducts(String query) {
+    if (!hasProducts || query.isEmpty) return [];
+    
+    final lowercaseQuery = query.toLowerCase();
+    
+    return productsList
+        .where((product) => 
+          product.isActive && (
+            product.name.toLowerCase().contains(lowercaseQuery) ||
+            product.shortDescription.toLowerCase().contains(lowercaseQuery) ||
+            product.longDescription.toLowerCase().contains(lowercaseQuery) ||
+            product.category.toLowerCase().contains(lowercaseQuery) ||
+            product.material.toLowerCase().contains(lowercaseQuery)
+          ))
+        .toList();
   }
 
-  // Update search query
-  void updateSearchQuery(String query) {
-    searchQuery.value = query;
-  }
+  // Filter products by multiple criteria
+  List<ProductModel> filterProducts({
+    String? category,
+    double? minPrice,
+    double? maxPrice,
+    double? minRating,
+    bool? inStockOnly,
+    bool? hasOffers,
+  }) {
+    if (!hasProducts) return [];
+    
+    var filtered = productsList.where((product) => product.isActive);
 
-  // Apply suggestion
-  void applySuggestion(String suggestion) {
-    searchQuery.value = suggestion;
-    searchSuggestions.clear();
-  }
-
-  // Clear all filters
-  void clearFilters() {
-    selectedCategory.value = null;
-    searchQuery.value = '';
-    minPrice.value = 0.0;
-    maxPrice.value = 10000.0;
-    inStockOnly.value = false;
-    selectedTags.clear();
-    searchSuggestions.clear();
-    products.value = allProducts.value;
-    clearError();
-  }
-
-  // Apply filters (called from UI)
-  void applyFilters() {
-    if (hasActiveFilters()) {
-      filterProducts(); // Use API filtering first
-    } else {
-      products.value = allProducts.value;
-    }
-  }
-
-  // Category selection handler
-  void selectCategory(String? category) {
-    selectedCategory.value = category;
     if (category != null && category.isNotEmpty) {
-      getProductsByCategory(category);
-    } else {
-      applyFilters();
+      filtered = filtered.where((p) => p.category.toLowerCase() == category.toLowerCase());
+    }
+
+    if (minPrice != null) {
+      filtered = filtered.where((p) => p.price >= minPrice);
+    }
+
+    if (maxPrice != null) {
+      filtered = filtered.where((p) => p.price <= maxPrice);
+    }
+
+    if (minRating != null) {
+      filtered = filtered.where((p) => p.averageRating >= minRating);
+    }
+
+    if (inStockOnly == true) {
+      filtered = filtered.where((p) => p.stock > 0);
+    }
+
+    if (hasOffers == true) {
+      filtered = filtered.where((p) => 
+        p.offers.any((offer) => offer.validTill.isAfter(DateTime.now())));
+    }
+
+    return filtered.toList();
+  }
+
+  // Sort products by various criteria
+  List<ProductModel> sortProducts(List<ProductModel> products, String sortBy) {
+    final sortedList = List<ProductModel>.from(products);
+    
+    switch (sortBy.toLowerCase()) {
+      case 'name':
+      case 'name_asc':
+        sortedList.sort((a, b) => a.name.compareTo(b.name));
+        break;
+      case 'name_desc':
+        sortedList.sort((a, b) => b.name.compareTo(a.name));
+        break;
+      case 'price':
+      case 'price_asc':
+        sortedList.sort((a, b) => a.price.compareTo(b.price));
+        break;
+      case 'price_desc':
+        sortedList.sort((a, b) => b.price.compareTo(a.price));
+        break;
+      case 'rating':
+      case 'rating_desc':
+        sortedList.sort((a, b) => b.averageRating.compareTo(a.averageRating));
+        break;
+      case 'rating_asc':
+        sortedList.sort((a, b) => a.averageRating.compareTo(b.averageRating));
+        break;
+      case 'newest':
+      case 'date_desc':
+        sortedList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        break;
+      case 'oldest':
+      case 'date_asc':
+        sortedList.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        break;
+      case 'popularity':
+        sortedList.sort((a, b) {
+          double scoreA = (a.reviews.length * 0.3) + (a.averageRating * 0.7);
+          double scoreB = (b.reviews.length * 0.3) + (b.averageRating * 0.7);
+          return scoreB.compareTo(scoreA);
+        });
+        break;
+      case 'discount':
+        sortedList.sort((a, b) => b.maxDiscountPercentage.compareTo(a.maxDiscountPercentage));
+        break;
+    }
+    
+    return sortedList;
+  }
+
+  // Get product by ID
+  ProductModel? getProductById(String id) {
+    if (!hasProducts) return null;
+    
+    try {
+      return productsList.firstWhere((product) => product.id == id);
+    } catch (e) {
+      return null;
     }
   }
 
-  // Price range update
-  void updatePriceRange(double min, double max) {
-    minPrice.value = min;
-    maxPrice.value = max;
-  }
-
-  // Toggle stock filter
-  void toggleStockFilter() {
-    inStockOnly.value = !inStockOnly.value;
+  // Get product recommendations based on user behavior (placeholder)
+  List<ProductModel> getRecommendedProducts({int limit = 10}) {
+    // This is a simple implementation. In a real app, you'd use user behavior data,
+    // purchase history, viewed products, etc., to generate personalized recommendations.
+    
+    if (!hasProducts) return [];
+    
+    // For now, return a mix of trending and highly rated products
+    final trending = getTrendingProducts(limit: limit ~/ 2);
+    final highRated = getHighRatingProducts(limit: limit ~/ 2);
+    
+    final Set<String> addedIds = {};
+    final List<ProductModel> recommendations = [];
+    
+    // Add trending products first
+    for (var product in trending) {
+      if (!addedIds.contains(product.id)) {
+        recommendations.add(product);
+        addedIds.add(product.id);
+      }
+    }
+    
+    // Fill remaining slots with high-rated products
+    for (var product in highRated) {
+      if (recommendations.length >= limit) break;
+      if (!addedIds.contains(product.id)) {
+        recommendations.add(product);
+        addedIds.add(product.id);
+      }
+    }
+    
+    return recommendations;
   }
 
   // Refresh products
@@ -451,11 +355,40 @@ class ProductController extends GetxController {
     await fetchAllProducts();
   }
 
+  // Error Handling
+  void clearError() {
+    hasError.value = false;
+    errorMessage.value = '';
+  }
+
+  void setError(String message) {
+    hasError.value = true;
+    errorMessage.value = message;
+  }
+
   // Helper methods for UI
-  bool get hasProducts =>
-      products.value != null && products.value!.data.isNotEmpty;
-
+  bool get hasProducts => products.value != null && products.value!.data.isNotEmpty;
   int get totalProducts => products.value?.data.length ?? 0;
-
   List<ProductModel> get productsList => products.value?.data ?? [];
+  
+  // Get statistics
+  Map<String, dynamic> getProductStats() {
+    if (!hasProducts) return {};
+    
+    final inStock = productsList.where((p) => p.stock > 0).length;
+    final outOfStock = productsList.where((p) => p.stock == 0).length;
+    final withOffers = productsList.where((p) => 
+      p.offers.any((offer) => offer.validTill.isAfter(DateTime.now()))).length;
+    final avgRating = productsList.isEmpty ? 0.0 : 
+      productsList.map((p) => p.averageRating).reduce((a, b) => a + b) / productsList.length;
+    
+    return {
+      'total': totalProducts,
+      'inStock': inStock,
+      'outOfStock': outOfStock,
+      'withOffers': withOffers,
+      'averageRating': avgRating,
+      'categories': categories.length,
+    };
+  }
 }

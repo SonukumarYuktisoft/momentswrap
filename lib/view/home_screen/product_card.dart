@@ -11,6 +11,7 @@ class ModernProductCard extends StatelessWidget {
   final void Function()? addToCart;
   final void Function()? onTap;
   final int stock;
+  final showAddToCart;
 
   const ModernProductCard({
     super.key,
@@ -23,6 +24,7 @@ class ModernProductCard extends StatelessWidget {
     this.addToCart,
     this.onTap,
     required this.stock,
+    this.showAddToCart = true,
   });
 
   // Filter valid offers (not expired)
@@ -383,7 +385,7 @@ class ModernProductCard extends StatelessWidget {
 
                     // Add to Cart Button
                     if (stock > 0) ...[
-                      Container(
+                   showAddToCart?   Container(
                         width: double.infinity,
                         height: 36,
                         decoration: BoxDecoration(
@@ -428,8 +430,8 @@ class ModernProductCard extends StatelessWidget {
                             padding: EdgeInsets.symmetric(horizontal: 8),
                             elevation: 0,
                           ),
-                        ),
-                      ),
+                        )
+                      ):SizedBox.shrink(),
                     ] else ...[
                       Container(
                         width: double.infinity,

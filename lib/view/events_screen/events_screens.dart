@@ -4,12 +4,13 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:momentswrap/controllers/cart_controller/cart_controller.dart' show CartController;
 import 'package:momentswrap/controllers/location_controller/location_controller.dart';
 import 'package:momentswrap/controllers/product_controller/product_controller.dart';
+import 'package:momentswrap/controllers/search_controller/search_product_controller.dart';
 import 'package:momentswrap/controllers/profile_controller/profile_controller.dart';
 import 'package:momentswrap/util/common/auth_utils.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
 import 'package:momentswrap/view/home_screen/product_card.dart';
 import 'package:momentswrap/view/home_screen/product_detail_screen.dart';
-import 'package:momentswrap/view/home_screen/search_screen.dart';
+import 'package:momentswrap/view/search_screens/search_screen.dart';
 
 class EventsScreens extends StatelessWidget {
   const EventsScreens({super.key});
@@ -37,7 +38,7 @@ class EventsScreens extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.search, color: Colors.black),
             onPressed: () {
-           
+          Get.to(() => SearchAndFiltersBar());
             },
           ),
         ],
