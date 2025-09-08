@@ -39,31 +39,6 @@ class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
     super.dispose();
   }
 
-  // Filter bottom sheet method
-  void showFilterBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      isScrollControlled: true,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.7,
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                'Filters',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Expanded(child: Center(child: Text('Filter options here'))),
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -381,4 +356,243 @@ class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
       );
     });
   }
+
+
+  
+  void showFilterBottomSheet(BuildContext context) {
+    Get.bottomSheet(
+      SafeArea(
+        child: Container(
+          height: HelperFunctions.screenHeight() * 0.8,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            children: [
+              // Header
+              Container(
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      "Filters",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Spacer(),
+                    Obx(
+                      () => controller.hasActiveFilters()
+                          ? TextButton(
+                              onPressed: controller.clearFilters,
+                              child: Text("Clear All"),
+                            )
+                          : SizedBox.shrink(),
+                    ),
+                    IconButton(
+                      onPressed: () => Get.back(),
+                      icon: Icon(Icons.close),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Filters Content
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Category Filter
+                      _buildFilterSection(
+                        title: "Category",
+                        child: Obx(() => _buildCategoryDropdown()),
+                      ),
+
+                      SizedBox(height: 24),
+
+                      // Price Range Filter
+                      _buildFilterSection(
+                        title: "Price Range",
+                        child: Obx(() => _buildPriceRangeSlider()),
+                      ),
+
+                      SizedBox(height: 24),
+
+                      // Stock Filter
+                      _buildFilterSection(
+                        title: "Availability",
+                        child: Obx(() => _buildStockFilter()),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Apply Button
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: Colors.grey[300]!)),
+                ),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      controller.applyFilters();
+                      Get.back();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Obx(
+                      () => controller.isFiltering.value
+                          ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Text(
+                              "Apply Filters",
+                              style: TextStyle(fontSize: 16),
+                            ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+    );
+  }
+
+  Widget _buildFilterSection({required String title, required Widget child}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
+        ),
+        SizedBox(height: 12),
+        child,
+      ],
+    );
+  }
+
+  Widget _buildCategoryDropdown() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
+      child: DropdownButtonFormField<String>(
+        value: controller.selectedCategory.value,
+        hint: Text('Select Category'),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        ),
+        isExpanded: true,
+        items: [
+          DropdownMenuItem<String>(
+            value: null,
+            child: Text(
+              'All Categories',
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+          ),
+          ...controller.categories
+              .map(
+                (category) =>
+                    DropdownMenuItem(value: category, child: Text(category)),
+              )
+              .toList(),
+        ],
+        onChanged: (value) => controller.selectCategory(value),
+      ),
+    );
+  }
+
+  Widget _buildPriceRangeSlider() {
+    return Column(
+      children: [
+        RangeSlider(
+          values: RangeValues(
+            controller.minPrice.value,
+            controller.maxPrice.value,
+          ),
+          min: 0,
+          max: 10000,
+          divisions: 100,
+          labels: RangeLabels(
+            "₹${controller.minPrice.value.toInt()}",
+            "₹${controller.maxPrice.value.toInt()}",
+          ),
+          onChanged: (RangeValues values) {
+            controller.updatePriceRange(values.start, values.end);
+          },
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text("₹${controller.minPrice.value.toInt()}"),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text("₹${controller.maxPrice.value.toInt()}"),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStockFilter() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
+      child: CheckboxListTile(
+        title: Text("Show only in-stock items"),
+        value: controller.inStockOnly.value,
+        onChanged: (bool? value) {
+          controller.toggleStockFilter();
+        },
+        controlAffinity: ListTileControlAffinity.leading,
+      ),
+    );
+  }
 }
+
+
