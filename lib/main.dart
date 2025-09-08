@@ -7,6 +7,7 @@ import 'package:momentswrap/test.dart';
 import 'package:momentswrap/util/common/full_loader_screens.dart';
 import 'package:momentswrap/util/not_found_screen/not_fonud_screen.dart';
 import 'package:momentswrap/util/themes/app_theme.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -18,27 +19,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      
       title: 'Flutter Demo',
       theme: AppTheme.light,
       debugShowCheckedModeBanner: false,
 
       // GetX Navigation
-
       initialRoute: AppPages.initial,
       getPages: AppPages.routes,
       unknownRoute: GetPage(
-        name: AppRoutes.notFound,
+        name: AppRoutes.notFoundScreen,
         page: () => NotFoundScreen(),
       ),
-
-
 
       // home: LoginPage(),
 
       // home: FullLoaderScreens(animationPath: 'assets/animations/addtocart.json'),
-
-
     );
   }
 }

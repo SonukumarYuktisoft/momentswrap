@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:momentswrap/routes/app_routes.dart';
 import 'package:momentswrap/util/common/auth_utils.dart';
 import 'package:momentswrap/view/reviews_screen/reviews_screen.dart';
 import 'package:momentswrap/view/search_screens/search_screen.dart';
-import 'package:momentswrap/view/splash_screen/widgets/all_products_screen.dart';
-import 'package:momentswrap/view/splash_screen/widgets/horizontal_productList.dart';
+import 'package:momentswrap/view/widgets/all_products_screen.dart';
+import 'package:momentswrap/view/widgets/horizontal_productList.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
 import 'package:momentswrap/controllers/order_controller/order_controller.dart';
@@ -109,7 +110,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           IconButton(
             icon: const Icon(Icons.search, color: Colors.black),
             onPressed: () {
-              Get.to(() => SearchAndFiltersBar());
+              Get.toNamed(AppRoutes.searchScreen);
             },
           ),
         ],
@@ -170,36 +171,47 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       _buildProductInfo(),
                       SizedBox(height: 20),
 
-                    Column(
+                      Column(
                         children: [
-
-                           if (similarProducts.isNotEmpty) ...[
-                      HorizontalProductList(
-                        title: 'Similar Products',
-                        products: similarProducts,
-                        onSeeAll: () => _navigateToAllProducts('similar'),
-                        onProductTap: (product) {
-                            Get.to(() => ProductDetailScreen(product: product));
-                        },
-                      ),
-                      SizedBox(height: 20),
-                    ],
+                          if (similarProducts.isNotEmpty) ...[
+                            HorizontalProductList(
+                              title: 'Similar Products',
+                              products: similarProducts,
+                              onSeeAll: () => _navigateToAllProducts('similar'),
+                              onProductTap: (product) {
+                                Get.to(
+                                  () => ProductDetailScreen(product: product),
+                                );
+                              },
+                            ),
+                            SizedBox(height: 20),
+                          ],
 
                           // Featured Products
                           HorizontalProductList(
                             title: "Featured Products",
-                            products: productController.getRecommendedProducts(limit: 10),
+                            products: productController.getRecommendedProducts(
+                              limit: 10,
+                            ),
                             onSeeAll: () {
-                              Get.to(() => AllProductsPage(
-                                title: "Featured Products",
-                                products: productController.getRecommendedProducts(limit: 50),
-                                onProductTap: (product) {
-                                  Get.to(() => ProductDetailScreen(product: product));
-                                },
-                              ));
+                              Get.to(
+                                () => AllProductsPage(
+                                  title: "Featured Products",
+                                  products: productController
+                                      .getRecommendedProducts(limit: 50),
+                                  onProductTap: (product) {
+                                    Get.to(
+                                      () =>
+                                          ProductDetailScreen(product: product),
+                                    );
+                                  },
+                                ),
+                              );
                             },
                             onProductTap: (product) {
-                              Get.to(() => ProductDetailScreen(product: product));
+                              Get.to(
+                                () => ProductDetailScreen(product: product),
+                              );
                             },
                           ),
 
@@ -208,19 +220,29 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           // Special Offers
                           HorizontalProductList(
                             title: "Special Offers",
-                            products: productController.getSpecialOfferProducts(limit: 10),
+                            products: productController.getSpecialOfferProducts(
+                              limit: 10,
+                            ),
                             onSeeAll: () {
-                              Get.to(() => AllProductsPage(
-                                title: "Special Offers",
-                                products: productController.getSpecialOfferProducts(limit: 50),
-                                onProductTap: (product) {
-                                  Get.to(() => ProductDetailScreen(product: product));
-                                },
-                                titleIcon: Icons.local_offer,
-                              ));
+                              Get.to(
+                                () => AllProductsPage(
+                                  title: "Special Offers",
+                                  products: productController
+                                      .getSpecialOfferProducts(limit: 50),
+                                  onProductTap: (product) {
+                                    Get.to(
+                                      () =>
+                                          ProductDetailScreen(product: product),
+                                    );
+                                  },
+                                  titleIcon: Icons.local_offer,
+                                ),
+                              );
                             },
                             onProductTap: (product) {
-                              Get.to(() => ProductDetailScreen(product: product));
+                              Get.to(
+                                () => ProductDetailScreen(product: product),
+                              );
                             },
                           ),
 
@@ -229,19 +251,29 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           // Trending Products
                           HorizontalProductList(
                             title: "Trending Now",
-                            products: productController.getTrendingProducts(limit: 10),
+                            products: productController.getTrendingProducts(
+                              limit: 10,
+                            ),
                             onSeeAll: () {
-                              Get.to(() => AllProductsPage(
-                                title: "Trending Now",
-                                products: productController.getTrendingProducts(limit: 50),
-                                onProductTap: (product) {
-                                  Get.to(() => ProductDetailScreen(product: product));
-                                },
-                                titleIcon: Icons.trending_up,
-                              ));
+                              Get.to(
+                                () => AllProductsPage(
+                                  title: "Trending Now",
+                                  products: productController
+                                      .getTrendingProducts(limit: 50),
+                                  onProductTap: (product) {
+                                    Get.to(
+                                      () =>
+                                          ProductDetailScreen(product: product),
+                                    );
+                                  },
+                                  titleIcon: Icons.trending_up,
+                                ),
+                              );
                             },
                             onProductTap: (product) {
-                              Get.to(() => ProductDetailScreen(product: product));
+                              Get.to(
+                                () => ProductDetailScreen(product: product),
+                              );
                             },
                           ),
 
@@ -250,19 +282,29 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           // High Rating Products
                           HorizontalProductList(
                             title: "Top Rated",
-                            products: productController.getHighRatingProducts(limit: 10),
+                            products: productController.getHighRatingProducts(
+                              limit: 10,
+                            ),
                             onSeeAll: () {
-                              Get.to(() => AllProductsPage(
-                                title: "Top Rated Products",
-                                products: productController.getHighRatingProducts(limit: 50),
-                                onProductTap: (product) {
-                                  Get.to(() => ProductDetailScreen(product: product));
-                                },
-                                titleIcon: Icons.star,
-                              ));
+                              Get.to(
+                                () => AllProductsPage(
+                                  title: "Top Rated Products",
+                                  products: productController
+                                      .getHighRatingProducts(limit: 50),
+                                  onProductTap: (product) {
+                                    Get.to(
+                                      () =>
+                                          ProductDetailScreen(product: product),
+                                    );
+                                  },
+                                  titleIcon: Icons.star,
+                                ),
+                              );
                             },
                             onProductTap: (product) {
-                              Get.to(() => ProductDetailScreen(product: product));
+                              Get.to(
+                                () => ProductDetailScreen(product: product),
+                              );
                             },
                           ),
 
@@ -271,19 +313,30 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           // Recently Added
                           HorizontalProductList(
                             title: "Recently Added",
-                            products: productController.getRecentProducts(limit: 10),
+                            products: productController.getRecentProducts(
+                              limit: 10,
+                            ),
                             onSeeAll: () {
-                              Get.to(() => AllProductsPage(
-                                title: "Recently Added",
-                                products: productController.getRecentProducts(limit: 50),
-                                onProductTap: (product) {
-                                  Get.to(() => ProductDetailScreen(product: product));
-                                },
-                                titleIcon: Icons.new_releases,
-                              ));
+                              Get.to(
+                                () => AllProductsPage(
+                                  title: "Recently Added",
+                                  products: productController.getRecentProducts(
+                                    limit: 50,
+                                  ),
+                                  onProductTap: (product) {
+                                    Get.to(
+                                      () =>
+                                          ProductDetailScreen(product: product),
+                                    );
+                                  },
+                                  titleIcon: Icons.new_releases,
+                                ),
+                              );
                             },
                             onProductTap: (product) {
-                              Get.to(() => ProductDetailScreen(product: product));
+                              Get.to(
+                                () => ProductDetailScreen(product: product),
+                              );
                             },
                           ),
                         ],

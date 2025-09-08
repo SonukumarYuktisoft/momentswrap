@@ -86,12 +86,12 @@
 //         // No login, no guest mode - show login
 //         print('Navigating to: Login Screen');
 //         authController.isGuestMode.value = false;
-//         Get.offAllNamed(AppRoutes.login);
+//         Get.offAllNamed(AppRoutes.loginScreen);
 //       }
 //     } catch (e) {
 //       print('Error in app flow: $e');
 //       // Fallback to login screen
-//       Get.offAllNamed(AppRoutes.login);
+//       Get.offAllNamed(AppRoutes.loginScreen);
 //     }
 //   }
 

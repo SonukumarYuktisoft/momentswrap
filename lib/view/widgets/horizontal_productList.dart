@@ -25,7 +25,9 @@ class HorizontalProductList extends StatelessWidget {
     if (products.isEmpty) return SizedBox();
 
     final CartController cartController = Get.find<CartController>();
-    final displayProducts = products.length > 10 ? products.sublist(0, 10) : products;
+    final displayProducts = products.length > 10
+        ? products.sublist(0, 10)
+        : products;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,13 +41,13 @@ class HorizontalProductList extends StatelessWidget {
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 18, 
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textColor,
                 ),
               ),
               TextButton(
-                onPressed: onSeeAll, 
+                onPressed: onSeeAll,
                 child: Text(
                   "See All",
                   style: TextStyle(
@@ -68,7 +70,7 @@ class HorizontalProductList extends StatelessWidget {
             separatorBuilder: (context, index) => SizedBox(width: 12),
             itemBuilder: (context, index) {
               final product = displayProducts[index];
-              
+
               return GestureDetector(
                 onTap: () {
                   // Fixed navigation - properly call the onProductTap function
@@ -76,28 +78,33 @@ class HorizontalProductList extends StatelessWidget {
                 },
                 child: Container(
                   width: 170, // Fixed width for cards
-                  margin: EdgeInsets.only(bottom: 8), // Add bottom margin for shadow
+                  margin: EdgeInsets.only(
+                    bottom: 8,
+                  ), // Add bottom margin for shadow
                   child: ModernProductCard(
-                    image: product.images.isNotEmpty ? product.images.first : '',
+                    image: product.images.isNotEmpty
+                        ? product.images.first
+                        : '',
                     title: product.name,
                     subtitle: product.shortDescription,
                     price: "₹${product.price}",
                     offers: product.offers,
                     stock: product.stock,
-                    showAddToCart: false, // Don't show add to cart in horizontal list
-                    addToCart: () {
-                      // Optional: Add to cart functionality
-                      AuthUtils.runIfLoggedIn(() async {
-                        await cartController.addToCart(
-                          productId: product.id,
-                          quantity: 1,
-                          image: product.images.isNotEmpty
-                              ? product.images.first
-                              : '',
-                          totalPrice: product.price.toDouble(),
-                        );
-                      });
-                    },
+                    showAddToCart:
+                        false, // Don't show add to cart in horizontal list
+                    // addToCart: () {
+                    //   // Optional: Add to cart functionality
+                    //   AuthUtils.runIfLoggedIn(() async {
+                    //     await cartController.addToCart(
+                    //       productId: product.id,
+                    //       quantity: 1,
+                    //       image: product.images.isNotEmpty
+                    //           ? product.images.first
+                    //           : '',
+                    //       totalPrice: product.price.toDouble(),
+                    //     );
+                    //   });
+                    // },
                     onTap: () {
                       // Ensure tap navigation works properly
                       onProductTap(product);

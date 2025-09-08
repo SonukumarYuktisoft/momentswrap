@@ -1,350 +1,10 @@
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:momentswrap/controllers/profile_controller/profile_controller.dart';
-// import 'package:momentswrap/util/constants/app_sizes.dart';
-// import 'package:momentswrap/view/order_screen/list_my_orders_screen.dart';
-// import 'package:momentswrap/view/profile_screen/edit_profile_screen.dart';
-
-// class ProfileScreen extends GetView<ProfileController> {
-//   const ProfileScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final ProfileController controller = Get.put(ProfileController());
-
-//     return Scaffold(
-//       backgroundColor: const Color(0xFFFFF4F6),
-//       body: Obx(() {
-//         if (controller.isLoading.value) {
-//           return const Center(
-//             child: CircularProgressIndicator(
-//               valueColor: AlwaysStoppedAnimation<Color>(Colors.pink),
-//             ),
-//           );
-//         }
-
-//         return RefreshIndicator(
-//           onRefresh: () => controller.getCustomerProfile(),
-//           color: Colors.pink,
-//           child: SingleChildScrollView(
-//             physics: const AlwaysScrollableScrollPhysics(),
-//             padding: const EdgeInsets.all(8.0),
-//             child: Padding(
-//               padding: const EdgeInsets.only(top: AppSizes.appBarHeight),
-//               child: Column(
-//                 children: [
-//                   // Profile Header Card
-//                   Container(
-//                     width: double.infinity,
-//                     padding: const EdgeInsets.all(20),
-//                     decoration: BoxDecoration(
-//                       color: Colors.white,
-//                       borderRadius: BorderRadius.circular(20),
-//                       boxShadow: [
-//                         BoxShadow(
-//                           color: Colors.pink.withOpacity(0.1),
-//                           blurRadius: 10,
-//                           offset: const Offset(0, 5),
-//                         ),
-//                       ],
-//                     ),
-//                     child: Column(
-//                       children: [
-//                         // Profile picture with edit indicator
-//                         Stack(
-//                           children: [
-//                             GestureDetector(
-//                               onTap: () =>
-//                                   controller.pickImage(ImageSource.gallery),
-//                               child: CircleAvatar(
-//                                 radius: 60,
-//                                 backgroundColor: Colors.grey[200],
-//                                 backgroundImage:
-//                                     controller.profileImage.value != null
-//                                     ? FileImage(controller.profileImage.value!)
-//                                     : null,
-//                                 child: controller.profileImage.value == null
-//                                     ? const Icon(
-//                                         Icons.person,
-//                                         size: 60,
-//                                         color: Colors.grey,
-//                                       )
-//                                     : null,
-//                               ),
-//                             ),
-//                             Positioned(
-//                               bottom: 0,
-//                               right: 0,
-//                               child: Container(
-//                                 padding: const EdgeInsets.all(6),
-//                                 decoration: BoxDecoration(
-//                                   color: Colors.pink,
-//                                   shape: BoxShape.circle,
-//                                   border: Border.all(
-//                                     color: Colors.white,
-//                                     width: 2,
-//                                   ),
-//                                 ),
-//                                 child: const Icon(
-//                                   Icons.camera_alt,
-//                                   color: Colors.white,
-//                                   size: 16,
-//                                 ),
-//                               ),
-//                             ),
-//                           ],
-//                         ),
-
-//                         const SizedBox(height: 16),
-
-//                         // User name
-//                         Text(
-//                           controller.fullName.isNotEmpty
-//                               ? controller.fullName
-//                               : 'Loading...',
-//                           style: const TextStyle(
-//                             fontSize: 22,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.black87,
-//                           ),
-//                         ),
-
-//                         const SizedBox(height: 6),
-
-//                         // User email
-//                         Text(
-//                           controller.email.isNotEmpty
-//                               ? controller.email
-//                               : 'No email available',
-//                           style: TextStyle(
-//                             fontSize: 16,
-//                             color: Colors.grey[600],
-//                           ),
-//                         ),
-
-//                         const SizedBox(height: 4),
-
-//                         // User phone
-//                         if (controller.phoneNumber.isNotEmpty)
-//                           Text(
-//                             controller.phoneNumber,
-//                             style: TextStyle(
-//                               fontSize: 16,
-//                               color: Colors.grey[600],
-//                             ),
-//                           ),
-//                       ],
-//                     ),
-//                   ),
-
-//                   const SizedBox(height: 20),
-
-//                   // Profile options card
-//                   Container(
-//                     decoration: BoxDecoration(
-//                       color: Colors.white,
-//                       borderRadius: BorderRadius.circular(16),
-//                       boxShadow: [
-//                         BoxShadow(
-//                           color: Colors.pink.withOpacity(0.1),
-//                           blurRadius: 8,
-//                           offset: const Offset(0, 4),
-//                         ),
-//                       ],
-//                     ),
-//                     child: Column(
-//                       children: [
-//                         _buildProfileItem(
-//                           icon: Icons.edit,
-//                           title: "Edit Profile",
-//                           color: Colors.blue,
-//                           onTap: () => Get.to(() => const EditProfileScreen()),
-//                         ),
-
-//                         _buildDivider(),
-
-//                         _buildProfileItem(
-//                           icon: Icons.shopping_cart,
-//                           title: "Orders",
-//                           color: Colors.black,
-//                           onTap: () => Get.to(() => ListMyOrdersScreen()),
-//                         ),
-
-//                         _buildDivider(),
-
-//                         _buildProfileItem(
-//                           icon: Icons.refresh,
-//                           title: "Refresh Profile",
-//                           color: Colors.green,
-//                           onTap: () => controller.getCustomerProfile(),
-//                         ),
-
-//                         _buildDivider(),
-
-//                         Obx(
-//                           () => _buildProfileItem(
-//                             icon: Icons.delete_forever,
-//                             title: "Delete Account",
-//                             color: Colors.red,
-//                             onTap: controller.isDeleting.value
-//                                 ? null
-//                                 : controller.showDeleteConfirmation,
-//                             trailing: controller.isDeleting.value
-//                                 ? const SizedBox(
-//                                     width: 20,
-//                                     height: 20,
-//                                     child: CircularProgressIndicator(
-//                                       strokeWidth: 2,
-//                                       valueColor: AlwaysStoppedAnimation<Color>(
-//                                         Colors.red,
-//                                       ),
-//                                     ),
-//                                   )
-//                                 : null,
-//                           ),
-//                         ),
-
-//                         _buildDivider(),
-
-//                         _buildProfileItem(
-//                           icon: Icons.logout,
-//                           title: "Log Out",
-//                           color: Colors.pink,
-//                           onTap: _showLogoutConfirmation,
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-
-//                   const SizedBox(height: 30),
-
-//                   // Debug/Development section (remove in production)
-//                   if (controller.profile.value != null)
-//                     Container(
-//                       width: double.infinity,
-//                       padding: const EdgeInsets.all(16),
-//                       decoration: BoxDecoration(
-//                         color: Colors.grey[100],
-//                         borderRadius: BorderRadius.circular(12),
-//                         border: Border.all(color: Colors.grey[300]!),
-//                       ),
-//                       child: Column(
-//                         crossAxisAlignment: CrossAxisAlignment.start,
-//                         children: [
-//                           Text(
-//                             'Profile Info:',
-//                             style: TextStyle(
-//                               fontWeight: FontWeight.bold,
-//                               color: Colors.grey[700],
-//                             ),
-//                           ),
-//                           const SizedBox(height: 8),
-//                           Text(
-//                             'ID: ${controller.userId}',
-//                             style: TextStyle(
-//                               fontSize: 12,
-//                               color: Colors.grey[600],
-//                             ),
-//                           ),
-//                           Text(
-//                             'First Name: ${controller.firstName}',
-//                             style: TextStyle(
-//                               fontSize: 12,
-//                               color: Colors.grey[600],
-//                             ),
-//                           ),
-//                           Text(
-//                             'Last Name: ${controller.lastName}',
-//                             style: TextStyle(
-//                               fontSize: 12,
-//                               color: Colors.grey[600],
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//         );
-//       }),
-//     );
-//   }
-
-//   Widget _buildProfileItem({
-//     IconData? icon,
-//     required String title,
-//     Color? color,
-//     void Function()? onTap,
-//     Widget? trailing,
-//   }) {
-//     return ListTile(
-//       leading: Icon(icon, color: color ?? Colors.pink),
-//       title: Text(
-//         title,
-//         style: TextStyle(
-//           color: onTap == null ? Colors.grey : (color ?? Colors.black),
-//           fontWeight: FontWeight.w500,
-//         ),
-//       ),
-//       trailing:
-//           trailing ??
-//           (onTap != null
-//               ? const Icon(
-//                   Icons.arrow_forward_ios,
-//                   size: 16,
-//                   color: Colors.grey,
-//                 )
-//               : const Icon(
-//                   Icons.arrow_forward_ios,
-//                   size: 16,
-//                   color: Colors.grey,
-//                 )),
-//       onTap: onTap,
-//     );
-//   }
-
-//   Widget _buildDivider() {
-//     return Divider(
-//       height: 1,
-//       color: Colors.grey[200],
-//       indent: 16,
-//       endIndent: 16,
-//     );
-//   }
-
-//   void _showLogoutConfirmation() {
-//     Get.dialog(
-//       AlertDialog(
-//         title: const Text('Log Out'),
-//         content: const Text('Are you sure you want to log out?'),
-//         actions: [
-//           TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
-//           TextButton(
-//             onPressed: () {
-//               Get.back();
-//               controller.logOut();
-//             },
-//             style: TextButton.styleFrom(foregroundColor: Colors.pink),
-//             child: const Text('Log Out'),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:momentswrap/controllers/profile_controller/profile_controller.dart';
+import 'package:momentswrap/routes/app_routes.dart';
+import 'package:momentswrap/util/common/auth_utils.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
 import 'package:momentswrap/util/constants/app_sizes.dart';
-import 'package:momentswrap/view/order_screen/list_my_orders_screen.dart';
-import 'package:momentswrap/view/profile_screen/edit_profile_screen.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
   const ProfileScreen({super.key});
@@ -373,7 +33,9 @@ class ProfileScreen extends GetView<ProfileController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      AppColors.primaryColor,
+                    ),
                     strokeWidth: 3,
                   ),
                   SizedBox(height: 16),
@@ -413,8 +75,8 @@ class ProfileScreen extends GetView<ProfileController> {
                   Container(
                     padding: EdgeInsets.only(
                       top: AppSizes.appBarHeight + 20,
-                      left: 20,
-                      right: 20,
+                      left: 100,
+                      right: 100,
                       bottom: 30,
                     ),
                     decoration: BoxDecoration(
@@ -436,7 +98,9 @@ class ProfileScreen extends GetView<ProfileController> {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.secondaryColor.withOpacity(0.2),
+                                    color: AppColors.secondaryColor.withOpacity(
+                                      0.2,
+                                    ),
                                     blurRadius: 15,
                                     offset: Offset(0, 8),
                                   ),
@@ -445,7 +109,8 @@ class ProfileScreen extends GetView<ProfileController> {
                               child: CircleAvatar(
                                 radius: 60,
                                 backgroundColor: AppColors.backgroundColor,
-                                backgroundImage: controller.profileImage.value != null
+                                backgroundImage:
+                                    controller.profileImage.value != null
                                     ? FileImage(controller.profileImage.value!)
                                     : null,
                                 child: controller.profileImage.value == null
@@ -471,7 +136,8 @@ class ProfileScreen extends GetView<ProfileController> {
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.secondaryColor.withOpacity(0.3),
+                                      color: AppColors.secondaryColor
+                                          .withOpacity(0.3),
                                       blurRadius: 8,
                                       offset: Offset(0, 4),
                                     ),
@@ -505,7 +171,10 @@ class ProfileScreen extends GetView<ProfileController> {
 
                         if (controller.email.isNotEmpty)
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.accentColor.withOpacity(0.2),
                               borderRadius: BorderRadius.circular(20),
@@ -553,13 +222,14 @@ class ProfileScreen extends GetView<ProfileController> {
                           ),
                           child: Column(
                             children: [
-                            
                               _buildModernProfileItem(
                                 icon: Icons.edit_outlined,
                                 title: "Edit Profile",
                                 subtitle: "Update your information",
                                 color: AppColors.infoColor,
-                                onTap: () => Get.to(() => const EditProfileScreen()),
+                                onTap: () => AuthUtils.runIfLoggedIn(() {
+                                  Get.toNamed(AppRoutes.editProfileScreen);
+                                }),
                               ),
 
                               _buildModernDivider(),
@@ -569,7 +239,9 @@ class ProfileScreen extends GetView<ProfileController> {
                                 title: "My Orders",
                                 subtitle: "Track your purchases",
                                 color: AppColors.secondaryColor,
-                                onTap: () => Get.to(() => ListMyOrdersScreen()),
+                                onTap: () => AuthUtils.runIfLoggedIn(() {
+                                  Get.toNamed(AppRoutes.orderScreen);
+                                }),
                               ),
 
                               _buildModernDivider(),
@@ -579,7 +251,9 @@ class ProfileScreen extends GetView<ProfileController> {
                                 title: "Refresh Profile",
                                 subtitle: "Update profile data",
                                 color: AppColors.successColor,
-                                onTap: () => controller.getCustomerProfile(),
+                                onTap: () => AuthUtils.runIfLoggedIn(() {
+                                  controller.getCustomerProfile();
+                                }),
                               ),
                             ],
                           ),
@@ -626,25 +300,28 @@ class ProfileScreen extends GetView<ProfileController> {
                                   ],
                                 ),
                               ),
-                              
+
                               Obx(
                                 () => _buildModernProfileItem(
                                   icon: Icons.delete_forever_outlined,
                                   title: "Delete Account",
                                   subtitle: "Permanently remove your account",
                                   color: AppColors.errorColor,
-                                  onTap: controller.isDeleting.value
-                                      ? null
-                                      : controller.showDeleteConfirmation,
+                                  onTap: () => AuthUtils.runIfLoggedIn(() {
+                                    controller.isDeleting.value
+                                        ? null
+                                        : controller.showDeleteConfirmation;
+                                  }),
                                   trailing: controller.isDeleting.value
                                       ? SizedBox(
                                           width: 20,
                                           height: 20,
                                           child: CircularProgressIndicator(
                                             strokeWidth: 2,
-                                            valueColor: AlwaysStoppedAnimation<Color>(
-                                              AppColors.errorColor,
-                                            ),
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                  AppColors.errorColor,
+                                                ),
                                           ),
                                         )
                                       : null,
@@ -658,7 +335,9 @@ class ProfileScreen extends GetView<ProfileController> {
                                 title: "Log Out",
                                 subtitle: "Sign out of your account",
                                 color: AppColors.warningColor,
-                                onTap: _showModernLogoutConfirmation,
+                                onTap: () => AuthUtils.runIfLoggedIn(() {
+                                  _showModernLogoutConfirmation();
+                                }),
                               ),
                             ],
                           ),
@@ -675,7 +354,9 @@ class ProfileScreen extends GetView<ProfileController> {
                               color: AppColors.secondaryLight,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: AppColors.secondaryColor.withOpacity(0.2),
+                                color: AppColors.secondaryColor.withOpacity(
+                                  0.2,
+                                ),
                               ),
                             ),
                             child: Column(
@@ -775,8 +456,8 @@ class ProfileScreen extends GetView<ProfileController> {
                     Text(
                       title,
                       style: TextStyle(
-                        color: onTap == null 
-                            ? AppColors.textSecondary 
+                        color: onTap == null
+                            ? AppColors.textSecondary
                             : AppColors.textColor,
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
@@ -844,9 +525,7 @@ class ProfileScreen extends GetView<ProfileController> {
     Get.dialog(
       AlertDialog(
         backgroundColor: AppColors.accentColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
             Container(
@@ -887,7 +566,10 @@ class ProfileScreen extends GetView<ProfileController> {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [AppColors.warningColor, AppColors.warningColor.withOpacity(0.8)],
+                colors: [
+                  AppColors.warningColor,
+                  AppColors.warningColor.withOpacity(0.8),
+                ],
               ),
               borderRadius: BorderRadius.circular(8),
             ),

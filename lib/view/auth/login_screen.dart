@@ -43,7 +43,12 @@ class LoginScreen extends GetView<LoginController> {
                         Positioned(
                           top: 20,
                           right: 20,
-                          child: TextButton(onPressed: () => Get.offAllNamed(AppRoutes.bottomNavigation), child:Text('skip'))),
+                          child: TextButton(
+                            onPressed: () =>
+                                Get.offAllNamed(AppRoutes.bottomNavigation),
+                            child: Text('skip'),
+                          ),
+                        ),
                         Positioned(
                           top: 50,
                           left: 100,
@@ -142,7 +147,7 @@ class LoginScreen extends GetView<LoginController> {
               children: [
                 TextButton(
                   onPressed: () {
-                    Get.toNamed(AppRoutes.forgotPassword);
+                    Get.toNamed(AppRoutes.forgotPasswordScreen);
                   },
                   child: const Text('Forgot Password'),
                 ),
@@ -173,7 +178,7 @@ class LoginScreen extends GetView<LoginController> {
                   child: AppWidgets.buildButton(
                     title: 'Create Account',
                     onPressed: () {
-                      Get.toNamed(AppRoutes.signUp);
+                      Get.toNamed(AppRoutes.signUpScreen);
                     },
                   ),
                 ),

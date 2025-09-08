@@ -16,7 +16,6 @@ class AuthUtils {
 
   /// For actions like "Buy Now" → check login + address
   static Future<void> runIfLoggedInAndHasAddress(Function action) async {
-    
     final isLoggedIn = await SharedPreferencesServices.getIsLoggedIn();
 
     if (!isLoggedIn) {
@@ -29,7 +28,9 @@ class AuthUtils {
     final addresses = await SharedPreferencesServices.getAddresses();
     if (addresses.isEmpty) {
       // No address → redirect to profile/address screen
-      Get.toNamed(AppRoutes.editProfile); // <-- yahan aap apna route set karo
+      Get.toNamed(
+        AppRoutes.editProfileScreen,
+      ); // <-- yahan aap apna route set karo
       return;
     }
 
@@ -44,14 +45,11 @@ class AuthUtils {
         title: const Text('Not Logged In'),
         content: const Text('Please log in to continue.'),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () {
               Get.back();
-              Get.toNamed(AppRoutes.login);
+              Get.toNamed(AppRoutes.loginScreen);
             },
             child: const Text('Log In'),
           ),
