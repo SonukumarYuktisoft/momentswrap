@@ -144,11 +144,13 @@ class _AllProductsPageState extends State<AllProductsPage> {
       child: GridView.builder(
         padding: EdgeInsets.all(16),
         itemCount: filteredProducts.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisExtent: 280,
-          crossAxisSpacing: 12,
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          // crossAxisCount: 2,
+          maxCrossAxisExtent: 200,
+          // mainAxisExtent: 280,
+          crossAxisSpacing: 0.75,
           mainAxisSpacing: 12,
+          childAspectRatio: 0.7,
         ),
         itemBuilder: (context, index) {
           final product = filteredProducts[index];

@@ -55,17 +55,10 @@ class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
               padding: EdgeInsets.all(16),
               child: Text(
                 'Filters',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
-            Expanded(
-              child: Center(
-                child: Text('Filter options here'),
-              ),
-            ),
+            Expanded(child: Center(child: Text('Filter options here'))),
           ],
         ),
       ),
@@ -91,11 +84,9 @@ class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
                 ],
               ),
             ),
-            
+
             // Scrollable Product List
-            Expanded(
-              child: _buildProductList(),
-            ),
+            Expanded(child: _buildProductList()),
           ],
         ),
       ),
@@ -130,10 +121,7 @@ class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
             borderRadius: BorderRadius.circular(20),
             borderSide: BorderSide.none,
           ),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 15,
-          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           prefixIcon: Obx(
             () => controller.isFiltering.value
                 ? Container(
@@ -321,9 +309,7 @@ class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
         return Container(
           height: 200,
           child: Center(
-            child: CircularProgressIndicator(
-              color: AppColors.primaryColor,
-            ),
+            child: CircularProgressIndicator(color: AppColors.primaryColor),
           ),
         );
       } else if (productResponse == null || productResponse.data.isEmpty) {
@@ -341,10 +327,7 @@ class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
                 SizedBox(height: 8),
                 Text(
                   "No products available",
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(color: Colors.grey[600], fontSize: 16),
                 ),
               ],
             ),
@@ -367,23 +350,30 @@ class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
                 ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final item = productResponse.data[index];
-                    return ReusableProductCard(
-                      product: item,
-                      showAddToCart: false,
-                      onTap: () {
-                        Get.to(
-                          () => ProductDetailScreen(product: item),
-                          transition: Transition.rightToLeft,
-                          duration: Duration(milliseconds: 300),
-                        );
-                      },
-                    );
-                  },
-                  childCount: productResponse.data.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final item = productResponse.data[index];
+                  return ModernProductCard(
+                    image: item.images.isNotEmpty ? item.images.first : '',
+                    title: item.name,
+                    subtitle: item.shortDescription,
+                    price: "₹${item.price}",
+                    // itemId: item.itemId,
+                    offers: item.offers,
+                    stock: item.stock,
+                    showAddToCart: false,
+                    // addToCart: () {
+                    //   AuthUtils.runIfLoggedIn(() async {
+                    //     await cartController.addToCart(
+                    //       itemId: item.id,
+                    //       quantity: 1,
+                    //       image: item.images.isNotEmpty ? item.images.first : '',
+                    //       totalPrice: item.price.toDouble(),
+                    //     );
+                    //   });
+                    // },
+                    onTap: () => Get.to(() => ProductDetailScreen(product: item),)
+                  );
+                }, childCount: productResponse.data.length),
               ),
             ),
           ],

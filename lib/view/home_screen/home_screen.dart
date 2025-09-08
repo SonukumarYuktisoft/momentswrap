@@ -532,10 +532,7 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(width: 12),
               Text(
                 "Search for products...",
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: Colors.grey[600], fontSize: 16),
               ),
               Spacer(),
               Icon(
@@ -641,7 +638,7 @@ class HorizontalProductList extends StatelessWidget {
 
         // Horizontal scrollable product list
         Container(
-          height: 280,
+          height: 220,
           child: ListView.separated(
             padding: EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
@@ -664,7 +661,7 @@ class HorizontalProductList extends StatelessWidget {
                     price: "₹${product.price}",
                     offers: product.offers,
                     stock: product.stock,
-                    showAddToCart: true,
+                    showAddToCart: false,
                     addToCart: () {
                       AuthUtils.runIfLoggedIn(() async {
                         await cartController.addToCart(
