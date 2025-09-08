@@ -4,13 +4,11 @@ import 'package:get/get.dart';
 import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
 import 'package:momentswrap/controllers/location_controller/location_controller.dart';
 import 'package:momentswrap/controllers/product_controller/product_controller.dart';
-import 'package:momentswrap/controllers/search_controller/search_product_controller.dart';
 import 'package:momentswrap/controllers/profile_controller/profile_controller.dart';
 import 'package:momentswrap/models/product_models/product_model.dart';
 import 'package:momentswrap/util/common/auth_utils.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
 import 'package:momentswrap/util/constants/app_images_string.dart';
-import 'package:momentswrap/util/constants/app_sizes.dart';
 import 'package:momentswrap/view/events_screen/events_screens.dart';
 import 'package:momentswrap/view/home_screen/product_card.dart';
 import 'package:momentswrap/view/home_screen/product_detail_screen.dart';
@@ -118,53 +116,53 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Location row with modern styling
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.accentColor.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Icon(
-                                    Icons.location_on_outlined,
-                                    color: AppColors.secondaryColor,
-                                    size: 20,
-                                  ),
-                                ),
-                                SizedBox(width: 12),
-                                Expanded(
-                                  child: Obx(() {
-                                    return Text(
-                                      locationController.address.value,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: AppColors.secondaryColor,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    );
-                                  }),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    locationController.getAddress();
-                                  },
-                                  icon: Icon(
-                                    Icons.refresh,
-                                    color: AppColors.secondaryColor,
-                                    size: 20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          // Padding(
+                          //   padding: EdgeInsets.symmetric(
+                          //     horizontal: 16,
+                          //     vertical: 8,
+                          //   ),
+                          //   child: Row(
+                          //     children: [
+                          //       Container(
+                          //         padding: EdgeInsets.all(8),
+                          //         decoration: BoxDecoration(
+                          //           color: AppColors.accentColor.withOpacity(0.2),
+                          //           borderRadius: BorderRadius.circular(8),
+                          //         ),
+                          //         child: Icon(
+                          //           Icons.location_on_outlined,
+                          //           color: AppColors.secondaryColor,
+                          //           size: 20,
+                          //         ),
+                          //       ),
+                          //       SizedBox(width: 12),
+                          //       Expanded(
+                          //         child: Obx(() {
+                          //           return Text(
+                          //             locationController.address.value,
+                          //             style: TextStyle(
+                          //               fontSize: 14,
+                          //               color: AppColors.secondaryColor,
+                          //               fontWeight: FontWeight.w500,
+                          //             ),
+                          //             maxLines: 1,
+                          //             overflow: TextOverflow.ellipsis,
+                          //           );
+                          //         }),
+                          //       ),
+                          //       IconButton(
+                          //         onPressed: () {
+                          //           locationController.getAddress();
+                          //         },
+                          //         icon: Icon(
+                          //           Icons.refresh,
+                          //           color: AppColors.secondaryColor,
+                          //           size: 20,
+                          //         ),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
                           
                           // Read-only Search Bar
                           _buildReadOnlySearchBar(),
@@ -532,12 +530,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontSize: 16,
                 ),
               ),
-              Spacer(),
-              Icon(
-                Icons.camera_alt_outlined,
-                color: Colors.grey[600],
-                size: 20,
-              ),
+              // Spacer(),
+              // Icon(
+              //   Icons.camera_alt_outlined,
+              //   color: Colors.grey[600],
+              //   size: 20,
+              // ),
             ],
           ),
         ),

@@ -298,7 +298,7 @@ void initState() {
                                   crossAxisSpacing: 12,
                                   mainAxisSpacing: 12,
                                 ),
-                            itemCount: 10,
+                            itemCount: productResponse.data.length,
                             itemBuilder: (context, index) {
                               final item = productResponse.data[index];
                               return GestureDetector(
