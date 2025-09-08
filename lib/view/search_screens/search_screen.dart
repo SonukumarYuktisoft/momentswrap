@@ -16,573 +16,379 @@ class SearchAndFiltersBar extends StatefulWidget {
 
 class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
   final SearchProductController controller = Get.put(SearchProductController());
-
   final TextEditingController searchController = TextEditingController();
-
   final FocusNode searchFocusNode = FocusNode();
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 300), () {
-      FocusScope.of(context).requestFocus(searchFocusNode);
+    // Delayed focus to avoid layout issues
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        FocusScope.of(context).requestFocus(searchFocusNode);
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    searchFocusNode.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  // Filter bottom sheet method
+  void showFilterBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      isScrollControlled: true,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.7,
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                'Filters',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: Text('Filter options here'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Text('Search Products', style: TextStyle(color: Colors.black)),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Get.back(),
-        ),
-      ),
+      backgroundColor: Colors.grey[50],
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Search Bar
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 8,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: TextFormField(
-                  autofocus: true, // 👈
-                  controller: searchController,
-                  focusNode: searchFocusNode,
-                  onChanged: (value) {
-                    controller.updateSearchQuery(value);
-                  },
-                  decoration: InputDecoration(
-                    hintText: "Search products, categories...",
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 15,
-                    ),
-                    prefixIcon: Obx(
-                      () => controller.isFiltering.value
-                          ? Container(
-                              width: 20,
-                              height: 20,
-                              padding: EdgeInsets.all(12),
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : Icon(Icons.search, color: Colors.grey[600]),
-                    ),
-                    suffixIcon: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Clear search button
-                        Obx(
-                          () => controller.searchQuery.value.isNotEmpty
-                              ? IconButton(
-                                  onPressed: () {
-                                    searchController.clear();
-                                    controller.updateSearchQuery('');
-                                    searchFocusNode.unfocus();
-                                  },
-                                  icon: Icon(Icons.clear, size: 20),
-                                )
-                              : SizedBox.shrink(),
-                        ),
-                        // Filter button
-                        Container(
-                          margin: EdgeInsets.only(right: 8),
-                          child: Stack(
-                            children: [
-                              IconButton(
-                                onPressed: () => showFilterBottomSheet(context),
-                                icon: Icon(Icons.tune, color: Colors.grey[600]),
-                              ),
-                              // Filter indicator
-                              Obx(
-                                () => controller.hasActiveFilters()
-                                    ? Positioned(
-                                        right: 8,
-                                        top: 8,
-                                        child: Container(
-                                          width: 8,
-                                          height: 8,
-                                          decoration: BoxDecoration(
-                                            color: Colors.red,
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                      )
-                                    : SizedBox.shrink(),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-              // Search Suggestions
-              Obx(() {
-                if (controller.searchSuggestions.isEmpty ||
-                    !searchFocusNode.hasFocus ||
-                    searchController.text.isEmpty) {
-                  return SizedBox.shrink();
-                }
-
-                return Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16),
-                  constraints: BoxConstraints(maxHeight: 200),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 8,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: controller.searchSuggestions.length,
-                    itemBuilder: (context, index) {
-                      final suggestion = controller.searchSuggestions[index];
-                      return ListTile(
-                        dense: true,
-                        leading: Icon(
-                          Icons.search,
-                          size: 18,
-                          color: Colors.grey,
-                        ),
-                        title: Text(suggestion),
-                        onTap: () {
-                          searchController.text = suggestion;
-                          controller.applySuggestion(suggestion);
-                          searchFocusNode.unfocus();
-                        },
-                      );
-                    },
-                  ),
-                );
-              }),
-
-              // Active Filters Display
-              Obx(() {
-                if (!controller.hasActiveFilters()) return SizedBox.shrink();
-
-                return Container(
-                  height: 50,
-                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      // Category filter chip
-                      if (controller.selectedCategory.value != null)
-                        Padding(
-                          padding: EdgeInsets.only(right: 8),
-                          child: Chip(
-                            label: Text(controller.selectedCategory.value!),
-                            deleteIcon: Icon(Icons.close, size: 16),
-                            onDeleted: () => controller.selectCategory(null),
-                            backgroundColor: Colors.blue.withOpacity(0.1),
-                            deleteIconColor: Colors.blue,
-                            labelStyle: TextStyle(color: Colors.blue),
-                          ),
-                        ),
-
-                      // Price range filter chip
-                      if (controller.minPrice.value > 0 ||
-                          controller.maxPrice.value < 10000)
-                        Padding(
-                          padding: EdgeInsets.only(right: 8),
-                          child: Chip(
-                            label: Text(
-                              '₹${controller.minPrice.value.toInt()} - ₹${controller.maxPrice.value.toInt()}',
-                            ),
-                            deleteIcon: Icon(Icons.close, size: 16),
-                            onDeleted: () =>
-                                controller.updatePriceRange(0, 10000),
-                            backgroundColor: Colors.green.withOpacity(0.1),
-                            deleteIconColor: Colors.green,
-                            labelStyle: TextStyle(color: Colors.green),
-                          ),
-                        ),
-
-                      // Stock filter chip
-                      if (controller.inStockOnly.value)
-                        Padding(
-                          padding: EdgeInsets.only(right: 8),
-                          child: Chip(
-                            label: Text('In Stock'),
-                            deleteIcon: Icon(Icons.close, size: 16),
-                            onDeleted: () => controller.toggleStockFilter(),
-                            backgroundColor: Colors.orange.withOpacity(0.1),
-                            deleteIconColor: Colors.orange,
-                            labelStyle: TextStyle(color: Colors.orange),
-                          ),
-                        ),
-
-                      // Clear all filters button
-                      TextButton.icon(
-                        onPressed: controller.clearFilters,
-                        icon: Icon(Icons.clear_all, size: 16),
-                        label: Text('Clear All'),
-                        style: TextButton.styleFrom(
-                          foregroundColor: Colors.red,
-                          backgroundColor: Colors.red.withOpacity(0.1),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }),
-
-              // Expanded Product List
-              Obx(() {
-                final productResponse = controller.products.value;
-
-                if (controller.isLoading.value) {
-                  return Container(
-                    height: 200,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.primaryColor,
-                      ),
-                    ),
-                  );
-                } else if (productResponse == null ||
-                    productResponse.data.isEmpty) {
-                  return Container(
-                    height: 200,
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.inventory_2_outlined,
-                            size: 48,
-                            color: Colors.grey[400],
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            "No products available",
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.68,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                    ),
-                    itemCount: productResponse.data.length,
-                    itemBuilder: (context, index) {
-                      final item = productResponse.data[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Get.to(ProductDetailScreen(product: item));
-                        },
-                        child: ModernProductCard(
-                          image: item.images.isNotEmpty
-                              ? item.images.first
-                              : '',
-                          title: item.name,
-                          subtitle: item.shortDescription,
-                          price: "₹${item.price}",
-                          offers: item.offers,
-                          stock: item.stock,
-                          // addToCart: (){
-                          //   AuthUtils.runIfLoggedIn(()async{
-                          //   await cartController.addToCart(
-                          //     productId: item.id,
-                          //     quantity: 1,
-                          //     image: item.images.isNotEmpty
-                          //         ? item.images.first
-                          //         : '',
-                          //     totalPrice: item.price.toDouble(),
-                          //   );
-                          //   });
-
-                          // },
-                        ),
-                      );
-                    },
-                  ),
-                );
-              }),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void showFilterBottomSheet(BuildContext context) {
-    Get.bottomSheet(
-      SafeArea(
-        child: Container(
-          height: HelperFunctions.screenHeight() * 0.8,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Column(
-            children: [
-              // Header
-              Container(
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      "Filters",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Spacer(),
-                    Obx(
-                      () => controller.hasActiveFilters()
-                          ? TextButton(
-                              onPressed: controller.clearFilters,
-                              child: Text("Clear All"),
-                            )
-                          : SizedBox.shrink(),
-                    ),
-                    IconButton(
-                      onPressed: () => Get.back(),
-                      icon: Icon(Icons.close),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Filters Content
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Category Filter
-                      _buildFilterSection(
-                        title: "Category",
-                        child: Obx(() => _buildCategoryDropdown()),
-                      ),
-
-                      SizedBox(height: 24),
-
-                      // Price Range Filter
-                      _buildFilterSection(
-                        title: "Price Range",
-                        child: Obx(() => _buildPriceRangeSlider()),
-                      ),
-
-                      SizedBox(height: 24),
-
-                      // Stock Filter
-                      _buildFilterSection(
-                        title: "Availability",
-                        child: Obx(() => _buildStockFilter()),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Apply Button
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border(top: BorderSide(color: Colors.grey[300]!)),
-                ),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      controller.applyFilters();
-                      Get.back();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Obx(
-                      () => controller.isFiltering.value
-                          ? SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                          : Text(
-                              "Apply Filters",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-    );
-  }
-
-  Widget _buildFilterSection({required String title, required Widget child}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
-          ),
-        ),
-        SizedBox(height: 12),
-        child,
-      ],
-    );
-  }
-
-  Widget _buildCategoryDropdown() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!),
-      ),
-      child: DropdownButtonFormField<String>(
-        value: controller.selectedCategory.value,
-        hint: Text('Select Category'),
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        ),
-        isExpanded: true,
-        items: [
-          DropdownMenuItem<String>(
-            value: null,
-            child: Text(
-              'All Categories',
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-          ),
-          ...controller.categories
-              .map(
-                (category) =>
-                    DropdownMenuItem(value: category, child: Text(category)),
-              )
-              .toList(),
-        ],
-        onChanged: (value) => controller.selectCategory(value),
-      ),
-    );
-  }
-
-  Widget _buildPriceRangeSlider() {
-    return Column(
-      children: [
-        RangeSlider(
-          values: RangeValues(
-            controller.minPrice.value,
-            controller.maxPrice.value,
-          ),
-          min: 0,
-          max: 10000,
-          divisions: 100,
-          labels: RangeLabels(
-            "₹${controller.minPrice.value.toInt()}",
-            "₹${controller.maxPrice.value.toInt()}",
-          ),
-          onChanged: (RangeValues values) {
-            controller.updatePriceRange(values.start, values.end);
-          },
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
           children: [
+            // Fixed Search Bar Section
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(6),
+              color: Colors.grey[50],
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: Column(
+                children: [
+                  _buildSearchBar(),
+                  _buildSearchSuggestions(),
+                  _buildActiveFilters(),
+                ],
               ),
-              child: Text("₹${controller.minPrice.value.toInt()}"),
             ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text("₹${controller.maxPrice.value.toInt()}"),
+            
+            // Scrollable Product List
+            Expanded(
+              child: _buildProductList(),
             ),
           ],
         ),
-      ],
+      ),
     );
   }
 
-  Widget _buildStockFilter() {
+  Widget _buildSearchBar() {
     return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!),
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
-      child: CheckboxListTile(
-        title: Text("Show only in-stock items"),
-        value: controller.inStockOnly.value,
-        onChanged: (bool? value) {
-          controller.toggleStockFilter();
+      child: TextFormField(
+        autofocus: true,
+        controller: searchController,
+        focusNode: searchFocusNode,
+        onChanged: (value) {
+          controller.updateSearchQuery(value);
         },
-        controlAffinity: ListTileControlAffinity.leading,
+        decoration: InputDecoration(
+          hintText: "Search products, categories...",
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 15,
+          ),
+          prefixIcon: Obx(
+            () => controller.isFiltering.value
+                ? Container(
+                    width: 20,
+                    height: 20,
+                    padding: EdgeInsets.all(12),
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Icon(Icons.search, color: Colors.grey[600]),
+          ),
+          suffixIcon: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Clear search button
+              Obx(
+                () => controller.searchQuery.value.isNotEmpty
+                    ? IconButton(
+                        onPressed: () {
+                          searchController.clear();
+                          controller.updateSearchQuery('');
+                          searchFocusNode.unfocus();
+                        },
+                        icon: Icon(Icons.clear, size: 20),
+                      )
+                    : SizedBox.shrink(),
+              ),
+              // Filter button
+              Container(
+                margin: EdgeInsets.only(right: 8),
+                child: Stack(
+                  children: [
+                    IconButton(
+                      onPressed: () => showFilterBottomSheet(context),
+                      icon: Icon(Icons.tune, color: Colors.grey[600]),
+                    ),
+                    // Filter indicator
+                    Obx(
+                      () => controller.hasActiveFilters()
+                          ? Positioned(
+                              right: 8,
+                              top: 8,
+                              child: Container(
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                            )
+                          : SizedBox.shrink(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
+  }
+
+  Widget _buildSearchSuggestions() {
+    return Obx(() {
+      if (controller.searchSuggestions.isEmpty ||
+          !searchFocusNode.hasFocus ||
+          searchController.text.isEmpty) {
+        return SizedBox.shrink();
+      }
+
+      return Container(
+        margin: EdgeInsets.symmetric(horizontal: 16),
+        constraints: BoxConstraints(maxHeight: 200),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 8,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: controller.searchSuggestions.length,
+          itemBuilder: (context, index) {
+            final suggestion = controller.searchSuggestions[index];
+            return ListTile(
+              dense: true,
+              leading: Icon(Icons.search, size: 18, color: Colors.grey),
+              title: Text(suggestion),
+              onTap: () {
+                searchController.text = suggestion;
+                controller.applySuggestion(suggestion);
+                searchFocusNode.unfocus();
+              },
+            );
+          },
+        ),
+      );
+    });
+  }
+
+  Widget _buildActiveFilters() {
+    return Obx(() {
+      if (!controller.hasActiveFilters()) return SizedBox.shrink();
+
+      return Container(
+        height: 50,
+        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: [
+            // Category filter chip
+            if (controller.selectedCategory.value != null)
+              Padding(
+                padding: EdgeInsets.only(right: 8),
+                child: Chip(
+                  label: Text(controller.selectedCategory.value!),
+                  deleteIcon: Icon(Icons.close, size: 16),
+                  onDeleted: () => controller.selectCategory(null),
+                  backgroundColor: Colors.blue.withOpacity(0.1),
+                  deleteIconColor: Colors.blue,
+                  labelStyle: TextStyle(color: Colors.blue),
+                ),
+              ),
+
+            // Price range filter chip
+            if (controller.minPrice.value > 0 ||
+                controller.maxPrice.value < 10000)
+              Padding(
+                padding: EdgeInsets.only(right: 8),
+                child: Chip(
+                  label: Text(
+                    '₹${controller.minPrice.value.toInt()} - ₹${controller.maxPrice.value.toInt()}',
+                  ),
+                  deleteIcon: Icon(Icons.close, size: 16),
+                  onDeleted: () => controller.updatePriceRange(0, 10000),
+                  backgroundColor: Colors.green.withOpacity(0.1),
+                  deleteIconColor: Colors.green,
+                  labelStyle: TextStyle(color: Colors.green),
+                ),
+              ),
+
+            // Stock filter chip
+            if (controller.inStockOnly.value)
+              Padding(
+                padding: EdgeInsets.only(right: 8),
+                child: Chip(
+                  label: Text('In Stock'),
+                  deleteIcon: Icon(Icons.close, size: 16),
+                  onDeleted: () => controller.toggleStockFilter(),
+                  backgroundColor: Colors.orange.withOpacity(0.1),
+                  deleteIconColor: Colors.orange,
+                  labelStyle: TextStyle(color: Colors.orange),
+                ),
+              ),
+
+            // Clear all filters button
+            TextButton.icon(
+              onPressed: controller.clearFilters,
+              icon: Icon(Icons.clear_all, size: 16),
+              label: Text('Clear All'),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+                backgroundColor: Colors.red.withOpacity(0.1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget _buildProductList() {
+    return Obx(() {
+      final productResponse = controller.products.value;
+
+      if (controller.isLoading.value) {
+        return Container(
+          height: 200,
+          child: Center(
+            child: CircularProgressIndicator(
+              color: AppColors.primaryColor,
+            ),
+          ),
+        );
+      } else if (productResponse == null || productResponse.data.isEmpty) {
+        return Container(
+          height: 200,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.inventory_2_outlined,
+                  size: 48,
+                  color: Colors.grey[400],
+                ),
+                SizedBox(height: 8),
+                Text(
+                  "No products available",
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+
+      return Scrollbar(
+        controller: _scrollController,
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.all(16),
+              sliver: SliverGrid(
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  // crossAxisCount: 2,
+                  maxCrossAxisExtent: 200,
+                  childAspectRatio: 0.68,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final item = productResponse.data[index];
+                    return ReusableProductCard(
+                      product: item,
+                      showAddToCart: false,
+                      onTap: () {
+                        Get.to(
+                          () => ProductDetailScreen(product: item),
+                          transition: Transition.rightToLeft,
+                          duration: Duration(milliseconds: 300),
+                        );
+                      },
+                    );
+                  },
+                  childCount: productResponse.data.length,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }

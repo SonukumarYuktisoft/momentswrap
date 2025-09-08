@@ -532,7 +532,16 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(width: 12),
               Text(
                 "Search for products...",
-                style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 16,
+                ),
+              ),
+              Spacer(),
+              Icon(
+                Icons.camera_alt_outlined,
+                color: Colors.grey[600],
+                size: 20,
               ),
             ],
           ),
