@@ -22,7 +22,7 @@ class OnboardingController extends GetxController {
   // next
   void nextPage() {
     if (currentPage.value == 2) {
-      Get.offAllNamed(AppRoutes.login);
+      Get.offAllNamed(AppRoutes.loginScreen);
     } else {
       int nextPage = currentPage.value + 1;
       pageController.animateToPage(

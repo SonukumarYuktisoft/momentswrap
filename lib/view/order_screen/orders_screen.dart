@@ -6,14 +6,14 @@
 // // Import your model classes here
 // // import 'package:momentswrap/models/order_model.dart';
 
-// class ListMyOrdersScreen extends StatefulWidget {
-//   const ListMyOrdersScreen({super.key});
+// class OrdersScreen extends StatefulWidget {
+//   const OrdersScreen({super.key});
 
 //   @override
-//   State<ListMyOrdersScreen> createState() => _ListMyOrdersScreenState();
+//   State<OrdersScreen> createState() => _OrdersScreenState();
 // }
 
-// class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
+// class _OrdersScreenState extends State<OrdersScreen> {
 //   final OrderController _orderController = Get.put(OrderController());
 
 //   @override
@@ -152,7 +152,7 @@
 //               ],
 //             ),
 //             const SizedBox(height: 12),
-            
+
 //             // Product Info
 //             if (mainProduct != null) ...[
 //               Row(
@@ -232,9 +232,9 @@
 //                 ],
 //               ),
 //             ],
-            
+
 //             const SizedBox(height: 12),
-            
+
 //             // Order Details
 //             Row(
 //               children: [
@@ -253,7 +253,7 @@
 //                 ),
 //               ],
 //             ),
-            
+
 //             if (order.shippingAddress != null) ...[
 //               const SizedBox(height: 8),
 //               Row(
@@ -278,14 +278,14 @@
 //                 ],
 //               ),
 //             ],
-            
+
 //             // Payment Method
 //             const SizedBox(height: 8),
 //             Row(
 //               children: [
 //                 Icon(
-//                   order.paymentMethod.toLowerCase() == 'cod' 
-//                       ? Icons.money 
+//                   order.paymentMethod.toLowerCase() == 'cod'
+//                       ? Icons.money
 //                       : Icons.credit_card,
 //                   size: 16,
 //                   color: Colors.grey[600],
@@ -324,9 +324,9 @@
 //                 ),
 //               ],
 //             ),
-            
+
 //             const SizedBox(height: 16),
-            
+
 //             // Action Buttons
 //             Row(
 //               children: [
@@ -370,7 +370,7 @@
 //   Widget _buildStatusChip(String status) {
 //     Color backgroundColor;
 //     Color textColor;
-    
+
 //     switch (status.toLowerCase()) {
 //       case 'pending':
 //         backgroundColor = Colors.orange.shade100;
@@ -396,7 +396,7 @@
 //         backgroundColor = Colors.grey.shade100;
 //         textColor = Colors.grey.shade800;
 //     }
-    
+
 //     return Container(
 //       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
 //       decoration: BoxDecoration(
@@ -455,14 +455,14 @@ import 'package:momentswrap/models/order_model/order_model.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
 import 'package:momentswrap/view/order_screen/order_details_screen.dart';
 
-class ListMyOrdersScreen extends StatefulWidget {
-  const ListMyOrdersScreen({super.key});
+class OrdersScreen extends StatefulWidget {
+  const OrdersScreen({super.key});
 
   @override
-  State<ListMyOrdersScreen> createState() => _ListMyOrdersScreenState();
+  State<OrdersScreen> createState() => _OrdersScreenState();
 }
 
-class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
+class _OrdersScreenState extends State<OrdersScreen> {
   final OrderController _orderController = Get.put(OrderController());
 
   @override
@@ -617,9 +617,9 @@ class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
                             ],
                           ),
                         ),
-                        
+
                         SizedBox(height: 16),
-                        
+
                         // Orders List
                         ListView.builder(
                           shrinkWrap: true,
@@ -707,7 +707,10 @@ class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
                   foregroundColor: AppColors.accentColor,
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -715,10 +718,7 @@ class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
                 icon: Icon(Icons.shopping_cart_outlined),
                 label: Text(
                   'Start Shopping',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ),
             ),
@@ -791,9 +791,9 @@ class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
                 _buildModernStatusChip(order.orderStatus),
               ],
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Product Info with Modern Layout
             if (mainProduct != null) ...[
               Container(
@@ -863,7 +863,10 @@ class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
                             children: [
                               if (hasMultipleProducts) ...[
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: AppColors.primaryLight,
                                     borderRadius: BorderRadius.circular(8),
@@ -880,7 +883,10 @@ class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
                                 SizedBox(width: 8),
                               ],
                               Container(
-                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
                                 decoration: BoxDecoration(
                                   color: AppColors.secondaryLight,
                                   borderRadius: BorderRadius.circular(8),
@@ -918,9 +924,9 @@ class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
                 ),
               ),
             ],
-            
+
             const SizedBox(height: 16),
-            
+
             // Modern Order Details
             Container(
               padding: EdgeInsets.all(16),
@@ -976,9 +982,9 @@ class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Modern Action Buttons
             Row(
               children: [
@@ -1008,9 +1014,9 @@ class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(width: 12),
-                
+
                 if (order.orderStatus.toLowerCase() == 'pending') ...[
                   Expanded(
                     child: Container(
@@ -1027,7 +1033,10 @@ class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
                       ),
                       child: TextButton.icon(
                         onPressed: () {
-                          _showModernCancelOrderDialog(order.id, mainProduct?.product.name);
+                          _showModernCancelOrderDialog(
+                            order.id,
+                            mainProduct?.product.name,
+                          );
                         },
                         style: TextButton.styleFrom(
                           foregroundColor: AppColors.accentColor,
@@ -1057,7 +1066,7 @@ class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
     Color backgroundColor;
     Color textColor;
     IconData icon;
-    
+
     switch (status.toLowerCase()) {
       case 'pending':
         backgroundColor = AppColors.warningColor.withOpacity(0.2);
@@ -1089,7 +1098,7 @@ class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
         textColor = Colors.grey[600]!;
         icon = Icons.help_outline;
     }
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
@@ -1127,7 +1136,7 @@ class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
       default:
         color = AppColors.errorColor;
     }
-    
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
@@ -1153,9 +1162,7 @@ class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
     Get.dialog(
       AlertDialog(
         backgroundColor: AppColors.accentColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
             Container(
@@ -1196,7 +1203,10 @@ class _ListMyOrdersScreenState extends State<ListMyOrdersScreen> {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [AppColors.errorColor, AppColors.errorColor.withOpacity(0.8)],
+                colors: [
+                  AppColors.errorColor,
+                  AppColors.errorColor.withOpacity(0.8),
+                ],
               ),
               borderRadius: BorderRadius.circular(8),
             ),

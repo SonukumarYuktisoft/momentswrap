@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -50,14 +49,18 @@ class LoginController extends GetxController {
             String userProfileImage = responseData.customer.profileImage;
             String userName =
                 '${responseData.customer.firstName} ${responseData.customer.lastName}';
-            List<Map<String, dynamic>> addresses = (responseData.customer.addresses as List).cast<Map<String, dynamic>>();    
+            List<Map<String, dynamic>> addresses =
+                (responseData.customer.addresses as List)
+                    .cast<Map<String, dynamic>>();
             String userPhone = responseData.customer.phone;
             await SharedPreferencesServices.setJwtToken(userToken);
             await SharedPreferencesServices.setUserName(userName);
             await SharedPreferencesServices.setIsLoggedIn(true);
             await SharedPreferencesServices.setUserId(userId);
             await SharedPreferencesServices.setUserEmail(userEmail);
-            await SharedPreferencesServices.setUserProfileImage(userProfileImage,);
+            await SharedPreferencesServices.setUserProfileImage(
+              userProfileImage,
+            );
             await SharedPreferencesServices.setLoginDate(DateTime.now());
             await SharedPreferencesServices.setUserId(userId);
             await SharedPreferencesServices.saveAddresses(addresses);
@@ -107,7 +110,7 @@ class LoginController extends GetxController {
             response.data['message'] ?? 'Logged out successfully',
             backgroundColor: Colors.green.withOpacity(0.5),
           );
-          Get.offAllNamed(AppRoutes.login);
+          Get.offAllNamed(AppRoutes.loginScreen);
         } else {
           Get.snackbar(
             'Logout Error',

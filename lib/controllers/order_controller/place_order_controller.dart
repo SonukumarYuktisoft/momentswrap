@@ -17,7 +17,7 @@ import 'package:momentswrap/util/helpers/helper_functions.dart';
 
 class PlaceOrderController extends GetxController {
   final ApiServices _apiServices = ApiServices();
-  
+
   final CartController cartController = Get.put(CartController());
   final LocationController locationController = Get.put(LocationController());
 
@@ -26,8 +26,11 @@ class PlaceOrderController extends GetxController {
   final RxInt currentStep = 0.obs;
   final RxString selectedAddressType = ''.obs;
   final RxString selectedPaymentMethod = 'card'.obs;
-  final Rx<Map<String, dynamic>?> selectedAddress = Rx<Map<String, dynamic>?>(null);
-  final RxList<Map<String, dynamic>> profileAddresses = <Map<String, dynamic>>[].obs;
+  final Rx<Map<String, dynamic>?> selectedAddress = Rx<Map<String, dynamic>?>(
+    null,
+  );
+  final RxList<Map<String, dynamic>> profileAddresses =
+      <Map<String, dynamic>>[].obs;
 
   // Step constants
   static const int STEP_ADDRESS = 0;
@@ -63,7 +66,6 @@ class PlaceOrderController extends GetxController {
       await loadProfileAddresses();
       currentStep.value = STEP_ADDRESS;
       _showOrderStepsDialog();
-
     } catch (e) {
       HelperFunctions.showSnackbar(
         title: 'Error',
@@ -94,7 +96,7 @@ class PlaceOrderController extends GetxController {
                 // Progress Indicator
                 _buildProgressIndicator(),
                 SizedBox(height: 20),
-                
+
                 // Step Content
                 Obx(() {
                   switch (currentStep.value) {
@@ -118,7 +120,7 @@ class PlaceOrderController extends GetxController {
               },
               child: Text('Cancel'),
             ),
-            
+
             // Next/Place Order Button
             Obx(() {
               return ElevatedButton(
@@ -129,7 +131,11 @@ class PlaceOrderController extends GetxController {
                         height: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : Text(currentStep.value == STEP_PAYMENT ? 'Place Order' : 'Next'),
+                    : Text(
+                        currentStep.value == STEP_PAYMENT
+                            ? 'Place Order'
+                            : 'Next',
+                      ),
               );
             }),
           ],
@@ -148,43 +154,35 @@ class PlaceOrderController extends GetxController {
             width: 30,
             height: 30,
             decoration: BoxDecoration(
-              color: currentStep.value >= STEP_ADDRESS 
-                  ? AppColors.primaryColor 
+              color: currentStep.value >= STEP_ADDRESS
+                  ? AppColors.primaryColor
                   : Colors.grey.shade300,
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              Icons.location_on,
-              color: Colors.white,
-              size: 16,
-            ),
+            child: Icon(Icons.location_on, color: Colors.white, size: 16),
           ),
-          
+
           // Line connector
           Expanded(
             child: Container(
               height: 2,
-              color: currentStep.value > STEP_ADDRESS 
-                  ? AppColors.primaryColor 
+              color: currentStep.value > STEP_ADDRESS
+                  ? AppColors.primaryColor
                   : Colors.grey.shade300,
             ),
           ),
-          
+
           // Step 2 - Payment
           Container(
             width: 30,
             height: 30,
             decoration: BoxDecoration(
-              color: currentStep.value >= STEP_PAYMENT 
-                  ? AppColors.primaryColor 
+              color: currentStep.value >= STEP_PAYMENT
+                  ? AppColors.primaryColor
                   : Colors.grey.shade300,
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              Icons.payment,
-              color: Colors.white,
-              size: 16,
-            ),
+            child: Icon(Icons.payment, color: Colors.white, size: 16),
           ),
         ],
       );
@@ -198,10 +196,7 @@ class PlaceOrderController extends GetxController {
       children: [
         Text(
           'Select Delivery Address',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 16),
 
@@ -241,8 +236,10 @@ class PlaceOrderController extends GetxController {
                 }
                 selectedAddress.value = {
                   'type': 'current',
-                  'fullName': await SharedPreferencesServices.getUserName() ?? '',
-                  'phone': await SharedPreferencesServices.getPhoneNumber() ?? '',
+                  'fullName':
+                      await SharedPreferencesServices.getUserName() ?? '',
+                  'phone':
+                      await SharedPreferencesServices.getPhoneNumber() ?? '',
                   'addressLine1': locationController.location.value,
                   'city': locationController.city.value,
                   'state': locationController.state.value,
@@ -266,7 +263,7 @@ class PlaceOrderController extends GetxController {
                 subtitle: Text('Add an address to your profile'),
                 trailing: IconButton(
                   icon: Icon(Icons.add),
-                  onPressed: () => Get.toNamed(AppRoutes.editProfile),
+                  onPressed: () => Get.toNamed(AppRoutes.editProfileScreen),
                 ),
               ),
             );
@@ -294,10 +291,7 @@ class PlaceOrderController extends GetxController {
                   selected: selectedAddressType.value == 'saved_$index',
                   onTap: () {
                     selectedAddressType.value = 'saved_$index';
-                    selectedAddress.value = {
-                      ...address,
-                      'type': 'saved',
-                    };
+                    selectedAddress.value = {...address, 'type': 'saved'};
                   },
                 ),
               );
@@ -315,10 +309,7 @@ class PlaceOrderController extends GetxController {
       children: [
         Text(
           'Select Payment Method',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 16),
 
@@ -329,7 +320,10 @@ class PlaceOrderController extends GetxController {
               // Card Payment
               Card(
                 child: ListTile(
-                  leading: Icon(Icons.credit_card, color: AppColors.primaryColor),
+                  leading: Icon(
+                    Icons.credit_card,
+                    color: AppColors.primaryColor,
+                  ),
                   title: Text('Card Payment'),
                   subtitle: Text('Pay with Credit/Debit Card'),
                   selected: selectedPaymentMethod.value == 'card',
@@ -377,19 +371,13 @@ class PlaceOrderController extends GetxController {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Shipping'),
-                  Text('₹50.00'),
-                ],
+                children: [Text('Shipping'), Text('₹50.00')],
               ),
               Divider(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Total',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  Text('Total', style: TextStyle(fontWeight: FontWeight.bold)),
                   Text(
                     '₹${(cartController.totalPrice + 50).toStringAsFixed(2)}',
                     style: TextStyle(
@@ -429,12 +417,16 @@ class PlaceOrderController extends GetxController {
       isPlacingOrder.value = true;
 
       final finalCartData = cartController.getFinalCartData();
-      
+
       // Clean product data - only send required fields
-      final products = finalCartData.map((item) => {
-        'productId': item['productId'].toString(),
-        'quantity': int.parse(item['quantity'].toString()),
-      }).toList();
+      final products = finalCartData
+          .map(
+            (item) => {
+              'productId': item['productId'].toString(),
+              'quantity': int.parse(item['quantity'].toString()),
+            },
+          )
+          .toList();
 
       print('Placing order with products: $products'); // Debug log
 
@@ -444,14 +436,17 @@ class PlaceOrderController extends GetxController {
         'shippingAddress': {
           'fullName': selectedAddress.value!['fullName'].toString(),
           'addressLine1': selectedAddress.value!['addressLine1'].toString(),
-          'addressLine2': selectedAddress.value!['addressLine2']?.toString() ?? '',
+          'addressLine2':
+              selectedAddress.value!['addressLine2']?.toString() ?? '',
           'city': selectedAddress.value!['city'].toString(),
           'state': selectedAddress.value!['state'].toString(),
           'postalCode': selectedAddress.value!['postalCode'].toString(),
           'country': selectedAddress.value!['country']?.toString() ?? 'India',
           'phone': selectedAddress.value!['phone'].toString(),
         },
-        'notes': selectedAddress.value!['notes']?.toString() ?? 'Please deliver during evening hours.',
+        'notes':
+            selectedAddress.value!['notes']?.toString() ??
+            'Please deliver during evening hours.',
       };
 
       print('Request body: ${jsonEncode(requestBody)}'); // Debug log
@@ -477,11 +472,9 @@ class PlaceOrderController extends GetxController {
         // Clear cart and refresh orders
         // cartController.clearCart();
         await fetchMyOrders();
-
       } else {
         throw Exception('Failed to place order');
       }
-
     } catch (e) {
       HelperFunctions.showSnackbar(
         title: 'Error',
@@ -500,29 +493,33 @@ class PlaceOrderController extends GetxController {
     bool isCurrentLocation = false,
   }) {
     final nameController = TextEditingController(
-      text: existingAddress?['fullName'] ?? ''
+      text: existingAddress?['fullName'] ?? '',
     );
     final phoneController = TextEditingController(
-      text: existingAddress?['phone'] ?? ''
+      text: existingAddress?['phone'] ?? '',
     );
     final addressLine1Controller = TextEditingController(
-      text: existingAddress?['addressLine1'] ?? 
-           (isCurrentLocation ? locationController.location.value : '')
+      text:
+          existingAddress?['addressLine1'] ??
+          (isCurrentLocation ? locationController.location.value : ''),
     );
     final addressLine2Controller = TextEditingController(
-      text: existingAddress?['addressLine2'] ?? ''
+      text: existingAddress?['addressLine2'] ?? '',
     );
     final cityController = TextEditingController(
-      text: existingAddress?['city'] ?? 
-           (isCurrentLocation ? locationController.city.value : '')
+      text:
+          existingAddress?['city'] ??
+          (isCurrentLocation ? locationController.city.value : ''),
     );
     final stateController = TextEditingController(
-      text: existingAddress?['state'] ?? 
-           (isCurrentLocation ? locationController.state.value : '')
+      text:
+          existingAddress?['state'] ??
+          (isCurrentLocation ? locationController.state.value : ''),
     );
     final pincodeController = TextEditingController(
-      text: existingAddress?['postalCode'] ?? 
-           (isCurrentLocation ? locationController.pincode.value : '')
+      text:
+          existingAddress?['postalCode'] ??
+          (isCurrentLocation ? locationController.pincode.value : ''),
     );
 
     Get.dialog(
@@ -604,10 +601,7 @@ class PlaceOrderController extends GetxController {
           ),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: Text('Cancel')),
           ElevatedButton(
             onPressed: () async {
               final newAddress = {
@@ -623,10 +617,7 @@ class PlaceOrderController extends GetxController {
 
               if (isCurrentLocation) {
                 // Update current location address
-                selectedAddress.value = {
-                  ...newAddress,
-                  'type': 'current',
-                };
+                selectedAddress.value = {...newAddress, 'type': 'current'};
               } else if (addressIndex != null) {
                 // Update existing address
                 profileAddresses[addressIndex] = newAddress;
@@ -653,14 +644,11 @@ class PlaceOrderController extends GetxController {
         title: Text('Login Required'),
         content: Text('Please log in to place an order.'),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: Text('Cancel')),
           ElevatedButton(
             onPressed: () {
               Get.back();
-              Get.toNamed(AppRoutes.login);
+              Get.toNamed(AppRoutes.loginScreen);
             },
             child: Text('Log In'),
           ),

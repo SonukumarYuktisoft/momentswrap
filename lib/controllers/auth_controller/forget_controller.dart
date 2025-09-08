@@ -29,9 +29,7 @@ class ForgetController extends GetxController {
         dio.Response response = await _apiServices.postRequest(
           authToken: false,
           url: 'https://moments-wrap-backend.vercel.app/user/forget-password',
-          data: {
-            'email': emailController.text.trim(),
-          },
+          data: {'email': emailController.text.trim()},
         );
         if (response.statusCode == 200 && response.data != null) {
           final responseData = LoginModel.fromJson(response.data);
@@ -56,7 +54,7 @@ class ForgetController extends GetxController {
             //   userProfileImage,
             // );
             // await SharedPreferencesServices.setPhoneNumber(userPhone);
-            Get.offAllNamed(AppRoutes.login);
+            Get.offAllNamed(AppRoutes.loginScreen);
           } else {
             Get.snackbar(
               'Login Error',

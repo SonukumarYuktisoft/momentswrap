@@ -11,9 +11,13 @@ import 'package:momentswrap/view/auth/forget_screen.dart';
 import 'package:momentswrap/view/auth/login_screen.dart';
 import 'package:momentswrap/view/auth/signup_screen.dart';
 import 'package:momentswrap/view/home_screen/home_screen.dart';
+import 'package:momentswrap/view/notifications_screen/notifications_screen.dart';
 import 'package:momentswrap/view/onboarding_screens/onboarding_screens.dart';
+import 'package:momentswrap/view/order_screen/order_details_screen.dart';
+import 'package:momentswrap/view/order_screen/orders_screen.dart';
 import 'package:momentswrap/view/profile_screen/edit_profile_screen.dart';
 import 'package:momentswrap/view/profile_screen/profile_screen.dart';
+import 'package:momentswrap/view/search_screens/search_screen.dart';
 import 'package:momentswrap/view/splash_screen/splash_screen.dart';
 
 class AppPages {
@@ -22,10 +26,8 @@ class AppPages {
   // Define the routes for the application
   // Each route is defined using GetPage, which includes the name, page builder, and
   static final routes = [
-
-
-///splashScreen
-/// Splash_Screen
+    ///splashScreen
+    /// Splash_Screen
     // GetPage(
     //   name: AppRoutes.splashScreen,
     //   page: () => const SplashScreen(),
@@ -43,33 +45,54 @@ class AppPages {
 
     /// Login Screen
     GetPage(
-      name: AppRoutes.login,
+      name: AppRoutes.loginScreen,
       page: () => const LoginScreen(),
       transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
       binding: AuthBinding(),
     ),
 
     /// Sign Up Screen
     GetPage(
-      name: AppRoutes.signUp,
+      name: AppRoutes.signUpScreen,
       page: () => SignupScreen(),
       transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
       binding: AuthBinding(),
     ),
 
     /// Forgot Password Screen
     GetPage(
-      name: AppRoutes.forgotPassword,
+      name: AppRoutes.forgotPasswordScreen,
       page: () => ForgetScreen(),
       transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
       binding: AuthBinding(),
     ),
 
     /// Bottom_Navigation
     GetPage(
       name: AppRoutes.bottomNavigation,
-      page: () =>  BottomNavigation(),
+      page: () => BottomNavigation(),
+
       transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+    ),
+
+    /// Notifications
+    GetPage(
+      name: AppRoutes.notificationsScreen,
+      page: () => NotificationsScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+    ),
+
+    /// Search Screen
+    GetPage(
+      name: AppRoutes.searchScreen,
+      page: () => SearchAndFiltersBar(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
     ),
 
     /// Home_Screen
@@ -77,34 +100,49 @@ class AppPages {
       name: AppRoutes.home,
       page: () => const HomeScreen(),
       transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 500),
-      binding: HomeBinding()
+      transitionDuration: const Duration(milliseconds: 300),
+      binding: HomeBinding(),
     ),
 
     /// Cart Screen
     GetPage(
-      name: AppRoutes.cart,
+      name: AppRoutes.cartScreen,
       page: () => AddToCartScreen(),
       transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
       binding: CartBinding(),
-      
     ),
 
+    /// Order Details Screen
+    GetPage(
+      name: AppRoutes.orderScreen,
+      page: () => const OrdersScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+    ),
+    //  /// Order Details Screen
+    //     GetPage(
+    //       name: AppRoutes.orderDetailsScreen,
+    //       page: () => OrderDetailsScreen(),
+    //       transition: Transition.fadeIn,
+    //       transitionDuration: const Duration(milliseconds: 300),
+    //     ),
     /// Profile Screen
     GetPage(
-      name: AppRoutes.profile,
+      name: AppRoutes.profileScreen,
       page: () => const ProfileScreen(),
       transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
       binding: ProfileBinding(),
     ),
-///EditProfileScreen
 
+    ///EditProfileScreen
     GetPage(
-      name: AppRoutes.profile,
+      name: AppRoutes.editProfileScreen,
       page: () => const EditProfileScreen(),
       transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
       binding: ProfileBinding(),
     ),
-
   ];
 }

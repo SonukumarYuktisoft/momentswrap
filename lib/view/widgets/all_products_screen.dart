@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:momentswrap/models/product_models/product_model.dart';
+import 'package:momentswrap/routes/app_routes.dart';
 import 'package:momentswrap/view/home_screen/product_card.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
 import 'package:momentswrap/util/common/auth_utils.dart';
@@ -28,7 +29,7 @@ class AllProductsPage extends StatefulWidget {
 
 class _AllProductsPageState extends State<AllProductsPage> {
   final CartController cartController = Get.put(CartController());
-  
+
   // Filter and sort options
   String selectedSortBy = 'name'; // name, price_low, price_high, rating
   bool showInStockOnly = false;
@@ -47,7 +48,7 @@ class _AllProductsPageState extends State<AllProductsPage> {
 
   void _calculatePriceRange() {
     if (widget.products.isEmpty) return;
-    
+
     final prices = widget.products.map((p) => p.price).toList();
     minPrice = prices.reduce((a, b) => a < b ? a : b).toDouble();
     maxPrice = prices.reduce((a, b) => a > b ? a : b).toDouble();
@@ -64,7 +65,8 @@ class _AllProductsPageState extends State<AllProductsPage> {
 
     // Apply price range filter
     filtered = filtered.where((product) {
-      return product.price >= priceRange.start && product.price <= priceRange.end;
+      return product.price >= priceRange.start &&
+          product.price <= priceRange.end;
     }).toList();
 
     // Apply sorting
@@ -105,31 +107,34 @@ class _AllProductsPageState extends State<AllProductsPage> {
               Icon(widget.titleIcon, color: Colors.black),
               SizedBox(width: 8),
             ],
-            Text(
-              widget.title,
-              style: TextStyle(color: Colors.black),
-            ),
+            Text(widget.title, style: TextStyle(color: Colors.black)),
           ],
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search, color: Colors.black),
+            onPressed: () {
+              Get.toNamed(AppRoutes.searchScreen);
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
           // Filter and Sort Section
           // _buildFilterSection(),
-          
+
           // Results Count
           // _buildResultsHeader(),
-          
+
           // Products Grid or Empty State
-          Expanded(
-            child:  _buildProductsGrid(),
-          ),
+          Expanded(child: _buildProductsGrid()),
         ],
       ),
     );
   }
-  
+
   Widget _buildProductsGrid() {
     return RefreshIndicator(
       onRefresh: () async {
@@ -156,22 +161,20 @@ class _AllProductsPageState extends State<AllProductsPage> {
             offers: product.offers,
             stock: product.stock,
             showAddToCart: false,
-            addToCart: () {
-              AuthUtils.runIfLoggedIn(() async {
-                await cartController.addToCart(
-                  productId: product.id,
-                  quantity: 1,
-                  image: product.images.isNotEmpty
-                      ? product.images.first
-                      : '',
-                  totalPrice: product.price.toDouble(),
-                );
-              });
-            },
+            // addToCart: () {
+            //   AuthUtils.runIfLoggedIn(() async {
+            //     await cartController.addToCart(
+            //       productId: product.id,
+            //       quantity: 1,
+            //       image: product.images.isNotEmpty ? product.images.first : '',
+            //       totalPrice: product.price.toDouble(),
+            //     );
+            //   });
+            // },
             onTap: () => widget.onProductTap(product),
           );
         },
       ),
     );
   }
-  }
+}

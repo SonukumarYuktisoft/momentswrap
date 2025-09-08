@@ -6,14 +6,16 @@ import 'package:momentswrap/controllers/location_controller/location_controller.
 import 'package:momentswrap/controllers/product_controller/product_controller.dart';
 import 'package:momentswrap/controllers/profile_controller/profile_controller.dart';
 import 'package:momentswrap/models/product_models/product_model.dart';
+import 'package:momentswrap/routes/app_routes.dart';
 import 'package:momentswrap/util/common/auth_utils.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
 import 'package:momentswrap/util/constants/app_images_string.dart';
 import 'package:momentswrap/view/events_screen/events_screens.dart';
 import 'package:momentswrap/view/home_screen/product_card.dart';
 import 'package:momentswrap/view/home_screen/product_detail_screen.dart';
+import 'package:momentswrap/view/notifications_screen/notifications_screen.dart';
 import 'package:momentswrap/view/search_screens/search_screen.dart';
-import 'package:momentswrap/view/splash_screen/widgets/all_products_screen.dart';
+import 'package:momentswrap/view/widgets/all_products_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final ProfileController profileController = Get.put(ProfileController());
 
     return Scaffold(
-      drawer: _buildModernDrawer(),
+      // drawer: _buildModernDrawer(),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.primaryColor,
@@ -57,7 +59,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.toNamed(AppRoutes.notificationsScreen);
+                    },
                     icon: Icon(
                       Icons.notifications_outlined,
                       color: AppColors.secondaryColor,
@@ -116,54 +120,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Location row with modern styling
-                          // Padding(
-                          //   padding: EdgeInsets.symmetric(
-                          //     horizontal: 16,
-                          //     vertical: 8,
-                          //   ),
-                          //   child: Row(
-                          //     children: [
-                          //       Container(
-                          //         padding: EdgeInsets.all(8),
-                          //         decoration: BoxDecoration(
-                          //           color: AppColors.accentColor.withOpacity(0.2),
-                          //           borderRadius: BorderRadius.circular(8),
-                          //         ),
-                          //         child: Icon(
-                          //           Icons.location_on_outlined,
-                          //           color: AppColors.secondaryColor,
-                          //           size: 20,
-                          //         ),
-                          //       ),
-                          //       SizedBox(width: 12),
-                          //       Expanded(
-                          //         child: Obx(() {
-                          //           return Text(
-                          //             locationController.address.value,
-                          //             style: TextStyle(
-                          //               fontSize: 14,
-                          //               color: AppColors.secondaryColor,
-                          //               fontWeight: FontWeight.w500,
-                          //             ),
-                          //             maxLines: 1,
-                          //             overflow: TextOverflow.ellipsis,
-                          //           );
-                          //         }),
-                          //       ),
-                          //       IconButton(
-                          //         onPressed: () {
-                          //           locationController.getAddress();
-                          //         },
-                          //         icon: Icon(
-                          //           Icons.refresh,
-                          //           color: AppColors.secondaryColor,
-                          //           size: 20,
-                          //         ),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
-                          
+                          SizedBox(height: 16),
+
                           // Read-only Search Bar
                           _buildReadOnlySearchBar(),
                           SizedBox(height: 20),
@@ -201,7 +159,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               Container(
                                 padding: EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: AppColors.primaryColor.withOpacity(0.2),
+                                  color: AppColors.primaryColor.withOpacity(
+                                    0.2,
+                                  ),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Icon(
@@ -335,18 +295,29 @@ class _HomeScreenState extends State<HomeScreen> {
                           // Featured Products
                           HorizontalProductList(
                             title: "Featured Products",
-                            products: controller.getRecommendedProducts(limit: 10),
+                            products: controller.getRecommendedProducts(
+                              limit: 10,
+                            ),
                             onSeeAll: () {
-                              Get.to(() => AllProductsPage(
-                                title: "Featured Products",
-                                products: controller.getRecommendedProducts(limit: 50),
-                                onProductTap: (product) {
-                                  Get.to(() => ProductDetailScreen(product: product));
-                                },
-                              ));
+                              Get.to(
+                                () => AllProductsPage(
+                                  title: "Featured Products",
+                                  products: controller.getRecommendedProducts(
+                                    limit: 50,
+                                  ),
+                                  onProductTap: (product) {
+                                    Get.to(
+                                      () =>
+                                          ProductDetailScreen(product: product),
+                                    );
+                                  },
+                                ),
+                              );
                             },
                             onProductTap: (product) {
-                              Get.to(() => ProductDetailScreen(product: product));
+                              Get.to(
+                                () => ProductDetailScreen(product: product),
+                              );
                             },
                           ),
 
@@ -355,19 +326,30 @@ class _HomeScreenState extends State<HomeScreen> {
                           // Special Offers
                           HorizontalProductList(
                             title: "Special Offers",
-                            products: controller.getSpecialOfferProducts(limit: 10),
+                            products: controller.getSpecialOfferProducts(
+                              limit: 10,
+                            ),
                             onSeeAll: () {
-                              Get.to(() => AllProductsPage(
-                                title: "Special Offers",
-                                products: controller.getSpecialOfferProducts(limit: 50),
-                                onProductTap: (product) {
-                                  Get.to(() => ProductDetailScreen(product: product));
-                                },
-                                titleIcon: Icons.local_offer,
-                              ));
+                              Get.to(
+                                () => AllProductsPage(
+                                  title: "Special Offers",
+                                  products: controller.getSpecialOfferProducts(
+                                    limit: 50,
+                                  ),
+                                  onProductTap: (product) {
+                                    Get.to(
+                                      () =>
+                                          ProductDetailScreen(product: product),
+                                    );
+                                  },
+                                  titleIcon: Icons.local_offer,
+                                ),
+                              );
                             },
                             onProductTap: (product) {
-                              Get.to(() => ProductDetailScreen(product: product));
+                              Get.to(
+                                () => ProductDetailScreen(product: product),
+                              );
                             },
                           ),
 
@@ -378,17 +360,26 @@ class _HomeScreenState extends State<HomeScreen> {
                             title: "Trending Now",
                             products: controller.getTrendingProducts(limit: 10),
                             onSeeAll: () {
-                              Get.to(() => AllProductsPage(
-                                title: "Trending Now",
-                                products: controller.getTrendingProducts(limit: 50),
-                                onProductTap: (product) {
-                                  Get.to(() => ProductDetailScreen(product: product));
-                                },
-                                titleIcon: Icons.trending_up,
-                              ));
+                              Get.to(
+                                () => AllProductsPage(
+                                  title: "Trending Now",
+                                  products: controller.getTrendingProducts(
+                                    limit: 50,
+                                  ),
+                                  onProductTap: (product) {
+                                    Get.to(
+                                      () =>
+                                          ProductDetailScreen(product: product),
+                                    );
+                                  },
+                                  titleIcon: Icons.trending_up,
+                                ),
+                              );
                             },
                             onProductTap: (product) {
-                              Get.to(() => ProductDetailScreen(product: product));
+                              Get.to(
+                                () => ProductDetailScreen(product: product),
+                              );
                             },
                           ),
 
@@ -397,19 +388,30 @@ class _HomeScreenState extends State<HomeScreen> {
                           // High Rating Products
                           HorizontalProductList(
                             title: "Top Rated",
-                            products: controller.getHighRatingProducts(limit: 10),
+                            products: controller.getHighRatingProducts(
+                              limit: 10,
+                            ),
                             onSeeAll: () {
-                              Get.to(() => AllProductsPage(
-                                title: "Top Rated Products",
-                                products: controller.getHighRatingProducts(limit: 50),
-                                onProductTap: (product) {
-                                  Get.to(() => ProductDetailScreen(product: product));
-                                },
-                                titleIcon: Icons.star,
-                              ));
+                              Get.to(
+                                () => AllProductsPage(
+                                  title: "Top Rated Products",
+                                  products: controller.getHighRatingProducts(
+                                    limit: 50,
+                                  ),
+                                  onProductTap: (product) {
+                                    Get.to(
+                                      () =>
+                                          ProductDetailScreen(product: product),
+                                    );
+                                  },
+                                  titleIcon: Icons.star,
+                                ),
+                              );
                             },
                             onProductTap: (product) {
-                              Get.to(() => ProductDetailScreen(product: product));
+                              Get.to(
+                                () => ProductDetailScreen(product: product),
+                              );
                             },
                           ),
 
@@ -420,17 +422,26 @@ class _HomeScreenState extends State<HomeScreen> {
                             title: "Recently Added",
                             products: controller.getRecentProducts(limit: 10),
                             onSeeAll: () {
-                              Get.to(() => AllProductsPage(
-                                title: "Recently Added",
-                                products: controller.getRecentProducts(limit: 50),
-                                onProductTap: (product) {
-                                  Get.to(() => ProductDetailScreen(product: product));
-                                },
-                                titleIcon: Icons.new_releases,
-                              ));
+                              Get.to(
+                                () => AllProductsPage(
+                                  title: "Recently Added",
+                                  products: controller.getRecentProducts(
+                                    limit: 50,
+                                  ),
+                                  onProductTap: (product) {
+                                    Get.to(
+                                      () =>
+                                          ProductDetailScreen(product: product),
+                                    );
+                                  },
+                                  titleIcon: Icons.new_releases,
+                                ),
+                              );
                             },
                             onProductTap: (product) {
-                              Get.to(() => ProductDetailScreen(product: product));
+                              Get.to(
+                                () => ProductDetailScreen(product: product),
+                              );
                             },
                           ),
                         ],
@@ -500,7 +511,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: GestureDetector(
         onTap: () {
           // Navigate to search screen when tapped
-          Get.to(() => SearchAndFiltersBar());
+          Get.toNamed(AppRoutes.searchScreen);
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -517,25 +528,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           child: Row(
             children: [
-              Icon(
-                Icons.search,
-                color: Colors.grey[600],
-                size: 20,
-              ),
+              Icon(Icons.search, color: Colors.grey[600], size: 20),
               SizedBox(width: 12),
               Text(
                 "Search for products...",
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: Colors.grey[600], fontSize: 16),
               ),
-              // Spacer(),
-              // Icon(
-              //   Icons.camera_alt_outlined,
-              //   color: Colors.grey[600],
-              //   size: 20,
-              // ),
             ],
           ),
         ),
@@ -597,7 +595,9 @@ class HorizontalProductList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (products.isEmpty) return SizedBox();
 
-    final displayProducts = products.length > 10 ? products.sublist(0, 10) : products;
+    final displayProducts = products.length > 10
+        ? products.sublist(0, 10)
+        : products;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -641,13 +641,15 @@ class HorizontalProductList extends StatelessWidget {
             itemBuilder: (context, index) {
               final product = displayProducts[index];
               final CartController cartController = Get.put(CartController());
-              
+
               return GestureDetector(
                 onTap: () => onProductTap(product),
                 child: SizedBox(
                   width: 160,
                   child: ModernProductCard(
-                    image: product.images.isNotEmpty ? product.images.first : '',
+                    image: product.images.isNotEmpty
+                        ? product.images.first
+                        : '',
                     title: product.name,
                     subtitle: product.shortDescription,
                     price: "₹${product.price}",
@@ -659,7 +661,9 @@ class HorizontalProductList extends StatelessWidget {
                         await cartController.addToCart(
                           productId: product.id,
                           quantity: 1,
-                          image: product.images.isNotEmpty ? product.images.first : '',
+                          image: product.images.isNotEmpty
+                              ? product.images.first
+                              : '',
                           totalPrice: product.price.toDouble(),
                         );
                       });

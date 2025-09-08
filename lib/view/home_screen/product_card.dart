@@ -24,7 +24,7 @@ class ModernProductCard extends StatelessWidget {
     this.addToCart,
     this.onTap,
     required this.stock,
-    this.showAddToCart = true,
+    this.showAddToCart = false,
   });
 
   // Filter valid offers (not expired)
@@ -36,8 +36,10 @@ class ModernProductCard extends StatelessWidget {
   // Get the best offer (highest discount)
   Offer? get bestOffer {
     if (validOffers.isEmpty) return null;
-    return validOffers.reduce((best, current) => 
-        current.discountPercentage > best.discountPercentage ? current : best);
+    return validOffers.reduce(
+      (best, current) =>
+          current.discountPercentage > best.discountPercentage ? current : best,
+    );
   }
 
   // Calculate discounted price
@@ -49,7 +51,8 @@ class ModernProductCard extends StatelessWidget {
   }
 
   double _parsePrice(String priceStr) {
-    return double.tryParse(priceStr.replaceAll('₹', '').replaceAll(',', '')) ?? 0.0;
+    return double.tryParse(priceStr.replaceAll('₹', '').replaceAll(',', '')) ??
+        0.0;
   }
 
   @override
@@ -89,7 +92,7 @@ class ModernProductCard extends StatelessWidget {
                     height: 120,
                     width: double.infinity,
                     color: AppColors.backgroundColor,
-                    child: image.isNotEmpty 
+                    child: image.isNotEmpty
                         ? Image.network(
                             image,
                             height: 120,
@@ -103,9 +106,13 @@ class ModernProductCard extends StatelessWidget {
                                   child: CircularProgressIndicator(
                                     color: AppColors.primaryColor,
                                     strokeWidth: 2,
-                                    value: loadingProgress.expectedTotalBytes != null
-                                        ? loadingProgress.cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
+                                    value:
+                                        loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                  .cumulativeBytesLoaded /
+                                              loadingProgress
+                                                  .expectedTotalBytes!
                                         : null,
                                   ),
                                 ),
@@ -203,10 +210,7 @@ class ModernProductCard extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [
-                            Colors.red[600]!,
-                            Colors.red[400]!,
-                          ],
+                          colors: [Colors.red[600]!, Colors.red[400]!],
                         ),
                         borderRadius: BorderRadius.circular(8),
                         boxShadow: [
@@ -234,11 +238,16 @@ class ModernProductCard extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.6),
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(16),
+                        ),
                       ),
                       child: Center(
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.red,
                             borderRadius: BorderRadius.circular(8),
@@ -326,7 +335,7 @@ class ModernProductCard extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                bestOffer != null 
+                                bestOffer != null
                                     ? "₹${discountedPrice.toStringAsFixed(0)}"
                                     : price,
                                 style: TextStyle(
@@ -336,35 +345,33 @@ class ModernProductCard extends StatelessWidget {
                                 ),
                               ),
                             ),
-                                // Original Price (crossed out) and savings
-                        if (bestOffer != null) ...[
-                          SizedBox(height: 2),
-                          Row(
-                            children: [
-                              Text(
-                                price,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                  decoration: TextDecoration.lineThrough,
-                                ),
-                              ),
-                              SizedBox(width: 6),
-                              Text(
-                                'Save ₹${(_parsePrice(price) - discountedPrice).toStringAsFixed(0)}',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.green[600],
-                                  fontWeight: FontWeight.w600,
-                                ),
+                            // Original Price (crossed out) and savings
+                            if (bestOffer != null) ...[
+                              SizedBox(height: 2),
+                              Row(
+                                children: [
+                                  Text(
+                                    price,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[600],
+                                      decoration: TextDecoration.lineThrough,
+                                    ),
+                                  ),
+                                  SizedBox(width: 6),
+                                  Text(
+                                    'Save ₹${(_parsePrice(price) - discountedPrice).toStringAsFixed(0)}',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.green[600],
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
-                          ),
-                        ],
                           ],
                         ),
-
-                    
 
                         // Offer validity (if available)
                         // if (bestOffer != null) ...[
@@ -385,53 +392,57 @@ class ModernProductCard extends StatelessWidget {
 
                     // Add to Cart Button
                     if (stock > 0) ...[
-                   showAddToCart?   Container(
-                        width: double.infinity,
-                        height: 36,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              AppColors.primaryColor,
-                              AppColors.primaryColor.withOpacity(0.8),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primaryColor.withOpacity(0.3),
-                              blurRadius: 4,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: ElevatedButton.icon(
-                          onPressed: addToCart,
-                          icon: Icon(
-                            Icons.add_shopping_cart_outlined,
-                            size: 16,
-                            color: AppColors.accentColor,
-                          ),
-                          label: Text(
-                            "Add to Cart",
-                            style: TextStyle(
-                              color: AppColors.accentColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 12,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            elevation: 0,
-                          ),
-                        )
-                      ):SizedBox.shrink(),
+                      showAddToCart
+                          ? Container(
+                              width: double.infinity,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    AppColors.primaryColor,
+                                    AppColors.primaryColor.withOpacity(0.8),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primaryColor.withOpacity(
+                                      0.3,
+                                    ),
+                                    blurRadius: 4,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: ElevatedButton.icon(
+                                onPressed: addToCart,
+                                icon: Icon(
+                                  Icons.add_shopping_cart_outlined,
+                                  size: 16,
+                                  color: AppColors.accentColor,
+                                ),
+                                label: Text(
+                                  "Add to Cart",
+                                  style: TextStyle(
+                                    color: AppColors.accentColor,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 8),
+                                  elevation: 0,
+                                ),
+                              ),
+                            )
+                          : SizedBox.shrink(),
                     ] else ...[
                       Container(
                         width: double.infinity,
@@ -464,8 +475,18 @@ class ModernProductCard extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${date.day} ${months[date.month - 1]}';
   }

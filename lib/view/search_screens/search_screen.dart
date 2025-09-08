@@ -8,7 +8,6 @@ import 'package:momentswrap/view/home_screen/product_card.dart';
 import 'package:momentswrap/view/home_screen/product_detail_screen.dart';
 
 class SearchAndFiltersBar extends StatefulWidget {
-
   SearchAndFiltersBar({Key? key}) : super(key: key);
 
   @override
@@ -22,17 +21,26 @@ class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
 
   final FocusNode searchFocusNode = FocusNode();
   @override
-void initState() {
-  super.initState();
-  Future.delayed(Duration(milliseconds: 300), () {
-    FocusScope.of(context).requestFocus(searchFocusNode);
-  });
-}
-
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(milliseconds: 300), () {
+      FocusScope.of(context).requestFocus(searchFocusNode);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Text('Search Products', style: TextStyle(color: Colors.black)),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Get.back(),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -51,7 +59,7 @@ void initState() {
                   ],
                 ),
                 child: TextFormField(
-                    autofocus: true,  // 👈
+                  autofocus: true, // 👈
                   controller: searchController,
                   focusNode: searchFocusNode,
                   onChanged: (value) {
@@ -129,7 +137,7 @@ void initState() {
                   ),
                 ),
               ),
-                
+
               // Search Suggestions
               Obx(() {
                 if (controller.searchSuggestions.isEmpty ||
@@ -137,7 +145,7 @@ void initState() {
                     searchController.text.isEmpty) {
                   return SizedBox.shrink();
                 }
-                
+
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal: 16),
                   constraints: BoxConstraints(maxHeight: 200),
@@ -159,7 +167,11 @@ void initState() {
                       final suggestion = controller.searchSuggestions[index];
                       return ListTile(
                         dense: true,
-                        leading: Icon(Icons.search, size: 18, color: Colors.grey),
+                        leading: Icon(
+                          Icons.search,
+                          size: 18,
+                          color: Colors.grey,
+                        ),
                         title: Text(suggestion),
                         onTap: () {
                           searchController.text = suggestion;
@@ -171,11 +183,11 @@ void initState() {
                   ),
                 );
               }),
-                
+
               // Active Filters Display
               Obx(() {
                 if (!controller.hasActiveFilters()) return SizedBox.shrink();
-                
+
                 return Container(
                   height: 50,
                   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -195,7 +207,7 @@ void initState() {
                             labelStyle: TextStyle(color: Colors.blue),
                           ),
                         ),
-                
+
                       // Price range filter chip
                       if (controller.minPrice.value > 0 ||
                           controller.maxPrice.value < 10000)
@@ -206,13 +218,14 @@ void initState() {
                               '₹${controller.minPrice.value.toInt()} - ₹${controller.maxPrice.value.toInt()}',
                             ),
                             deleteIcon: Icon(Icons.close, size: 16),
-                            onDeleted: () => controller.updatePriceRange(0, 10000),
+                            onDeleted: () =>
+                                controller.updatePriceRange(0, 10000),
                             backgroundColor: Colors.green.withOpacity(0.1),
                             deleteIconColor: Colors.green,
                             labelStyle: TextStyle(color: Colors.green),
                           ),
                         ),
-                
+
                       // Stock filter chip
                       if (controller.inStockOnly.value)
                         Padding(
@@ -226,7 +239,7 @@ void initState() {
                             labelStyle: TextStyle(color: Colors.orange),
                           ),
                         ),
-                
+
                       // Clear all filters button
                       TextButton.icon(
                         onPressed: controller.clearFilters,
@@ -244,96 +257,93 @@ void initState() {
                   ),
                 );
               }),
-          
-          
+
               // Expanded Product List
-                Obx(() {
-                        final productResponse = controller.products.value;
-          
-                        if (controller.isLoading.value) {
-                          return Container(
-                            height: 200,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.primaryColor,
-                              ),
-                            ),
-                          );
-                        } else if (productResponse == null ||
-                            productResponse.data.isEmpty) {
-                          return Container(
-                            height: 200,
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.inventory_2_outlined,
-                                    size: 48,
-                                    color: Colors.grey[400],
-                                  ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    "No products available",
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-          
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: GridView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 0.68,
-                                  crossAxisSpacing: 12,
-                                  mainAxisSpacing: 12,
-                                ),
-                            itemCount: productResponse.data.length,
-                            itemBuilder: (context, index) {
-                              final item = productResponse.data[index];
-                              return GestureDetector(
-                                onTap: () {
-                                  Get.to(ProductDetailScreen(product: item));
-                                },
-                                child: ModernProductCard(
-                                  image: item.images.isNotEmpty
-                                      ? item.images.first
-                                      : '',
-                                  title: item.name,
-                                  subtitle: item.shortDescription,
-                                  price: "₹${item.price}",
-                                  offers: item.offers,
-                                  stock: item.stock,
-                                  // addToCart: (){
-                                  //   AuthUtils.runIfLoggedIn(()async{
-                                  //   await cartController.addToCart(
-                                  //     productId: item.id,
-                                  //     quantity: 1,
-                                  //     image: item.images.isNotEmpty
-                                  //         ? item.images.first
-                                  //         : '',
-                                  //     totalPrice: item.price.toDouble(),
-                                  //   );
-                                  //   });
-          
-                                  // },
-                                ),
-                              );
-                            },
+              Obx(() {
+                final productResponse = controller.products.value;
+
+                if (controller.isLoading.value) {
+                  return Container(
+                    height: 200,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
+                  );
+                } else if (productResponse == null ||
+                    productResponse.data.isEmpty) {
+                  return Container(
+                    height: 200,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.inventory_2_outlined,
+                            size: 48,
+                            color: Colors.grey[400],
                           ),
-                        );
-                      }),
-                     
+                          SizedBox(height: 8),
+                          Text(
+                            "No products available",
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.68,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                    ),
+                    itemCount: productResponse.data.length,
+                    itemBuilder: (context, index) {
+                      final item = productResponse.data[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Get.to(ProductDetailScreen(product: item));
+                        },
+                        child: ModernProductCard(
+                          image: item.images.isNotEmpty
+                              ? item.images.first
+                              : '',
+                          title: item.name,
+                          subtitle: item.shortDescription,
+                          price: "₹${item.price}",
+                          offers: item.offers,
+                          stock: item.stock,
+                          // addToCart: (){
+                          //   AuthUtils.runIfLoggedIn(()async{
+                          //   await cartController.addToCart(
+                          //     productId: item.id,
+                          //     quantity: 1,
+                          //     image: item.images.isNotEmpty
+                          //         ? item.images.first
+                          //         : '',
+                          //     totalPrice: item.price.toDouble(),
+                          //   );
+                          //   });
+
+                          // },
+                        ),
+                      );
+                    },
+                  ),
+                );
+              }),
             ],
           ),
         ),
