@@ -1,4 +1,4 @@
-// Enhanced Order Controller with Place Order functionality
+// Enhanced Order Controller with Place Order functionality for both Cart and Single Product
 // Add these methods to your existing OrderController class
 
 import 'dart:convert';
@@ -23,6 +23,7 @@ class PlaceOrderController extends GetxController {
 
   // Observable variables
   final RxBool isPlacingOrder = false.obs;
+  final RxBool isBuyProductLoading = false.obs; // For single product buy now
   final RxInt currentStep = 0.obs;
   final RxString selectedAddressType = ''.obs;
   final RxString selectedPaymentMethod = 'card'.obs;
@@ -31,6 +32,10 @@ class PlaceOrderController extends GetxController {
   );
   final RxList<Map<String, dynamic>> profileAddresses =
       <Map<String, dynamic>>[].obs;
+
+  // Order type tracking
+  final RxString orderType = 'cart'.obs; // 'cart' or 'single'
+  final Rx<Map<String, dynamic>?> singleProductData = Rx<Map<String, dynamic>?>(null);
 
   // Step constants
   static const int STEP_ADDRESS = 0;
@@ -52,7 +57,7 @@ class PlaceOrderController extends GetxController {
     }
   }
 
-  /// Main Place Order function with step-by-step process
+  /// Main Place Order function for CART items with step-by-step process
   Future<void> initiateOrderProcess() async {
     try {
       // Check if user is logged in
@@ -61,6 +66,40 @@ class PlaceOrderController extends GetxController {
         _showLoginDialog();
         return;
       }
+
+      // Set order type to cart
+      orderType.value = 'cart';
+      singleProductData.value = null;
+
+      // Load addresses and show step-by-step dialog
+      await loadProfileAddresses();
+      currentStep.value = STEP_ADDRESS;
+      _showOrderStepsDialog();
+    } catch (e) {
+      HelperFunctions.showSnackbar(
+        title: 'Error',
+        message: e.toString(),
+        backgroundColor: Colors.red,
+      );
+    }
+  }
+
+  /// Buy Now function for SINGLE product with same step-by-step process
+  Future<void> buyProduct({required String productId, required int quantity}) async {
+    try {
+      // Check if user is logged in
+      final isLoggedIn = await SharedPreferencesServices.getIsLoggedIn();
+      if (!isLoggedIn) {
+        _showLoginDialog();
+        return;
+      }
+
+      // Set order type to single product
+      orderType.value = 'single';
+      singleProductData.value = {
+        'productId': productId,
+        'quantity': quantity,
+      };
 
       // Load addresses and show step-by-step dialog
       await loadProfileAddresses();
@@ -85,7 +124,7 @@ class PlaceOrderController extends GetxController {
             children: [
               Icon(Icons.shopping_cart_checkout, color: AppColors.primaryColor),
               SizedBox(width: 8),
-              Text('Place Order'),
+              Obx(() => Text(orderType.value == 'cart' ? 'Place Order' : 'Buy Now')),
             ],
           ),
           content: Container(
@@ -123,9 +162,10 @@ class PlaceOrderController extends GetxController {
 
             // Next/Place Order Button
             Obx(() {
+              final isLoading = orderType.value == 'cart' ? isPlacingOrder.value : isBuyProductLoading.value;
               return ElevatedButton(
-                onPressed: isPlacingOrder.value ? null : _handleNextStep,
-                child: isPlacingOrder.value
+                onPressed: isLoading ? null : _handleNextStep,
+                child: isLoading
                     ? SizedBox(
                         width: 20,
                         height: 20,
@@ -133,7 +173,7 @@ class PlaceOrderController extends GetxController {
                       )
                     : Text(
                         currentStep.value == STEP_PAYMENT
-                            ? 'Place Order'
+                            ? (orderType.value == 'cart' ? 'Place Order' : 'Buy Now')
                             : 'Next',
                       ),
               );
@@ -302,7 +342,7 @@ class PlaceOrderController extends GetxController {
     );
   }
 
-  /// Build payment selection step
+  /// Build payment selection step with dynamic summary
   Widget _buildPaymentSelectionStep() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -347,50 +387,68 @@ class PlaceOrderController extends GetxController {
 
         SizedBox(height: 20),
 
-        // Order Summary
-        Container(
-          padding: EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: AppColors.primaryLight.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+        // Order Summary - Dynamic based on order type
+        Obx(() => _buildOrderSummary()),
+      ],
+    );
+  }
+
+  /// Build dynamic order summary
+  Widget _buildOrderSummary() {
+    double itemsPrice = 0.0;
+    int itemCount = 0;
+    
+    if (orderType.value == 'cart') {
+      itemsPrice = cartController.totalPrice;
+      itemCount = cartController.totalItems;
+    } else if (singleProductData.value != null) {
+      // For single product, you might need to get price from product details
+      // For now, using a placeholder - you should fetch actual product price
+      itemsPrice = 299.0; // Replace with actual product price
+      itemCount = singleProductData.value!['quantity'];
+    }
+
+    return Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.primaryLight.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Order Summary',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Text('Items ($itemCount)'),
+              Text('₹${itemsPrice.toStringAsFixed(2)}'),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [Text('Shipping'), Text('₹50.00')],
+          ),
+          Divider(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Total', style: TextStyle(fontWeight: FontWeight.bold)),
               Text(
-                'Order Summary',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Items (${cartController.totalItems})'),
-                  Text('₹${cartController.totalPrice.toStringAsFixed(2)}'),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [Text('Shipping'), Text('₹50.00')],
-              ),
-              Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Total', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(
-                    '₹${(cartController.totalPrice + 50).toStringAsFixed(2)}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primaryColor,
-                    ),
-                  ),
-                ],
+                '₹${(itemsPrice + 50).toStringAsFixed(2)}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryColor,
+                ),
               ),
             ],
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -411,24 +469,38 @@ class PlaceOrderController extends GetxController {
     }
   }
 
-  /// Place the actual order
+  /// Place the actual order - handles both cart and single product
   Future<void> _placeOrder() async {
     try {
-      isPlacingOrder.value = true;
+      if (orderType.value == 'cart') {
+        isPlacingOrder.value = true;
+      } else {
+        isBuyProductLoading.value = true;
+      }
 
-      final finalCartData = cartController.getFinalCartData();
+      List<Map<String, dynamic>> products = [];
 
-      // Clean product data - only send required fields
-      final products = finalCartData
-          .map(
-            (item) => {
-              'productId': item['productId'].toString(),
-              'quantity': int.parse(item['quantity'].toString()),
-            },
-          )
-          .toList();
+      // Prepare products based on order type
+      if (orderType.value == 'cart') {
+        final finalCartData = cartController.getFinalCartData();
+        products = finalCartData
+            .map(
+              (item) => {
+                'productId': item['productId'].toString(),
+                'quantity': int.parse(item['quantity'].toString()),
+              },
+            )
+            .toList();
+      } else if (singleProductData.value != null) {
+        products = [
+          {
+            'productId': singleProductData.value!['productId'].toString(),
+            'quantity': singleProductData.value!['quantity'],
+          }
+        ];
+      }
 
-      print('Placing order with products: $products'); // Debug log
+      print('Placing ${orderType.value} order with products: $products');
 
       final requestBody = {
         'products': products,
@@ -449,7 +521,7 @@ class PlaceOrderController extends GetxController {
             'Please deliver during evening hours.',
       };
 
-      print('Request body: ${jsonEncode(requestBody)}'); // Debug log
+      print('Request body: ${jsonEncode(requestBody)}');
 
       final response = await _apiServices.requestPostForApi(
         authToken: true,
@@ -465,12 +537,16 @@ class PlaceOrderController extends GetxController {
 
         HelperFunctions.showSnackbar(
           title: 'Success',
-          message: data['message'] ?? 'Order placed successfully',
+          message: data['message'] ?? 
+              (orderType.value == 'cart' ? 'Order placed successfully' : 'Product purchased successfully'),
           backgroundColor: Colors.green,
         );
 
-        // Clear cart and refresh orders
-        // cartController.clearCart();
+        // Clear cart only if it was a cart order
+        if (orderType.value == 'cart') {
+          // cartController.clearCart();
+        }
+        
         await fetchMyOrders();
       } else {
         throw Exception('Failed to place order');
@@ -482,7 +558,11 @@ class PlaceOrderController extends GetxController {
         backgroundColor: Colors.red,
       );
     } finally {
-      isPlacingOrder.value = false;
+      if (orderType.value == 'cart') {
+        isPlacingOrder.value = false;
+      } else {
+        isBuyProductLoading.value = false;
+      }
     }
   }
 
@@ -664,6 +744,9 @@ class PlaceOrderController extends GetxController {
     selectedPaymentMethod.value = 'card';
     selectedAddress.value = null;
     isPlacingOrder.value = false;
+    isBuyProductLoading.value = false;
+    orderType.value = 'cart';
+    singleProductData.value = null;
   }
 
   /// Add to existing fetchMyOrders method (from your original controller)

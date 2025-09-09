@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:momentswrap/controllers/order_controller/place_order_controller.dart';
 import 'package:momentswrap/routes/app_routes.dart';
 import 'package:momentswrap/util/common/auth_utils.dart';
 import 'package:momentswrap/view/home_screen/product_card.dart';
@@ -29,6 +30,9 @@ class ProductDetailScreen extends StatefulWidget {
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   final CartController cartController = Get.put(CartController());
   final OrderController orderController = Get.put(OrderController());
+  final PlaceOrderController placeOrderController = Get.put(
+    PlaceOrderController(),
+  );
   final ProductController productController = Get.find<ProductController>();
   final PageController pageController = PageController();
   int currentImageIndex = 0;
@@ -1803,34 +1807,32 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ),
 
           const SizedBox(width: 16),
-
-          // Buy Now Button
           Expanded(
-            child: Obx(() {
-              return Container(
-                decoration: BoxDecoration(
-                  gradient: AppColors.primaryGradient,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primaryColor.withOpacity(0.4),
-                      blurRadius: 8,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: ElevatedButton.icon(
-                  onPressed: orderController.isBuyProductLoading.value
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: AppColors.primaryGradient,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryColor.withOpacity(0.4),
+                    blurRadius: 8,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Obx(
+                () => ElevatedButton.icon(
+                  onPressed: placeOrderController.isBuyProductLoading.value
                       ? null
                       : () {
                           AuthUtils.runIfLoggedInAndHasAddress(() {
-                            orderController.buyProduct(
+                            placeOrderController.buyProduct(
                               productId: widget.product.id,
                               quantity: 1,
                             );
                           });
                         },
-                  icon: orderController.isBuyProductLoading.value
+                  icon: placeOrderController.isBuyProductLoading.value
                       ? SizedBox(
                           width: 20,
                           height: 20,
@@ -1845,7 +1847,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           color: AppColors.accentColor,
                         ),
                   label: Text(
-                    "Buy Now",
+                    placeOrderController.isBuyProductLoading.value
+                        ? "Processing..."
+                        : "Buy Now",
                     style: TextStyle(
                       color: AppColors.accentColor,
                       fontWeight: FontWeight.w600,
@@ -1863,8 +1867,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     elevation: 0,
                   ),
                 ),
-              );
-            }),
+              ),
+            ),
           ),
         ],
       ),
