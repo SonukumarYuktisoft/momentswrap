@@ -310,7 +310,7 @@ class ProfileScreen extends GetView<ProfileController> {
                                   onTap: () => AuthUtils.runIfLoggedIn(() {
                                     controller.isDeleting.value
                                         ? null
-                                        : controller.showDeleteConfirmation;
+                                        : controller.showDeleteConfirmation();
                                   }),
                                   trailing: controller.isDeleting.value
                                       ? SizedBox(

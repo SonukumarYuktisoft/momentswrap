@@ -4,7 +4,7 @@ import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
 import 'package:momentswrap/models/product_models/product_model.dart';
 import 'package:momentswrap/util/common/auth_utils.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/view/home_screen/product_detail_screen.dart';
+import 'package:momentswrap/view/home_screen/product_detail_screen/product_detail_screen.dart';
 
 class ModernProductCard extends StatelessWidget {
   final String image, title, subtitle, price;

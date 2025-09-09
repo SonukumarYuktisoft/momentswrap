@@ -5,7 +5,7 @@ import 'package:momentswrap/util/common/auth_utils.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
 import 'package:momentswrap/util/helpers/helper_functions.dart';
 import 'package:momentswrap/view/home_screen/product_card.dart';
-import 'package:momentswrap/view/home_screen/product_detail_screen.dart';
+import 'package:momentswrap/view/home_screen/product_detail_screen/product_detail_screen.dart';
 
 class SearchAndFiltersBar extends StatefulWidget {
   SearchAndFiltersBar({Key? key}) : super(key: key);
@@ -38,7 +38,6 @@ class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
     _scrollController.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +109,19 @@ class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
           suffixIcon: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Clear search button
+              // // Clear search button
+              // Obx(
+              //   () => controller.searchQuery.value.isNotEmpty
+              //       ? IconButton(
+              //           onPressed: () {
+              //             searchController.clear();
+              //             controller.updateSearchQuery('');
+              //             searchFocusNode.unfocus();
+              //           },
+              //           icon: Icon(Icons.clear, size: 20),
+              //         )
+              //       : SizedBox.shrink(),
+              // ),
               Obx(
                 () => controller.searchQuery.value.isNotEmpty
                     ? IconButton(
@@ -118,11 +129,13 @@ class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
                           searchController.clear();
                           controller.updateSearchQuery('');
                           searchFocusNode.unfocus();
+                          // Sirf query clear karo, products wahi rahenge
                         },
                         icon: Icon(Icons.clear, size: 20),
                       )
                     : SizedBox.shrink(),
               ),
+
               // Filter button
               Container(
                 margin: EdgeInsets.only(right: 8),
@@ -346,7 +359,8 @@ class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
                     //     );
                     //   });
                     // },
-                    onTap: () => Get.to(() => ProductDetailScreen(product: item),)
+                    onTap: () =>
+                        Get.to(() => ProductDetailScreen(product: item)),
                   );
                 }, childCount: productResponse.data.length),
               ),
@@ -357,8 +371,6 @@ class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
     });
   }
 
-
-  
   void showFilterBottomSheet(BuildContext context) {
     Get.bottomSheet(
       SafeArea(
@@ -594,5 +606,3 @@ class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
     );
   }
 }
-
-

@@ -12,7 +12,7 @@ import 'package:momentswrap/util/common/auth_utils.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
 import 'package:momentswrap/view/home_screen/home_screen.dart';
 import 'package:momentswrap/view/home_screen/product_card.dart';
-import 'package:momentswrap/view/home_screen/product_detail_screen.dart';
+import 'package:momentswrap/view/home_screen/product_detail_screen/product_detail_screen.dart';
 import 'package:momentswrap/view/search_screens/search_screen.dart';
 import 'package:momentswrap/view/widgets/all_products_screen.dart';
 

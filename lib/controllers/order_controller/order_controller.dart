@@ -8,7 +8,6 @@ import 'package:momentswrap/util/constants/app_config.dart';
 import 'package:momentswrap/util/helpers/helper_functions.dart';
 
 class OrderController extends GetxController {
-
   final ApiServices _apiServices = ApiServices();
   final AppConfig _appConfig = AppConfig();
 
@@ -116,7 +115,7 @@ class OrderController extends GetxController {
       dio.Response? response = await _apiServices.getRequest(
         authToken: true,
         url:
-            '$_appConfig/api/customer/list-my-orders',
+            'https://moment-wrap-backend.vercel.app/api/customer/list-my-orders',
       );
 
       if (response != null && response.statusCode == 200) {
@@ -186,8 +185,7 @@ class OrderController extends GetxController {
 
       dio.Response? response = await _apiServices.getRequest(
         authToken: true,
-        url:
-            '$_appConfig/api/customer/get-order-details/$orderId',
+        url: '$_appConfig/api/customer/get-order-details/$orderId',
       );
 
       if (response != null && response.statusCode == 200) {
@@ -232,7 +230,7 @@ class OrderController extends GetxController {
       isLoading.value = true;
 
       final url =
-          '$_appConfig/api/customer/cancel-order/$orderId';
+          'https://moment-wrap-backend.vercel.app/api/customer/cancel-order/$orderId';
 
       dio.Response? response = await _apiServices.requestPutForApi(
         authToken: true,

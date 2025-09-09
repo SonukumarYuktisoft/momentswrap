@@ -1,5 +1,3 @@
 class AppConfig {
-  static const String baseUrl = 'http://moment-wrap-backend.vercel.app';
-
-
+  static const String baseUrl = 'https://moment-wrap-backend.vercel.app';
 }

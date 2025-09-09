@@ -341,22 +341,44 @@ class SearchProductController extends GetxController {
   }
 
   // Debounced search functionality
-  void _debounceSearch() {
-    _searchDebouncer?.cancel();
-    _searchDebouncer = Timer(_searchDebounceDelay, () {
-      if (searchQuery.value.isNotEmpty) {
-        generateSearchSuggestions();
+  // void _debounceSearch() {
+  //   _searchDebouncer?.cancel();
+  //   _searchDebouncer = Timer(_searchDebounceDelay, () {
+  //     if (searchQuery.value.isNotEmpty) {
+  //       generateSearchSuggestions();
+  //       applyLocalFilters();
+  //     } else {
+  //       searchSuggestions.clear();
+  //       if (hasActiveFilters()) {
+  //         applyLocalFilters();
+  //       } else {
+  //         products.value = allProducts.value;
+  //       }
+  //     }
+  //   });
+  // }
+  // Debounced search functionality
+void _debounceSearch() {
+  _searchDebouncer?.cancel();
+  _searchDebouncer = Timer(_searchDebounceDelay, () {
+    if (searchQuery.value.isNotEmpty) {
+      generateSearchSuggestions();
+      applyLocalFilters();
+    } else {
+      searchSuggestions.clear();
+      if (hasActiveFilters()) {
+        applyLocalFilters();
+      } else if (searchQuery.value.isNotEmpty) {
+        // Agar query hai to filter lagao
         applyLocalFilters();
       } else {
-        searchSuggestions.clear();
-        if (hasActiveFilters()) {
-          applyLocalFilters();
-        } else {
-          products.value = allProducts.value;
-        }
+        // Bilkul fresh case me hi reset karo
+        products.value = allProducts.value;
       }
-    });
-  }
+    }
+  });
+}
+
 
   // Generate search suggestions
   void generateSearchSuggestions() {

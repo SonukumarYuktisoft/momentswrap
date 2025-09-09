@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:momentswrap/routes/app_routes.dart';
 import 'package:momentswrap/util/common/auth_utils.dart';
 import 'package:momentswrap/view/home_screen/product_card.dart';
+import 'package:momentswrap/view/home_screen/product_detail_screen/widgets/full_screenImage_viewer.dart';
 import 'package:momentswrap/view/reviews_screen/reviews_screen.dart';
 import 'package:momentswrap/view/search_screens/search_screen.dart';
 import 'package:momentswrap/view/widgets/all_products_screen.dart';
@@ -285,6 +286,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 ],
                               ),
                             ),
+                          // Special Offer Products Section
                           Column(
                             children: [
                               Padding(
@@ -294,7 +296,89 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Similar Products',
+                                      'Special Offer Products',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.textColor,
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        _navigateToAllProducts('offer');
+                                      },
+                                      child: Text(
+                                        'View All',
+                                        style: TextStyle(
+                                          color: AppColors.primaryColor,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              Container(
+                                height: 280,
+                                child: ListView.separated(
+                                  padding: EdgeInsets.symmetric(horizontal: 0),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: productController
+                                      .getSpecialOfferProducts()
+                                      .take(10)
+                                      .length,
+                                  separatorBuilder: (context, index) =>
+                                      SizedBox(width: 12),
+                                  itemBuilder: (context, index) {
+                                    final specialOfferProduct =
+                                        specialOfferProducts[index];
+
+                                    return Container(
+                                      width: 170,
+                                      margin: EdgeInsets.only(bottom: 8),
+                                      child: ReusableProductCard(
+                                        product: specialOfferProduct,
+                                        showAddToCart: false,
+                                        onTap: () {
+                                          print(
+                                            'Tapped on similar product: ${specialOfferProduct.name}',
+                                          );
+                                          print(
+                                            'Product ID: ${specialOfferProduct.id}',
+                                          );
+
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProductDetailScreen(
+                                                    product:
+                                                        specialOfferProduct,
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          // Discount Products Section
+                          Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'discount Products',
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -327,8 +411,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   separatorBuilder: (context, index) =>
                                       SizedBox(width: 12),
                                   itemBuilder: (context, index) {
-                                    final discountProduct = discountProducts[index];
-                                      
+                                    final discountProduct =
+                                        discountProducts[index];
+
                                     return Container(
                                       width: 170,
                                       margin: EdgeInsets.only(bottom: 8),
@@ -361,6 +446,86 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ],
                           ),
                           SizedBox(height: 32),
+                          // High Rating Products Section
+                          Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'High Rating Products',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.textColor,
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        _navigateToAllProducts('high_rating');
+                                      },
+                                      child: Text(
+                                        'View All',
+                                        style: TextStyle(
+                                          color: AppColors.primaryColor,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              Container(
+                                height: 280,
+                                child: ListView.separated(
+                                  padding: EdgeInsets.symmetric(horizontal: 0),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: productController
+                                      .getHighRatingProducts()
+                                      .take(10)
+                                      .length,
+                                  separatorBuilder: (context, index) =>
+                                      SizedBox(width: 12),
+                                  itemBuilder: (context, index) {
+                                    final highRatingProduct = productController
+                                        .getHighRatingProducts()[index];
+
+                                    return Container(
+                                      width: 170,
+                                      margin: EdgeInsets.only(bottom: 8),
+                                      child: ReusableProductCard(
+                                        product: highRatingProduct,
+                                        showAddToCart: false,
+                                        onTap: () {
+                                          print(
+                                            'Tapped on high rating product: ${highRatingProduct.name}',
+                                          );
+                                          print(
+                                            'Product ID: ${highRatingProduct.id}',
+                                          );
+
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProductDetailScreen(
+                                                    product: highRatingProduct,
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ],
@@ -375,74 +540,259 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
+  // Widget _buildImageCarousel() {
+  //   final images = widget.product.images.isNotEmpty ? widget.product.images : [''];
+  //   final hasValidImages = widget.product.images.isNotEmpty;
+
+  //   return SliverToBoxAdapter(
+  //     child: Container(
+  //       height: MediaQuery.of(context).size.height * 0.5,
+  //       color: Colors.grey[100],
+  //       child: Stack(
+  //         children: [
+  //           PageView.builder(
+  //             controller: pageController,
+  //             onPageChanged: (index) => setState(() => currentImageIndex = index),
+  //             itemCount: images.length,
+  //             itemBuilder: (context, index) {
+  //               return Container(
+  //                 padding: EdgeInsets.all(20),
+  //                 child: hasValidImages
+  //                     ? Image.network(
+  //                         images[index],
+  //                         fit: BoxFit.contain,
+  //                         errorBuilder: (_, __, ___) => _buildPlaceholderImage(),
+  //                       )
+  //                     : _buildPlaceholderImage(),
+  //               );
+  //             },
+  //           ),
+
+  //           // Actions
+  //           Positioned(
+  //             top: 20,
+  //             right: 20,
+  //             child: Column(
+  //               children: [
+  //                 // _buildActionButton(Icons.favorite_border, () {}),
+  //                 SizedBox(height: 12),
+  //                 IconButton(
+  //                   icon: Icon(Icons.share_outlined, color: Colors.black),
+  //                   onPressed: () {
+  //                     ShareHelper.shareProduct(
+  //                       name: widget.product.name,
+  //                       price: widget.product.price.toString(),
+  //                       imageUrl: hasValidImages ? widget.product.images.first : "",
+  //                       shareUrl: 'https://moment-wrap-frontend.vercel.app/product/${widget.product.id}',
+  //                     );
+  //                   },
+  //                 )
+  //               ],
+  //             ),
+  //           ),
+
+  //           // Page Indicators
+  //           if (images.length > 1)
+  //             Positioned(
+  //               bottom: 20,
+  //               left: 0,
+  //               right: 0,
+  //               child: Center(
+  //                 child: SmoothPageIndicator(
+  //                   controller: pageController,
+  //                   count: images.length,
+  //                   effect: WormEffect(
+  //                     dotColor: Colors.grey[300]!,
+  //                     activeDotColor: AppColors.primaryColor,
+  //                     dotHeight: 8,
+  //                     dotWidth: 8,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
   Widget _buildImageCarousel() {
-    final images = widget.product.images.isNotEmpty ? widget.product.images : [''];
+    final images = widget.product.images.isNotEmpty
+        ? widget.product.images
+        : [''];
     final hasValidImages = widget.product.images.isNotEmpty;
-    
+
     return SliverToBoxAdapter(
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.5,
+        height:
+            MediaQuery.of(context).size.height *
+            0.6, // Increased height for thumbnails
         color: Colors.grey[100],
-        child: Stack(
+        child: Column(
           children: [
-            PageView.builder(
-              controller: pageController,
-              onPageChanged: (index) => setState(() => currentImageIndex = index),
-              itemCount: images.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  padding: EdgeInsets.all(20),
-                  child: hasValidImages
-                      ? Image.network(
-                          images[index],
-                          fit: BoxFit.contain,
-                          errorBuilder: (_, __, ___) => _buildPlaceholderImage(),
-                        )
-                      : _buildPlaceholderImage(),
-                );
-              },
-            ),
-
-            // Actions
-            Positioned(
-              top: 20,
-              right: 20,
-              child: Column(
+            // Main Image Section
+            Expanded(
+              child: Stack(
                 children: [
-                  // _buildActionButton(Icons.favorite_border, () {}),
-                  SizedBox(height: 12),
-                  IconButton(
-                    icon: Icon(Icons.share_outlined, color: Colors.black),
-                    onPressed: () {
-                      ShareHelper.shareProduct(
-                        name: widget.product.name,
-                        price: widget.product.price.toString(),
-                        imageUrl: hasValidImages ? widget.product.images.first : "",
-                        shareUrl: 'https://moment-wrap-frontend.vercel.app/product/${widget.product.id}',
+                  // Main Image PageView
+                  PageView.builder(
+                    controller: pageController,
+                    onPageChanged: (index) =>
+                        setState(() => currentImageIndex = index),
+                    itemCount: images.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () => _openFullScreenImage(images, index),
+                        child: Container(
+                          padding: EdgeInsets.all(20),
+                          child: hasValidImages
+                              ? Hero(
+                                  tag: 'product_image_$index',
+                                  child: Image.network(
+                                    images[index],
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (_, __, ___) =>
+                                        _buildPlaceholderImage(),
+                                  ),
+                                )
+                              : _buildPlaceholderImage(),
+                        ),
                       );
                     },
-                  )
+                  ),
+
+                  // Actions (Top Right)
+                  Positioned(
+                    top: 20,
+                    right: 20,
+                    child: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.9),
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.favorite_border,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              // Add to favorites functionality
+                            },
+                          ),
+                        ),
+                        SizedBox(height: 12),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.9),
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.share_outlined,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              ShareHelper.shareProduct(
+                                name: widget.product.name,
+                                price: widget.product.price.toString(),
+                                imageUrl: hasValidImages
+                                    ? widget.product.images.first
+                                    : "",
+                                shareUrl:
+                                    'https://moment-wrap-frontend.vercel.app/product/${widget.product.id}',
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Page Indicators (only if no thumbnails or single image)
+                  if (images.length > 1 && images.length <= 3)
+                    Positioned(
+                      bottom: 20,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: SmoothPageIndicator(
+                          controller: pageController,
+                          count: images.length,
+                          effect: WormEffect(
+                            dotColor: Colors.grey[300]!,
+                            activeDotColor: AppColors.primaryColor,
+                            dotHeight: 8,
+                            dotWidth: 8,
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
 
-            // Page Indicators
+            // Thumbnail Section (only show if more than 1 image)
             if (images.length > 1)
-              Positioned(
-                bottom: 20,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: SmoothPageIndicator(
-                    controller: pageController,
-                    count: images.length,
-                    effect: WormEffect(
-                      dotColor: Colors.grey[300]!,
-                      activeDotColor: AppColors.primaryColor,
-                      dotHeight: 8,
-                      dotWidth: 8,
-                    ),
-                  ),
+              Container(
+                height: 80,
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: images.length,
+                  itemBuilder: (context, index) {
+                    final isSelected = currentImageIndex == index;
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() => currentImageIndex = index);
+                        pageController.animateToPage(
+                          index,
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                      child: Container(
+                        width: 64,
+                        height: 64,
+                        margin: EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: isSelected
+                                ? AppColors.primaryColor
+                                : Colors.grey[300]!,
+                            width: isSelected ? 2 : 1,
+                          ),
+                          color: Colors.white,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: hasValidImages
+                              ? Image.network(
+                                  images[index],
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Container(
+                                    color: Colors.grey[200],
+                                    child: Icon(
+                                      Icons.image_not_supported_outlined,
+                                      color: Colors.grey[400],
+                                      size: 20,
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  color: Colors.grey[200],
+                                  child: Icon(
+                                    Icons.image_outlined,
+                                    color: Colors.grey[400],
+                                    size: 20,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
           ],
@@ -451,8 +801,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-
-
+  // Full Screen Image Viewer
+  void _openFullScreenImage(List<String> images, int initialIndex) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) =>
+            FullScreenImageViewer(images: images, initialIndex: initialIndex),
+      ),
+    );
+  }
 
   // Navigation Methods
   void _navigateToAllProducts(String type) {
@@ -484,7 +841,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             .toList();
         title = 'Discount Products';
         break;
-      case 'rating':
+      case 'high_rating':
         products = productController.productsList
             .where(
               (p) =>
@@ -533,6 +890,135 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
+  // Widget _buildProductHeader() {
+  //   return Row(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Expanded(
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: [
+  //             // // Product ID Badge
+  //             // Container(
+  //             //   padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+  //             //   decoration: BoxDecoration(
+  //             //     color: AppColors.primaryLight,
+  //             //     borderRadius: BorderRadius.circular(20),
+  //             //   ),
+  //             //   child: Text(
+  //             //     'ID: ${widget.product.productId}',
+  //             //     style: TextStyle(
+  //             //       fontSize: 12,
+  //             //       fontWeight: FontWeight.w600,
+  //             //       color: AppColors.primaryColor,
+  //             //     ),
+  //             //   ),
+  //             // ),
+  //             SizedBox(height: 12),
+
+  //             Text(
+  //               widget.product.name ?? "No Name",
+  //               style: TextStyle(
+  //                 fontSize: 26,
+  //                 fontWeight: FontWeight.bold,
+  //                 color: AppColors.textColor,
+  //                 height: 1.2,
+  //               ),
+  //             ),
+  //             SizedBox(height: 8),
+
+  //             Text(
+  //               widget.product.category ?? "Uncategorized",
+  //               style: TextStyle(
+  //                 fontSize: 14,
+  //                 color: AppColors.textSecondary,
+  //                 fontWeight: FontWeight.w500,
+  //               ),
+  //             ),
+  //             SizedBox(height: 12),
+
+  //             Container(
+  //               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+  //               decoration: BoxDecoration(
+  //                 gradient: AppColors.primaryGradient,
+  //                 borderRadius: BorderRadius.circular(25),
+  //                 boxShadow: [
+  //                   BoxShadow(
+  //                     color: AppColors.primaryColor.withOpacity(0.3),
+  //                     blurRadius: 8,
+  //                     offset: Offset(0, 4),
+  //                   ),
+  //                 ],
+  //               ),
+  //               child: Text(
+  //                 "₹${widget.product.price ?? 0}",
+  //                 style: TextStyle(
+  //                   fontSize: 22,
+  //                   fontWeight: FontWeight.bold,
+  //                   color: AppColors.accentColor,
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //       Container(
+  //         decoration: BoxDecoration(
+  //           color: AppColors.primaryLight,
+  //           borderRadius: BorderRadius.circular(12),
+  //         ),
+  //         child: IconButton(
+  //           onPressed: () {},
+  //           icon: Icon(
+  //             Icons.favorite_border,
+  //             color: AppColors.primaryColor,
+  //             size: 24,
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  // Add these getter methods to your _ProductDetailScreenState class
+
+  // Get best offer (highest discount)
+  Offer? get bestOffer {
+    if (validOffers.isEmpty) return null;
+    return validOffers.reduce(
+      (best, current) =>
+          current.discountPercentage > best.discountPercentage ? current : best,
+    );
+  }
+
+  // Calculate discounted price with validation
+  double get discountedPrice {
+    if (bestOffer == null) return widget.product.price;
+
+    double originalPrice = widget.product.price;
+    double discountAmount =
+        (originalPrice * bestOffer!.discountPercentage) / 100;
+    double finalPrice = originalPrice - discountAmount;
+
+    // Validation: ensure discounted price is not negative or unrealistic
+    if (finalPrice < 0 || finalPrice >= originalPrice) {
+      return originalPrice;
+    }
+
+    return finalPrice;
+  }
+
+  // Calculate savings amount
+  double get savingsAmount {
+    return widget.product.price - discountedPrice;
+  }
+
+  // Check if product has valid discount
+  bool get hasValidDiscount {
+    return bestOffer != null && savingsAmount > 0;
+  }
+
+  // Updated _buildProductHeader method with discount logic
   Widget _buildProductHeader() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -541,22 +1027,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // // Product ID Badge
-              // Container(
-              //   padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              //   decoration: BoxDecoration(
-              //     color: AppColors.primaryLight,
-              //     borderRadius: BorderRadius.circular(20),
-              //   ),
-              //   child: Text(
-              //     'ID: ${widget.product.productId}',
-              //     style: TextStyle(
-              //       fontSize: 12,
-              //       fontWeight: FontWeight.w600,
-              //       color: AppColors.primaryColor,
-              //     ),
-              //   ),
-              // ),
               SizedBox(height: 12),
 
               Text(
@@ -580,28 +1050,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
               SizedBox(height: 12),
 
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                decoration: BoxDecoration(
-                  gradient: AppColors.primaryGradient,
-                  borderRadius: BorderRadius.circular(25),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primaryColor.withOpacity(0.3),
-                      blurRadius: 8,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Text(
-                  "₹${widget.product.price ?? 0}",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.accentColor,
-                  ),
-                ),
-              ),
+              // Price Section with Discount Logic
+              _buildPriceSection(),
             ],
           ),
         ),
@@ -620,6 +1070,135 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  // New price section widget with discount calculations
+  Widget _buildPriceSection() {
+    return Container(
+      // padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      decoration: BoxDecoration(
+        // gradient: AppColors.primaryGradient,
+        // borderRadius: BorderRadius.circular(25),
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: AppColors.primaryColor.withOpacity(0.3),
+        //     blurRadius: 8,
+        //     offset: Offset(0, 4),
+        //   ),
+        // ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // // Current/Discounted Price
+          // Text(
+          //   hasValidDiscount
+          //       ? "₹${discountedPrice.toStringAsFixed(0)}"
+          //       : "₹${widget.product.price.toStringAsFixed(0)}",
+          //   style: TextStyle(
+          //     fontSize: 22,
+          //     fontWeight: FontWeight.bold,
+          //     color: AppColors.accentColor,
+          //   ),
+          // ),
+
+          // Original Price and Savings (if discount exists)
+          if (hasValidDiscount) ...[
+            SizedBox(height: 4),
+            Row(
+              children: [
+                // Savings Amount
+                Container(
+                  // padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  // decoration: BoxDecoration(
+                  //   color: Colors.green.withOpacity(0.2),
+                  //   borderRadius: BorderRadius.circular(12),
+                  //   border: Border.all(
+                  //     color: Colors.green.withOpacity(0.3),
+                  //     width: 1,
+                  //   ),
+                  // ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.arrow_downward,
+                        // weight: 10,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                        size: 20,
+                      ),
+                      // Text(
+                      //   '${savingsAmount.toStringAsFixed(0)}',
+                      //   style: TextStyle(
+                      //     fontSize: 12,
+                      //     color: Colors.green[800],
+                      //     fontWeight: FontWeight.w600,
+                      //   ),
+                      // ),
+                      Text(
+                        '${bestOffer!.discountPercentage}%',
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.green[800],
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 4),
+
+                // Original Price (crossed out)
+                Text(
+                  "₹${widget.product.price.toStringAsFixed(0)}",
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: AppColors.secondaryColor.withOpacity(0.7),
+                    decoration: TextDecoration.lineThrough,
+                    decorationColor: AppColors.secondaryColor.withOpacity(0.7),
+                    decorationThickness: 2,
+                  ),
+                ),
+                SizedBox(width: 4),
+                // Current/Discounted Price
+                Text(
+                  hasValidDiscount
+                      ? "₹${discountedPrice.toStringAsFixed(0)}"
+                      : "₹${widget.product.price.toStringAsFixed(0)}",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.secondaryColor,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 4),
+            // // Discount Percentage
+            // Container(
+            //   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            //   decoration: BoxDecoration(
+            //     color: Colors.red.withOpacity(0.2),
+            //     borderRadius: BorderRadius.circular(12),
+            //     border: Border.all(
+            //       color: Colors.red.withOpacity(0.3),
+            //       width: 1,
+            //     ),
+            //   ),
+            //   child: Text(
+            //     '${bestOffer!.discountPercentage}% OFF',
+            //     style: TextStyle(
+            //       fontSize: 12,
+            //       color: Colors.red[800],
+            //       fontWeight: FontWeight.bold,
+            //     ),
+            //   ),
+            // ),
+          ],
+        ],
+      ),
     );
   }
 
