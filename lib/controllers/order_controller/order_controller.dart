@@ -4,7 +4,7 @@ import 'package:dio/dio.dart' as dio;
 import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
 import 'package:momentswrap/models/order_model/order_model.dart';
 import 'package:momentswrap/services/api_services.dart';
-import 'package:momentswrap/util/constants/app_config.dart';
+import 'package:momentswrap/services/app_config.dart';
 import 'package:momentswrap/util/helpers/helper_functions.dart';
 
 class OrderController extends GetxController {

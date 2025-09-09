@@ -2,10 +2,11 @@ import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:momentswrap/models/product_models/product_model.dart';
 import 'package:momentswrap/services/api_services.dart';
+import 'package:momentswrap/services/app_config.dart';
 
 class ProductController extends GetxController {
   final ApiServices _apiServices = ApiServices();
-
+  final AppConfig _appConfig = AppConfig();
   final RxBool isLoading = false.obs;
   final Rx<ProductResponse?> products = Rx<ProductResponse?>(null);
   final RxString errorMessage = ''.obs;
@@ -29,7 +30,7 @@ class ProductController extends GetxController {
 
       final dio.Response response = await _apiServices.getRequest(
         authToken: false,
-        url: 'https://moment-wrap-backend.vercel.app/api/customer/list-all-products',
+        url: _appConfig.getListAllProducts,
       );
 
       if (response.statusCode == 200 && response.data != null) {
