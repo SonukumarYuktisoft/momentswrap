@@ -6,6 +6,7 @@ import 'package:momentswrap/util/common/auth_utils.dart';
 import 'package:momentswrap/view/home_screen/product_card.dart';
 import 'package:momentswrap/view/home_screen/product_detail_screen/widgets/full_screenImage_viewer.dart';
 import 'package:momentswrap/view/reviews_screen/reviews_screen.dart';
+import 'package:momentswrap/view/search_screens/reviews_screen/reviews_screen.dart';
 import 'package:momentswrap/view/search_screens/search_screen.dart';
 import 'package:momentswrap/view/widgets/all_products_screen.dart';
 import 'package:momentswrap/view/widgets/horizontal_productList.dart';
@@ -175,6 +176,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                       // Material & Warranty Info
                       _buildProductInfo(),
+                      SizedBox(height: 20),
+                      // Reviews Section
+                      // _buildReviewsSection(),
                       SizedBox(height: 20),
 
                       Column(
@@ -1614,6 +1618,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+
+        Text("Reviews", style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: AppColors.textColor,
+        ),),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -1635,7 +1645,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
               ],
             ),
-            if (widget.product.reviews.length > 3)
+
+
+            if (widget.product.reviews.length > 1)
               TextButton(
                 onPressed: _navigateToReviews,
                 child: Text(
