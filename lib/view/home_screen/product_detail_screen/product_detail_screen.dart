@@ -178,7 +178,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       _buildProductInfo(),
                       SizedBox(height: 20),
                       // Reviews Section
-                      // _buildReviewsSection(),
+                      _buildReviewsSection(),
                       SizedBox(height: 20),
 
                       Column(
@@ -1204,6 +1204,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             //     ),
             //   ),
             // ),
+          ] else ...[
+            // No Discount - Just show the original price
+            Text(
+              "₹${widget.product.price.toStringAsFixed(0)}",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: AppColors.secondaryColor,
+              ),
+            ),
           ],
         ],
       ),
@@ -1614,58 +1624,183 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
+  // Widget _buildReviewsSection() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(
+  //         "Reviews",
+  //         style: TextStyle(
+  //           fontSize: 22,
+  //           fontWeight: FontWeight.bold,
+  //           color: AppColors.textColor,
+  //         ),
+  //       ),
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           Row(
+  //             children: [
+  //               Icon(
+  //                 Icons.rate_review_outlined,
+  //                 color: AppColors.primaryColor,
+  //                 size: 20,
+  //               ),
+  //               SizedBox(width: 8),
+  //               Text(
+  //                 'Reviews (${widget.product.reviews.length})',
+  //                 style: TextStyle(
+  //                   fontSize: 16,
+  //                   fontWeight: FontWeight.bold,
+  //                   color: AppColors.textColor,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+
+  //           // if (widget.product.reviews.length > 1)
+  //           //   TextButton(
+  //           //     onPressed: _navigateToReviews,
+  //           //     child: Text(
+  //           //       'See All',
+  //           //       style: TextStyle(
+  //           //         color: AppColors.primaryColor,
+  //           //         fontWeight: FontWeight.w600,
+  //           //       ),
+  //           //     ),
+  //           //   ),
+  //         ],
+  //       ),
+  //       SizedBox(height: 12),
+  //       ...widget.product.reviews
+  //           .take(5)
+  //           .map(
+  //             (review) => Container(
+  //               margin: EdgeInsets.only(bottom: 12),
+  //               padding: EdgeInsets.all(16),
+  //               decoration: BoxDecoration(
+  //                 color: AppColors.surfaceTint,
+  //                 borderRadius: BorderRadius.circular(12),
+  //                 border: Border.all(
+  //                   color: AppColors.primaryColor.withOpacity(0.1),
+  //                 ),
+  //               ),
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Row(
+  //                     children: [
+  //                       Expanded(
+  //                         child: Text(
+  //                           review.customer,
+  //                           style: TextStyle(
+  //                             fontWeight: FontWeight.bold,
+  //                             color: AppColors.textColor,
+  //                             fontSize: 14,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       Row(
+  //                         children: List.generate(5, (starIndex) {
+  //                           return Icon(
+  //                             starIndex < review.rating
+  //                                 ? Icons.star_rounded
+  //                                 : Icons.star_border_rounded,
+  //                             color: Colors.amber,
+  //                             size: 16,
+  //                           );
+  //                         }),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                   SizedBox(height: 8),
+  //                   Text(
+  //                     review.comment,
+  //                     style: TextStyle(
+  //                       color: AppColors.textSecondary,
+  //                       fontSize: 13,
+  //                       height: 1.4,
+  //                     ),
+  //                   ),
+  //                   SizedBox(height: 4),
+  //                   Text(
+  //                     _formatDate(review.createdAt),
+  //                     style: TextStyle(
+  //                       color: AppColors.textSecondary,
+  //                       fontSize: 11,
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           )
+  //           .toList(),
+  //     ],
+  //   );
+  // }
   Widget _buildReviewsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
-        Text("Reviews", style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-          color: AppColors.textColor,
-        ),),
+        // Text(
+        //   "Reviews",
+        //   style: TextStyle(
+        //     fontSize: 22,
+        //     fontWeight: FontWeight.bold,
+        //     color: AppColors.textColor,
+        //   ),
+        // ),
+        SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.rate_review_outlined,
-                  color: AppColors.primaryColor,
-                  size: 20,
-                ),
+                // Icon(
+                //   Icons.rate_review_outlined,
+                //   color: AppColors.primaryColor,
+                //   size: 20,
+                // ),
                 SizedBox(width: 8),
                 Text(
                   'Reviews (${widget.product.reviews.length})',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textColor,
                   ),
                 ),
               ],
             ),
-
-
-            if (widget.product.reviews.length > 1)
-              TextButton(
-                onPressed: _navigateToReviews,
-                child: Text(
-                  'See All',
-                  style: TextStyle(
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
+            // // Agar reviews > 3 to "See All" show karna
+            // if (widget.product.reviews.length > 3)
+            //   TextButton(
+            //     onPressed: _navigateToReviews,
+            //     child: Text(
+            //       'See All',
+            //       style: TextStyle(
+            //         color: AppColors.primaryColor,
+            //         fontWeight: FontWeight.w600,
+            //       ),
+            //     ),
+            //   ),
           ],
         ),
         SizedBox(height: 12),
-        ...widget.product.reviews
-            .take(3)
-            .map(
-              (review) => Container(
-                margin: EdgeInsets.only(bottom: 12),
+
+        /// 👇 Horizontal Scrollable Reviews
+        SizedBox(
+          height: 140, // fixed height for horizontal list
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: widget.product.reviews
+                .take(5)
+                .length, // max 5 reviews show
+            separatorBuilder: (_, __) => SizedBox(width: 12),
+            itemBuilder: (context, index) {
+              final review = widget.product.reviews[index];
+              return Container(
+                width: 250, // card width
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceTint,
@@ -1687,6 +1822,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               color: AppColors.textColor,
                               fontSize: 14,
                             ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         Row(
@@ -1703,15 +1839,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       ],
                     ),
                     SizedBox(height: 8),
-                    Text(
-                      review.comment,
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 13,
-                        height: 1.4,
+                    Expanded(
+                      child: Text(
+                        review.comment,
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 13,
+                          height: 1.4,
+                        ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    SizedBox(height: 6),
                     Text(
                       _formatDate(review.createdAt),
                       style: TextStyle(
@@ -1721,9 +1861,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                   ],
                 ),
-              ),
-            )
-            .toList(),
+              );
+            },
+          ),
+        ),
       ],
     );
   }
