@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:momentswrap/controllers/order_controller/order_controller.dart';
+import 'package:momentswrap/controllers/review_controller/review_controller.dart';
 import 'package:momentswrap/models/order_model/order_model.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
+import 'package:momentswrap/view/order_screen/widgets/review_button.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
   final String orderId;
@@ -15,6 +17,7 @@ class OrderDetailsScreen extends StatefulWidget {
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   final OrderController _orderController = Get.find<OrderController>();
+  final ReviewController _reviewController = Get.put(ReviewController());
 
   @override
   void initState() {
@@ -602,7 +605,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               final orderProduct = entry.value;
               return Column(
                 children: [
-                  _buildModernProductItem(orderProduct),
+                  _buildModernProductItem(
+                    orderProduct,
+                    order,
+                    orderProduct.product,
+                  ),
                   if (index < order.products.length - 1)
                     Container(
                       height: 1,
@@ -626,9 +633,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     );
   }
 
-  Widget _buildModernProductItem(OrderProduct orderProduct) {
+  Widget _buildModernProductItem(
+    OrderProduct orderProduct,
+    OrderModel order,
+    ProductInfo productInfo,
+  ) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.surfaceTint,
         borderRadius: BorderRadius.circular(12),
@@ -637,6 +648,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Product Image
           Container(
             width: 80,
             height: 80,
@@ -647,7 +659,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 BoxShadow(
                   color: AppColors.primaryColor.withOpacity(0.1),
                   blurRadius: 4,
-                  offset: Offset(0, 2),
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
@@ -682,10 +694,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   ),
           ),
           const SizedBox(width: 16),
+
+          // Product Details
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Product Name
                 Text(
                   orderProduct.product.name,
                   style: TextStyle(
@@ -697,6 +712,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 6),
+
+                // Short Description
                 if (orderProduct.product.shortDescription.isNotEmpty) ...[
                   Text(
                     orderProduct.product.shortDescription,
@@ -709,6 +726,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   ),
                   const SizedBox(height: 12),
                 ],
+
+                // Quantity & Price
                 Row(
                   children: [
                     Container(
@@ -728,7 +747,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             size: 12,
                             color: AppColors.secondaryColor,
                           ),
-                          SizedBox(width: 4),
+                          const SizedBox(width: 4),
                           Text(
                             'Qty: ${orderProduct.quantity}',
                             style: TextStyle(
@@ -753,7 +772,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                         ),
                         const SizedBox(height: 2),
                         Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             horizontal: 8,
                             vertical: 2,
                           ),
@@ -774,6 +793,21 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     ),
                   ],
                 ),
+
+                // Review Button
+                if (order.orderStatus.toLowerCase() == 'delivered') ...[
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 44,
+
+                    child: ReviewButton(
+                      orderProduct: orderProduct,
+                      order: order,
+                      productInfo: productInfo,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),

@@ -125,26 +125,28 @@ class _WriteReviewWidgetState extends State<WriteReviewWidget> with SingleTicker
       return;
     }
 
-    bool success;
-    if (widget.isEdit) {
-      success = await widget.reviewController.updateReview(
-        productId: widget.productId,
-        rating: _rating,
-        comment: _commentController.text.trim(),
-      );
-    } else {
-      success = await widget.reviewController.addReview(
-        productId: widget.productId,
-        rating: _rating,
-        comment: _commentController.text.trim(),
-      );
+    // bool success;
+    // if (widget.isEdit) {
+    //   success = await widget.reviewController.updateReview(
+    //     productId: widget.productId,
+    //     rating: _rating,
+    //     comment: _commentController.text.trim(),
+    //   );
+    // }
+    // //  else {
+    // //   success = await widget.reviewController.addReview(
+    // //     productId: widget.productId,
+    // //     rating: _rating,
+    // //     comment: _commentController.text.trim(),
+    // //     orderId: widget.existingReview?.orderId ?? '',
+    // //   );
     }
 
-    if (success) {
-      widget.onSubmitted?.call();
-      Get.back();
-    }
-  }
+  //   if (success) {
+  //     widget.onSubmitted?.call();
+  //     Get.back();
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

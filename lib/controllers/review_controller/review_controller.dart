@@ -111,10 +111,11 @@ class ReviewController extends GetxController {
   }
 
   /// Add a new review
-  Future<bool> addReview({
+  Future<void> addReview({
     required String productId,
     required int rating,
     required String comment,
+    required String orderId,
   }) async {
     try {
       isSubmitting.value = true;
@@ -127,20 +128,24 @@ class ReviewController extends GetxController {
       }
       
       if (comment.trim().isEmpty) {
+        
         throw Exception('Review comment cannot be empty');
       }
 
-      final response = await _apiServices.postRequest(
-        url: 'https://moment-wrap-backend.vercel.app/api/customer/add-review/$productId',
+      final response = await _apiServices.requestPostForApi(
+        url: 'https://moment-wrap-backend.vercel.app/api/customer/add-review',
         authToken: true,
-        data: {
+        dictParameter: {
           'rating': rating,
           'comment': comment.trim(),
+          'orderId': orderId,
+          'productId': productId,
+
         },
       );
 
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        final data = response.data;
+      if (response != null && (response.statusCode == 201 || response.statusCode == 200)) {
+        final data = response.data ?? {};
         if (data['success'] == true) {
           Get.snackbar(
             'Success',
@@ -153,12 +158,12 @@ class ReviewController extends GetxController {
           
           // Refresh product reviews if we're viewing the same product
           await getProductReviews(productId);
-          return true;
+          // return true;
         } else {
           throw Exception(data['message'] ?? 'Failed to add review');
         }
       } else {
-        final data = response.data;
+        final data = response?.data ?? {};
         throw Exception(data['message'] ?? 'Failed to add review');
       }
     } catch (e) {
@@ -182,14 +187,14 @@ class ReviewController extends GetxController {
         snackPosition: SnackPosition.TOP,
         duration: Duration(seconds: 4),
       );
-      return false;
+      // return false;
     } finally {
       isSubmitting.value = false;
     }
   }
 
   /// Update an existing review
-  Future<bool> updateReview({
+  Future<void> updateReview({
     required String productId,
     required int rating,
     required String comment,
@@ -209,7 +214,7 @@ class ReviewController extends GetxController {
       }
 
       final response = await _apiServices.putRequest(
-        url: '/api/customer/update-review/$productId',
+        url: 'https://moment-wrap-backend.vercel.app/api/customer/update-review/$productId',
         authToken: true,
         data: {
           'rating': rating,
@@ -229,10 +234,10 @@ class ReviewController extends GetxController {
             duration: Duration(seconds: 3),
           );
           
-          // Refresh reviews
-          await getProductReviews(productId);
-          await getMyReviews();
-          return true;
+          // // Refresh reviews
+          // await getProductReviews(productId);
+          // await getMyReviews();
+          // return true;
         } else {
           throw Exception(data['message'] ?? 'Failed to update review');
         }
@@ -259,7 +264,7 @@ class ReviewController extends GetxController {
         snackPosition: SnackPosition.TOP,
         duration: Duration(seconds: 4),
       );
-      return false;
+      // return false;
     } finally {
       isSubmitting.value = false;
     }

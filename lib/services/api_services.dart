@@ -38,31 +38,31 @@ class ApiServices {
     throw Exception('Failed to load data');
   }
 
-  //post request
-  Future<Response> postRequest({
-    required String url,
-    Map<String, dynamic>? queryParameters,
-    required bool authToken,
-    Map<String, dynamic>? data,
-  }) async {
-    try {
-      final response = await _dio.post(
-        url,
-        data: data,
-        options: Options(
-          headers: await getHeader(authToken),
+  // //post request
+  // Future<Response> postRequest({
+  //   required String url,
+  //   Map<String, dynamic>? queryParameters,
+  //   required bool authToken,
+  //   Map<String, dynamic>? data,
+  // }) async {
+  //   try {
+  //     final response = await _dio.post(
+  //       url,
+  //       data: data,
+  //       options: Options(
+  //         headers: await getHeader(authToken),
 
-          sendTimeout: const Duration(minutes: 1),
-          receiveTimeout: const Duration(minutes: 1),
-        ),
-      );
-      log("postRequest response = ${response.data}");
-      return response;
-    } catch (e) {
-      log("postRequest error = $e");
-      rethrow;
-    }
-  }
+  //         sendTimeout: const Duration(minutes: 1),
+  //         receiveTimeout: const Duration(minutes: 1),
+  //       ),
+  //     );
+  //     log("postRequest response = ${response.data}");
+  //     return response;
+  //   } catch (e) {
+  //     log("postRequest error = $e");
+  //     rethrow;
+  //   }
+  // }
 
   /// POST
   Future<Response?> requestPostForApi({
@@ -149,6 +149,13 @@ class ApiServices {
     Map<String, dynamic>? data,
   }) async {
     try {
+      print("putRequest url = $url");
+      print("putRequest data = $data");
+      print("putRequest queryParameters  = $queryParameters");
+      // print("putRequest data = $authToken");
+
+
+
       final response = await _dio.put(
         url,
         data: jsonEncode(data),

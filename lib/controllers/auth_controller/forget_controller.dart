@@ -26,14 +26,14 @@ class ForgetController extends GetxController {
     if (forgetFormKey.currentState?.validate() ?? false) {
       isLoading.value = true;
       try {
-        dio.Response response = await _apiServices.postRequest(
+        dio.Response? response = await _apiServices.requestPostForApi(
           authToken: false,
           url: 'https://moments-wrap-backend.vercel.app/user/forget-password',
-          data: {'email': emailController.text.trim()},
+          dictParameter: {'email': emailController.text.trim()},
         );
-        if (response.statusCode == 200 && response.data != null) {
-          final responseData = LoginModel.fromJson(response.data);
-          if (responseData.message == ["Login successful"]) {
+        if (response?.statusCode == 200 && response?.data != null) {
+          final responseData = LoginModel.fromJson(response!.data);
+          if (responseData.message == "Login successful") {
             Get.snackbar(
               'Forget Password',
               'Welcome ${responseData.customer.firstName} ${responseData.customer.lastName}!',
@@ -58,13 +58,13 @@ class ForgetController extends GetxController {
           } else {
             Get.snackbar(
               'Login Error',
-              response.statusMessage ?? 'Unknown error',
+              response?.statusMessage ?? 'Unknown error',
             );
           }
         } else {
           Get.snackbar(
             'Login Error',
-            response.statusMessage ?? 'Unknown error',
+            response?.statusMessage ?? 'Unknown error',
           );
         }
       } catch (e) {

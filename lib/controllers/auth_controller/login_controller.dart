@@ -26,17 +26,17 @@ class LoginController extends GetxController {
     if (loginFormKey.currentState?.validate() ?? false) {
       isLoading.value = true;
       try {
-        dio.Response response = await _apiServices.postRequest(
+        dio.Response? response = await _apiServices.requestPostForApi(
           authToken: false,
           url:
               'https://moment-wrap-backend.vercel.app/api/customer/login-customer',
-          data: {
+          dictParameter: {
             'email': emailController.text.trim(),
             'password': passwordController.text.trim(),
           },
         );
-        if (response.statusCode == 200 && response.data != null) {
-          final responseData = LoginModel.fromJson(response.data);
+        if (response?.statusCode == 200 && response?.data != null) {
+          final responseData = LoginModel.fromJson(response!.data);
           if (responseData.message == 'Login successful') {
             Get.snackbar(
               'Login Success',
@@ -51,7 +51,8 @@ class LoginController extends GetxController {
                 '${responseData.customer.firstName} ${responseData.customer.lastName}';
             List<Map<String, dynamic>> addresses =
                 (responseData.customer.addresses as List)
-                    .cast<Map<String, dynamic>>();
+                    .map((e) => Map<String, dynamic>.from(e as Map))
+                    .toList();
             String userPhone = responseData.customer.phone;
             await SharedPreferencesServices.setJwtToken(userToken);
             await SharedPreferencesServices.setUserName(userName);
@@ -69,13 +70,13 @@ class LoginController extends GetxController {
           } else {
             Get.snackbar(
               'Login Error',
-              response.statusMessage ?? 'Unknown error',
+              response?.statusMessage ?? 'Unknown error',
             );
           }
         } else {
           Get.snackbar(
             'Login Error',
-            response.statusMessage ?? 'Unknown error',
+            response?.statusMessage ?? 'Unknown error',
           );
         }
       } catch (e) {
@@ -84,7 +85,8 @@ class LoginController extends GetxController {
           e.toString(),
           backgroundColor: Colors.red.withOpacity(0.5),
         );
-        print(e);
+        // Use logging framework instead of print
+        debugPrint(e.toString());
       } finally {
         isLoading.value = false;
       }
@@ -95,43 +97,43 @@ class LoginController extends GetxController {
     isLoading.value = true;
     try {
       final token = await SharedPreferencesServices.getJwtToken();
-      dio.Response response = await _apiServices.postRequest(
+      dio.Response? response = await _apiServices.requestPostForApi(
         authToken: true,
         url:
             'https://moment-wrap-backend.vercel.app/api/customer/logout-customer',
-        data: {},
+        dictParameter: {},
       );
-      if (response.statusCode == 200 && response.data != null) {
-        final success = response.data['success'] == true;
+      if (response?.statusCode == 200 && response?.data != null) {
+        final success = response?.data['success'] == true;
         if (success) {
           await SharedPreferencesServices.clearAll();
           Get.snackbar(
             'Logout Success',
-            response.data['message'] ?? 'Logged out successfully',
-            backgroundColor: Colors.green.withOpacity(0.5),
+            response?.data['message'] ?? 'Logged out successfully',
+            backgroundColor: const Color.fromRGBO(76, 175, 80, 0.5), // Colors.green.withValues(76, 175, 80, 0.5)
           );
           Get.offAllNamed(AppRoutes.loginScreen);
         } else {
           Get.snackbar(
             'Logout Error',
-            response.data['message'] ?? 'Unknown error',
-            backgroundColor: Colors.red.withOpacity(0.5),
+            response?.data['message'] ?? 'Unknown error',
+            backgroundColor: const Color.fromRGBO(244, 67, 54, 0.5), // Colors.red.withValues(244, 67, 54, 0.5)
           );
         }
       } else {
         Get.snackbar(
           'Logout Error',
-          response.statusMessage ?? 'Unknown error',
-          backgroundColor: Colors.red.withOpacity(0.5),
+          response?.statusMessage ?? 'Unknown error',
+          backgroundColor: const Color.fromRGBO(244, 67, 54, 0.5), // Colors.red.withValues(244, 67, 54, 0.5)
         );
       }
     } catch (e) {
       Get.snackbar(
         'Logout Error',
         e.toString(),
-        backgroundColor: Colors.red.withOpacity(0.5),
+        backgroundColor: const Color.fromRGBO(244, 67, 54, 0.5), // Colors.red.withValues(244, 67, 54, 0.5)
       );
-      print(e);
+      debugPrint(e.toString());
     } finally {
       isLoading.value = false;
     }
