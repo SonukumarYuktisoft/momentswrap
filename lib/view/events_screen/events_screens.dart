@@ -10,6 +10,7 @@ import 'package:momentswrap/controllers/profile_controller/profile_controller.da
 import 'package:momentswrap/routes/app_routes.dart';
 import 'package:momentswrap/util/common/auth_utils.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
+import 'package:momentswrap/util/constants/simmers/horizontal_productList_shimmer.dart';
 import 'package:momentswrap/view/home_screen/home_screen.dart';
 import 'package:momentswrap/view/home_screen/product_card.dart';
 import 'package:momentswrap/view/home_screen/product_detail_screen/product_detail_screen.dart';
@@ -49,13 +50,16 @@ class EventsScreens extends StatelessWidget {
               final productResponse = controller.products.value;
 
               if (controller.isLoading.value) {
-                return Container(
-                  height: 200,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.primaryColor,
-                    ),
-                  ),
+                return Column(
+                  children: [
+                    HorizontalProductListShimmer(),
+                    SizedBox(height: 16),
+                    HorizontalProductListShimmer(),
+                    SizedBox(height: 16),
+                    HorizontalProductListShimmer(),
+                    SizedBox(height: 16),
+                    HorizontalProductListShimmer(),
+                  ],
                 );
               } else if (productResponse == null ||
                   productResponse.data.isEmpty) {

@@ -59,10 +59,9 @@ class ProductController extends GetxController {
             .toList();
 
         products.value = ProductResponse(data: productsList);
-        
+
         // Extract unique categories
         _extractCategories(productsList);
-        
       } else {
         throw Exception("Failed to load products: ${response.statusCode}");
       }
@@ -86,14 +85,20 @@ class ProductController extends GetxController {
   }
 
   // Get similar products (same category, different product)
-  List<ProductModel> getSimilarProducts(String currentProductId, String category, {int limit = 10}) {
+  List<ProductModel> getSimilarProducts(
+    String currentProductId,
+    String category, {
+    int limit = 10,
+  }) {
     if (!hasProducts) return [];
-    
+
     return productsList
-        .where((product) => 
-          product.category.toLowerCase() == category.toLowerCase() && 
-          product.id != currentProductId &&
-          product.isActive)
+        .where(
+          (product) =>
+              product.category.toLowerCase() == category.toLowerCase() &&
+              product.id != currentProductId &&
+              product.isActive,
+        )
         .take(limit)
         .toList();
   }
@@ -101,23 +106,30 @@ class ProductController extends GetxController {
   // Get products with valid offers/discounts
   List<ProductModel> getDiscountProducts({int limit = 10}) {
     if (!hasProducts) return [];
-    
+
     return productsList
-        .where((product) => 
-          product.offers.any((offer) => offer.validTill.isAfter(DateTime.now())) &&
-          product.isActive)
+        .where(
+          (product) =>
+              product.offers.any(
+                (offer) => offer.validTill.isAfter(DateTime.now()),
+              ) &&
+              product.isActive,
+        )
         .take(limit)
         .toList();
   }
 
   // Get high-rating products (4+ stars)
-  List<ProductModel> getHighRatingProducts({int limit = 10, double minRating = 4.0}) {
+  List<ProductModel> getHighRatingProducts({
+    int limit = 10,
+    double minRating = 4.0,
+  }) {
     if (!hasProducts) return [];
-    
+
     return productsList
-        .where((product) => 
-          product.averageRating >= minRating &&
-          product.isActive)
+        .where(
+          (product) => product.averageRating >= minRating && product.isActive,
+        )
         .toList()
       ..sort((a, b) => b.averageRating.compareTo(a.averageRating))
       ..take(limit);
@@ -126,34 +138,34 @@ class ProductController extends GetxController {
   // Get products with special offers
   List<ProductModel> getSpecialOfferProducts({int limit = 10}) {
     if (!hasProducts) return [];
-    
+
     return productsList
-        .where((product) => 
-          product.offers.isNotEmpty &&
-          product.isActive)
+        .where((product) => product.offers.isNotEmpty && product.isActive)
         .toList()
-      ..sort((a, b) => b.maxDiscountPercentage.compareTo(a.maxDiscountPercentage))
+      ..sort(
+        (a, b) => b.maxDiscountPercentage.compareTo(a.maxDiscountPercentage),
+      )
       ..take(limit);
   }
 
   // Get products by category
   List<ProductModel> getProductsByCategory(String category) {
     if (!hasProducts) return [];
-    
+
     return productsList
-        .where((product) => 
-          product.category.toLowerCase() == category.toLowerCase() &&
-          product.isActive)
+        .where(
+          (product) =>
+              product.category.toLowerCase() == category.toLowerCase() &&
+              product.isActive,
+        )
         .toList();
   }
 
   // Get trending/popular products (based on reviews count and rating)
   List<ProductModel> getTrendingProducts({int limit = 10}) {
     if (!hasProducts) return [];
-    
-    return productsList
-        .where((product) => product.isActive)
-        .toList()
+
+    return productsList.where((product) => product.isActive).toList()
       ..sort((a, b) {
         // Sort by combination of review count and rating
         double scoreA = (a.reviews.length * 0.3) + (a.averageRating * 0.7);
@@ -166,10 +178,8 @@ class ProductController extends GetxController {
   // Get recently added products
   List<ProductModel> getRecentProducts({int limit = 10}) {
     if (!hasProducts) return [];
-    
-    return productsList
-        .where((product) => product.isActive)
-        .toList()
+
+    return productsList.where((product) => product.isActive).toList()
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt))
       ..take(limit);
   }
@@ -177,11 +187,9 @@ class ProductController extends GetxController {
   // Get products in stock
   List<ProductModel> getInStockProducts({int limit = 10}) {
     if (!hasProducts) return [];
-    
+
     return productsList
-        .where((product) => 
-          product.stock > 0 &&
-          product.isActive)
+        .where((product) => product.stock > 0 && product.isActive)
         .take(limit)
         .toList();
   }
@@ -189,30 +197,37 @@ class ProductController extends GetxController {
   // Get low stock products (for admin/alerts)
   List<ProductModel> getLowStockProducts({int threshold = 5}) {
     if (!hasProducts) return [];
-    
+
     return productsList
-        .where((product) => 
-          product.stock > 0 && 
-          product.stock <= threshold &&
-          product.isActive)
+        .where(
+          (product) =>
+              product.stock > 0 &&
+              product.stock <= threshold &&
+              product.isActive,
+        )
         .toList();
   }
 
   // Search products by name, description, or category
   List<ProductModel> searchProducts(String query) {
     if (!hasProducts || query.isEmpty) return [];
-    
+
     final lowercaseQuery = query.toLowerCase();
-    
+
     return productsList
-        .where((product) => 
-          product.isActive && (
-            product.name.toLowerCase().contains(lowercaseQuery) ||
-            product.shortDescription.toLowerCase().contains(lowercaseQuery) ||
-            product.longDescription.toLowerCase().contains(lowercaseQuery) ||
-            product.category.toLowerCase().contains(lowercaseQuery) ||
-            product.material.toLowerCase().contains(lowercaseQuery)
-          ))
+        .where(
+          (product) =>
+              product.isActive &&
+              (product.name.toLowerCase().contains(lowercaseQuery) ||
+                  product.shortDescription.toLowerCase().contains(
+                    lowercaseQuery,
+                  ) ||
+                  product.longDescription.toLowerCase().contains(
+                    lowercaseQuery,
+                  ) ||
+                  product.category.toLowerCase().contains(lowercaseQuery) ||
+                  product.material.toLowerCase().contains(lowercaseQuery)),
+        )
         .toList();
   }
 
@@ -226,11 +241,13 @@ class ProductController extends GetxController {
     bool? hasOffers,
   }) {
     if (!hasProducts) return [];
-    
+
     var filtered = productsList.where((product) => product.isActive);
 
     if (category != null && category.isNotEmpty) {
-      filtered = filtered.where((p) => p.category.toLowerCase() == category.toLowerCase());
+      filtered = filtered.where(
+        (p) => p.category.toLowerCase() == category.toLowerCase(),
+      );
     }
 
     if (minPrice != null) {
@@ -250,8 +267,9 @@ class ProductController extends GetxController {
     }
 
     if (hasOffers == true) {
-      filtered = filtered.where((p) => 
-        p.offers.any((offer) => offer.validTill.isAfter(DateTime.now())));
+      filtered = filtered.where(
+        (p) => p.offers.any((offer) => offer.validTill.isAfter(DateTime.now())),
+      );
     }
 
     return filtered.toList();
@@ -260,7 +278,7 @@ class ProductController extends GetxController {
   // Sort products by various criteria
   List<ProductModel> sortProducts(List<ProductModel> products, String sortBy) {
     final sortedList = List<ProductModel>.from(products);
-    
+
     switch (sortBy.toLowerCase()) {
       case 'name':
       case 'name_asc':
@@ -299,17 +317,19 @@ class ProductController extends GetxController {
         });
         break;
       case 'discount':
-        sortedList.sort((a, b) => b.maxDiscountPercentage.compareTo(a.maxDiscountPercentage));
+        sortedList.sort(
+          (a, b) => b.maxDiscountPercentage.compareTo(a.maxDiscountPercentage),
+        );
         break;
     }
-    
+
     return sortedList;
   }
 
   // Get product by ID
   ProductModel? getProductById(String id) {
     if (!hasProducts) return null;
-    
+
     try {
       return productsList.firstWhere((product) => product.id == id);
     } catch (e) {
@@ -321,16 +341,16 @@ class ProductController extends GetxController {
   List<ProductModel> getRecommendedProducts({int limit = 10}) {
     // This is a simple implementation. In a real app, you'd use user behavior data,
     // purchase history, viewed products, etc., to generate personalized recommendations.
-    
+
     if (!hasProducts) return [];
-    
+
     // For now, return a mix of trending and highly rated products
     final trending = getTrendingProducts(limit: limit ~/ 2);
     final highRated = getHighRatingProducts(limit: limit ~/ 2);
-    
+
     final Set<String> addedIds = {};
     final List<ProductModel> recommendations = [];
-    
+
     // Add trending products first
     for (var product in trending) {
       if (!addedIds.contains(product.id)) {
@@ -338,7 +358,7 @@ class ProductController extends GetxController {
         addedIds.add(product.id);
       }
     }
-    
+
     // Fill remaining slots with high-rated products
     for (var product in highRated) {
       if (recommendations.length >= limit) break;
@@ -347,7 +367,7 @@ class ProductController extends GetxController {
         addedIds.add(product.id);
       }
     }
-    
+
     return recommendations;
   }
 
@@ -368,21 +388,28 @@ class ProductController extends GetxController {
   }
 
   // Helper methods for UI
-  bool get hasProducts => products.value != null && products.value!.data.isNotEmpty;
+  bool get hasProducts =>
+      products.value != null && products.value!.data.isNotEmpty;
   int get totalProducts => products.value?.data.length ?? 0;
   List<ProductModel> get productsList => products.value?.data ?? [];
-  
+
   // Get statistics
   Map<String, dynamic> getProductStats() {
     if (!hasProducts) return {};
-    
+
     final inStock = productsList.where((p) => p.stock > 0).length;
     final outOfStock = productsList.where((p) => p.stock == 0).length;
-    final withOffers = productsList.where((p) => 
-      p.offers.any((offer) => offer.validTill.isAfter(DateTime.now()))).length;
-    final avgRating = productsList.isEmpty ? 0.0 : 
-      productsList.map((p) => p.averageRating).reduce((a, b) => a + b) / productsList.length;
-    
+    final withOffers = productsList
+        .where(
+          (p) =>
+              p.offers.any((offer) => offer.validTill.isAfter(DateTime.now())),
+        )
+        .length;
+    final avgRating = productsList.isEmpty
+        ? 0.0
+        : productsList.map((p) => p.averageRating).reduce((a, b) => a + b) /
+              productsList.length;
+
     return {
       'total': totalProducts,
       'inStock': inStock,

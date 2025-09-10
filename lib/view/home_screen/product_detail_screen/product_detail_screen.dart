@@ -10,6 +10,7 @@ import 'package:momentswrap/view/search_screens/reviews_screen/reviews_screen.da
 import 'package:momentswrap/view/search_screens/search_screen.dart';
 import 'package:momentswrap/view/widgets/all_products_screen.dart';
 import 'package:momentswrap/view/widgets/horizontal_productList.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
 import 'package:momentswrap/controllers/order_controller/order_controller.dart';
@@ -1274,6 +1275,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ],
         ),
         SizedBox(height: 12),
+
+        /// 👇 Offers List
         ...validOffers
             .map(
               (offer) => Container(
@@ -1311,14 +1314,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            offer.offerTitle,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textColor,
-                              fontSize: 14,
+                          /// 👇 Shimmer on offer title
+                          Shimmer.fromColors(
+                            baseColor: Colors.green,
+                            highlightColor: Colors.lightGreenAccent,
+                            child: Text(
+                              offer.offerTitle,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textColor,
+                                fontSize: 14,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
+
                           if (offer.offerDescription.isNotEmpty)
                             Text(
                               offer.offerDescription,
@@ -1327,6 +1337,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 fontSize: 12,
                               ),
                             ),
+
                           Text(
                             'Valid till ${_formatDate(offer.validTill)}',
                             style: TextStyle(

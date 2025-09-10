@@ -10,6 +10,7 @@ import 'package:momentswrap/routes/app_routes.dart';
 import 'package:momentswrap/util/common/auth_utils.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
 import 'package:momentswrap/util/constants/app_images_string.dart';
+import 'package:momentswrap/util/constants/simmers/horizontal_productList_shimmer.dart';
 import 'package:momentswrap/view/events_screen/events_screens.dart';
 import 'package:momentswrap/view/home_screen/product_card.dart';
 import 'package:momentswrap/view/home_screen/product_detail_screen/product_detail_screen.dart';
@@ -254,13 +255,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     // Product Sections
                     Obx(() {
                       if (controller.isLoading.value) {
-                        return Container(
-                          height: 200,
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.primaryColor,
-                            ),
-                          ),
+                        // return Container(
+                        //   height: 200,
+                        //   child: Center(
+                        //     child: CircularProgressIndicator(
+                        //       color: AppColors.primaryColor,
+                        //     ),
+                        //   ),
+                        // );
+                        return Column(
+                          children: [
+                            HorizontalProductListShimmer(),
+                            SizedBox(height: 16),
+                            HorizontalProductListShimmer(),
+                            SizedBox(height: 16),
+                            HorizontalProductListShimmer(),
+                            SizedBox(height: 16),
+                            HorizontalProductListShimmer(),
+                          ],
                         );
                       }
 

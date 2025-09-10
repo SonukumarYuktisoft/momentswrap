@@ -336,4 +336,3 @@ class OrderController extends GetxController {
     return order.products.isNotEmpty ? order.products.first : null;
   }
 }
-
