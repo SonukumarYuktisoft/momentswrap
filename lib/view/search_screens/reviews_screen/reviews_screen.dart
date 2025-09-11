@@ -21,7 +21,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
 
   List<Review> get sortedReviews {
     List<Review> reviews = List.from(widget.product.reviews);
-    
+
     switch (_sortBy) {
       case 'newest':
         reviews.sort((a, b) => b.createdAt.compareTo(a.createdAt));
@@ -36,7 +36,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
         reviews.sort((a, b) => a.rating.compareTo(b.rating));
         break;
     }
-    
+
     return reviews;
   }
 
@@ -58,10 +58,10 @@ class _ReviewsPageState extends State<ReviewsPage> {
         children: [
           // Reviews Summary
           _buildReviewsSummary(),
-          
+
           // Sort Options
           _buildSortSection(),
-          
+
           // Reviews List
           Expanded(
             child: widget.product.reviews.isEmpty
@@ -70,7 +70,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
           ),
         ],
       ),
-      floatingActionButton: _buildWriteReviewFAB(),
+      // floatingActionButton: _buildWriteReviewFAB(),
     );
   }
 
@@ -83,10 +83,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
         children: [
           Text(
             'Reviews',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           Text(
             widget.product.name,
@@ -149,8 +146,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
                           index < averageRating.floor()
                               ? Icons.star_rounded
                               : index < averageRating
-                                  ? Icons.star_half_rounded
-                                  : Icons.star_border_rounded,
+                              ? Icons.star_half_rounded
+                              : Icons.star_border_rounded,
                           color: Colors.amber,
                           size: 20,
                         );
@@ -167,15 +164,19 @@ class _ReviewsPageState extends State<ReviewsPage> {
                   ],
                 ),
               ),
-              
+
               SizedBox(width: 20),
-              
+
               // Rating Distribution
               Expanded(
                 child: Column(
                   children: [
                     for (int i = 5; i >= 1; i--)
-                      _buildRatingBar(i, ratingDistribution[i] ?? 0, totalReviews),
+                      _buildRatingBar(
+                        i,
+                        ratingDistribution[i] ?? 0,
+                        totalReviews,
+                      ),
                   ],
                 ),
               ),
@@ -188,7 +189,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
 
   Widget _buildRatingBar(int stars, int count, int total) {
     final percentage = total > 0 ? (count / total) : 0.0;
-    
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 2),
       child: Row(
@@ -226,10 +227,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
           SizedBox(width: 8),
           Text(
             '$count',
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -313,9 +311,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
       decoration: BoxDecoration(
         color: AppColors.accentColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.primaryColor.withOpacity(0.1),
-        ),
+        border: Border.all(color: AppColors.primaryColor.withOpacity(0.1)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.02),
@@ -339,7 +335,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                 ),
                 child: Center(
                   child: Text(
-                    review.customer.isNotEmpty 
+                    review.customer.isNotEmpty
                         ? review.customer[0].toUpperCase()
                         : 'A',
                     style: TextStyle(
@@ -388,9 +384,9 @@ class _ReviewsPageState extends State<ReviewsPage> {
               ),
             ],
           ),
-          
+
           SizedBox(height: 12),
-          
+
           // Review Comment
           Text(
             review.comment,
@@ -400,7 +396,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
               height: 1.5,
             ),
           ),
-          
+
           // Helpful Actions (can be implemented later)
           SizedBox(height: 12),
           Row(
@@ -490,7 +486,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
 
   Widget _buildWriteReviewFAB() {
     if (widget.product.reviews.isEmpty) return SizedBox.shrink();
-    
+
     return FloatingActionButton.extended(
       onPressed: () => _showWriteReviewDialog(),
       backgroundColor: AppColors.primaryColor,
@@ -568,13 +564,14 @@ class _ReviewsPageState extends State<ReviewsPage> {
                                       child: Image.network(
                                         widget.product.images.first,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return Icon(
-                                            Icons.image_outlined,
-                                            color: Colors.grey[400],
-                                            size: 24,
-                                          );
-                                        },
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                              return Icon(
+                                                Icons.image_outlined,
+                                                color: Colors.grey[400],
+                                                size: 24,
+                                              );
+                                            },
                                       ),
                                     )
                                   : Icon(
@@ -611,9 +608,9 @@ class _ReviewsPageState extends State<ReviewsPage> {
                             ),
                           ],
                         ),
-                        
+
                         SizedBox(height: 24),
-                        
+
                         // Rating Selection
                         Text(
                           'Rate this product',
@@ -645,9 +642,9 @@ class _ReviewsPageState extends State<ReviewsPage> {
                             );
                           }),
                         ),
-                        
+
                         SizedBox(height: 24),
-                        
+
                         // Review Text
                         Text(
                           'Write your review',
@@ -664,12 +661,17 @@ class _ReviewsPageState extends State<ReviewsPage> {
                             maxLines: null,
                             expands: true,
                             decoration: InputDecoration(
-                              hintText: 'Share your experience with this product...',
-                              hintStyle: TextStyle(color: AppColors.textSecondary),
+                              hintText:
+                                  'Share your experience with this product...',
+                              hintStyle: TextStyle(
+                                color: AppColors.textSecondary,
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide: BorderSide(
-                                  color: AppColors.primaryColor.withOpacity(0.3),
+                                  color: AppColors.primaryColor.withOpacity(
+                                    0.3,
+                                  ),
                                 ),
                               ),
                               focusedBorder: OutlineInputBorder(
@@ -695,7 +697,10 @@ class _ReviewsPageState extends State<ReviewsPage> {
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: (_selectedRating > 0 && _reviewController.text.trim().isNotEmpty && !_isSubmitting)
+                      onPressed:
+                          (_selectedRating > 0 &&
+                              _reviewController.text.trim().isNotEmpty &&
+                              !_isSubmitting)
                           ? () => _submitReview(setModalState)
                           : null,
                       style: ElevatedButton.styleFrom(
@@ -751,7 +756,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
     try {
       // Simulate API call - Replace with actual API call
       await Future.delayed(Duration(seconds: 2));
-      
+
       // Here you would typically call your API to submit the review
       // await reviewController.submitReview(
       //   productId: widget.product.id,
@@ -771,9 +776,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
       // Reset form
       _selectedRating = 0;
       _reviewController.clear();
-      
+
       Navigator.pop(context);
-      
     } catch (e) {
       // Show error message
       Get.snackbar(

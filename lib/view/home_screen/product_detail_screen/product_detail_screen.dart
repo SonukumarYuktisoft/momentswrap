@@ -1783,18 +1783,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
               ],
             ),
-            // // Agar reviews > 3 to "See All" show karna
-            // if (widget.product.reviews.length > 3)
-            //   TextButton(
-            //     onPressed: _navigateToReviews,
-            //     child: Text(
-            //       'See All',
-            //       style: TextStyle(
-            //         color: AppColors.primaryColor,
-            //         fontWeight: FontWeight.w600,
-            //       ),
-            //     ),
-            //   ),
+            // Agar reviews > 3 to "See All" show karna
+            if (widget.product.reviews.length > 3)
+              TextButton(
+                onPressed: _navigateToReviews,
+                child: Text(
+                  'See All',
+                  style: TextStyle(
+                    color: AppColors.primaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
           ],
         ),
         SizedBox(height: 12),
