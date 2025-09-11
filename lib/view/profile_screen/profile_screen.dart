@@ -73,17 +73,34 @@ class ProfileScreen extends GetView<ProfileController> {
                 children: [
                   // Modern Header with Profile
                   Container(
+                    // padding: EdgeInsets.only(
+                    //   top: AppSizes.appBarHeight + 20,
+                    //   left: 100,
+                    //   right: 100,
+                    //   bottom: 30,
+                    // ),
                     padding: EdgeInsets.only(
-                      top: AppSizes.appBarHeight + 20,
-                      left: 100,
-                      right: 100,
+                      top: MediaQuery.of(context).viewPadding.top + 20,
                       bottom: 30,
                     ),
+
+                    width: double.infinity,
                     decoration: BoxDecoration(
                       gradient: AppColors.primaryGradient,
                       borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(30),
                         bottomRight: Radius.circular(30),
+                      ),
+                      image: DecorationImage(
+                        image: AssetImage("assets/images/bgimg.png"),
+                        fit: BoxFit.none,
+                        // colorFilter: ColorFilter.mode(
+                        //   AppColors.primaryColor.withOpacity(
+                        //     0.3,
+                        //   ), // overlay color
+                        //   BlendMode
+                        //       .darken, // ya phir softLight / overlay try kar sakte ho
+                        // ),
                       ),
                     ),
                     child: Column(
