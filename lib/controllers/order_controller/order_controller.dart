@@ -225,7 +225,7 @@ class OrderController extends GetxController {
     }
   }
 
-  Future<void> cancelOrder(String orderId) async {
+  Future<void> cancelOrder({required String  orderId,  dynamic  reason}) async {
     try {
       isLoading.value = true;
 
@@ -235,7 +235,9 @@ class OrderController extends GetxController {
       dio.Response? response = await _apiServices.requestPutForApi(
         authToken: true,
         url: url,
-        dictParameter: {},
+        dictParameter: {
+         "reason": reason,
+        },
       );
 
       if (response != null && response.statusCode == 200) {
