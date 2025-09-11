@@ -21,6 +21,12 @@ class AppConfig {
   String get getListAllProducts => '$baseUrl/api/customer/list-all-products';
   String get getProductDetailsById => '$baseUrl/api/customer/product-details-by-id';
   String get listProductsByCategory =>  '$baseUrl/api/customer/list-products-by-category';
+    String get getListProductsByCategory => "$baseUrl/api/customer/list-products-by-category";
+  String get getFilterProducts => "$baseUrl/api/customer/filter-products";
+  String get getProductDetails => "$baseUrl/api/customer/get-product-details"; // Base URL, append /:id
+  
+  // Helper method for product details by ID
+  // String  getProductDetailsById(String productId) => "$getProductDetails/$productId";
 
   // Cart APIs Endpoints
   String get addToCart => '$baseUrl/api/customer/add-to-cart';

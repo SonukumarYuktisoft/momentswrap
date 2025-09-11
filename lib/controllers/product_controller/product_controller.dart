@@ -14,7 +14,9 @@ class ProductController extends GetxController {
 
   // Categories for filtering
   final RxList<String> categories = <String>[].obs;
-  final RxString selectedCategory = ''.obs;
+  final RxString selectedCategory = 'All'.obs; // Default to 'All'
+  final Rx<ProductResponse?> filteredProducts = Rx<ProductResponse?>(null);
+  final RxBool isCategoryLoading = false.obs;
 
   @override
   void onInit() {
@@ -59,6 +61,7 @@ class ProductController extends GetxController {
             .toList();
 
         products.value = ProductResponse(data: productsList);
+        filteredProducts.value = ProductResponse(data: productsList); // Initially show all
 
         // Extract unique categories
         _extractCategories(productsList);
@@ -69,19 +72,195 @@ class ProductController extends GetxController {
       print("Error fetching all products: $e");
       setError("Failed to load products. Please try again.");
       products.value = ProductResponse(data: []);
+      filteredProducts.value = ProductResponse(data: []);
     } finally {
       isLoading.value = false;
     }
   }
 
+  // NEW: Fetch products by category using API
+  Future<void> fetchProductsByCategory(String category) async {
+    if (category == 'All') {
+      // Show all products
+      filteredProducts.value = products.value;
+      selectedCategory.value = category;
+      return;
+    }
+
+    try {
+      isCategoryLoading.value = true;
+      clearError();
+
+      final dio.Response response = await _apiServices.getRequest(
+        authToken: false,
+        url: '${_appConfig.getListProductsByCategory}/$category',
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        final dynamic responseData = response.data;
+
+        List<dynamic> productsData;
+        if (responseData is List) {
+          productsData = responseData;
+        } else if (responseData is Map && responseData.containsKey('data')) {
+          productsData = responseData['data'] as List<dynamic>;
+        } else {
+          throw Exception('Invalid response format');
+        }
+
+        final categoryProductsList = productsData
+            .map((json) {
+              try {
+                return ProductModel.fromJson(json);
+              } catch (e) {
+                print("Error parsing category product: $e");
+                return null;
+              }
+            })
+            .where((product) => product != null)
+            .cast<ProductModel>()
+            .toList();
+
+        filteredProducts.value = ProductResponse(data: categoryProductsList);
+        selectedCategory.value = category;
+      } else {
+        throw Exception("Failed to load category products: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching products by category: $e");
+      setError("Failed to load category products. Please try again.");
+      // Fallback to local filtering if API fails
+      _filterProductsLocally(category);
+    } finally {
+      isCategoryLoading.value = false;
+    }
+  }
+
+  // NEW: Filter products using API with multiple parameters
+  Future<void> filterProductsAPI({
+    String? category,
+    double? minPrice,
+    double? maxPrice,
+    int? minStock,
+    String? sortBy,
+  }) async {
+    try {
+      isCategoryLoading.value = true;
+      clearError();
+
+      // Build query parameters
+      Map<String, dynamic> queryParams = {};
+      
+      if (category != null && category != 'All') {
+        queryParams['category'] = category;
+      }
+      if (minPrice != null) {
+        queryParams['minPrice'] = minPrice.toString();
+      }
+      if (maxPrice != null) {
+        queryParams['maxPrice'] = maxPrice.toString();
+      }
+      if (minStock != null) {
+        queryParams['minStock'] = minStock.toString();
+      }
+      if (sortBy != null) {
+        queryParams['sortBy'] = sortBy;
+      }
+
+      // Convert to query string
+      String queryString = queryParams.entries
+          .map((e) => '${e.key}=${e.value}')
+          .join('&');
+
+      String url = _appConfig.getFilterProducts;
+      if (queryString.isNotEmpty) {
+        url += '?$queryString';
+      }
+
+      final dio.Response response = await _apiServices.getRequest(
+        authToken: false,
+        url: url,
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        final dynamic responseData = response.data;
+
+        List<dynamic> productsData;
+        if (responseData is List) {
+          productsData = responseData;
+        } else if (responseData is Map && responseData.containsKey('data')) {
+          productsData = responseData['data'] as List<dynamic>;
+        } else {
+          throw Exception('Invalid response format');
+        }
+
+        final filteredProductsList = productsData
+            .map((json) {
+              try {
+                return ProductModel.fromJson(json);
+              } catch (e) {
+                print("Error parsing filtered product: $e");
+                return null;
+              }
+            })
+            .where((product) => product != null)
+            .cast<ProductModel>()
+            .toList();
+
+        filteredProducts.value = ProductResponse(data: filteredProductsList);
+        if (category != null) {
+          selectedCategory.value = category;
+        }
+      } else {
+        throw Exception("Failed to filter products: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error filtering products: $e");
+      setError("Failed to filter products. Please try again.");
+    } finally {
+      isCategoryLoading.value = false;
+    }
+  }
+
+  // Local fallback filtering (when API fails)
+  void _filterProductsLocally(String category) {
+    if (!hasProducts) return;
+
+    if (category == 'All') {
+      filteredProducts.value = products.value;
+    } else {
+      final filtered = productsList
+          .where((product) => 
+              product.category.toLowerCase() == category.toLowerCase() && 
+              product.isActive)
+          .toList();
+      
+      filteredProducts.value = ProductResponse(data: filtered);
+    }
+    selectedCategory.value = category;
+  }
+
   void _extractCategories(List<ProductModel> productsList) {
-    final Set<String> uniqueCategories = {};
+    final Set<String> uniqueCategories = {'All'}; // Always include 'All' option
     for (var product in productsList) {
       if (product.category.isNotEmpty) {
         uniqueCategories.add(product.category);
       }
     }
-    categories.value = uniqueCategories.toList()..sort();
+    categories.value = uniqueCategories.toList();
+    // Keep 'All' at the beginning
+    categories.sort((a, b) {
+      if (a == 'All') return -1;
+      if (b == 'All') return 1;
+      return a.compareTo(b);
+    });
+  }
+
+  // NEW: Method to handle category selection
+  void selectCategory(String category) {
+    if (selectedCategory.value == category) return; // Already selected
+    
+    fetchProductsByCategory(category);
   }
 
   // Get similar products (same category, different product)
@@ -105,9 +284,10 @@ class ProductController extends GetxController {
 
   // Get products with valid offers/discounts
   List<ProductModel> getDiscountProducts({int limit = 10}) {
-    if (!hasProducts) return [];
+    final sourceList = filteredProducts.value?.data ?? productsList;
+    if (sourceList.isEmpty) return [];
 
-    return productsList
+    return sourceList
         .where(
           (product) =>
               product.offers.any(
@@ -124,35 +304,44 @@ class ProductController extends GetxController {
     int limit = 10,
     double minRating = 4.0,
   }) {
-    if (!hasProducts) return [];
+    final sourceList = filteredProducts.value?.data ?? productsList;
+    if (sourceList.isEmpty) return [];
 
-    return productsList
+    final filtered = sourceList
         .where(
           (product) => product.averageRating >= minRating && product.isActive,
         )
-        .toList()
-      ..sort((a, b) => b.averageRating.compareTo(a.averageRating))
-      ..take(limit);
+        .toList();
+
+    filtered.sort((a, b) => b.averageRating.compareTo(a.averageRating));
+    return filtered.take(limit).toList();
   }
 
   // Get products with special offers
   List<ProductModel> getSpecialOfferProducts({int limit = 10}) {
-    if (!hasProducts) return [];
+    final sourceList = filteredProducts.value?.data ?? productsList;
+    if (sourceList.isEmpty) return [];
 
-    return productsList
+    final filtered = sourceList
         .where((product) => product.offers.isNotEmpty && product.isActive)
-        .toList()
-      ..sort(
-        (a, b) => b.maxDiscountPercentage.compareTo(a.maxDiscountPercentage),
-      )
-      ..take(limit);
+        .toList();
+
+    filtered.sort(
+      (a, b) => b.maxDiscountPercentage.compareTo(a.maxDiscountPercentage),
+    );
+    return filtered.take(limit).toList();
   }
 
-  // Get products by category
+  // Get products by category (now uses filtered products)
   List<ProductModel> getProductsByCategory(String category) {
-    if (!hasProducts) return [];
+    final sourceList = filteredProducts.value?.data ?? productsList;
+    if (sourceList.isEmpty) return [];
 
-    return productsList
+    if (category == 'All') {
+      return sourceList.where((product) => product.isActive).toList();
+    }
+
+    return sourceList
         .where(
           (product) =>
               product.category.toLowerCase() == category.toLowerCase() &&
@@ -163,32 +352,35 @@ class ProductController extends GetxController {
 
   // Get trending/popular products (based on reviews count and rating)
   List<ProductModel> getTrendingProducts({int limit = 10}) {
-    if (!hasProducts) return [];
+    final sourceList = filteredProducts.value?.data ?? productsList;
+    if (sourceList.isEmpty) return [];
 
-    return productsList.where((product) => product.isActive).toList()
-      ..sort((a, b) {
-        // Sort by combination of review count and rating
-        double scoreA = (a.reviews.length * 0.3) + (a.averageRating * 0.7);
-        double scoreB = (b.reviews.length * 0.3) + (b.averageRating * 0.7);
-        return scoreB.compareTo(scoreA);
-      })
-      ..take(limit);
+    final filtered = sourceList.where((product) => product.isActive).toList();
+    filtered.sort((a, b) {
+      // Sort by combination of review count and rating
+      double scoreA = (a.reviews.length * 0.3) + (a.averageRating * 0.7);
+      double scoreB = (b.reviews.length * 0.3) + (b.averageRating * 0.7);
+      return scoreB.compareTo(scoreA);
+    });
+    return filtered.take(limit).toList();
   }
 
   // Get recently added products
   List<ProductModel> getRecentProducts({int limit = 10}) {
-    if (!hasProducts) return [];
+    final sourceList = filteredProducts.value?.data ?? productsList;
+    if (sourceList.isEmpty) return [];
 
-    return productsList.where((product) => product.isActive).toList()
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt))
-      ..take(limit);
+    final filtered = sourceList.where((product) => product.isActive).toList();
+    filtered.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return filtered.take(limit).toList();
   }
 
   // Get products in stock
   List<ProductModel> getInStockProducts({int limit = 10}) {
-    if (!hasProducts) return [];
+    final sourceList = filteredProducts.value?.data ?? productsList;
+    if (sourceList.isEmpty) return [];
 
-    return productsList
+    return sourceList
         .where((product) => product.stock > 0 && product.isActive)
         .take(limit)
         .toList();
@@ -196,9 +388,10 @@ class ProductController extends GetxController {
 
   // Get low stock products (for admin/alerts)
   List<ProductModel> getLowStockProducts({int threshold = 5}) {
-    if (!hasProducts) return [];
+    final sourceList = filteredProducts.value?.data ?? productsList;
+    if (sourceList.isEmpty) return [];
 
-    return productsList
+    return sourceList
         .where(
           (product) =>
               product.stock > 0 &&
@@ -210,11 +403,12 @@ class ProductController extends GetxController {
 
   // Search products by name, description, or category
   List<ProductModel> searchProducts(String query) {
-    if (!hasProducts || query.isEmpty) return [];
+    final sourceList = filteredProducts.value?.data ?? productsList;
+    if (sourceList.isEmpty || query.isEmpty) return [];
 
     final lowercaseQuery = query.toLowerCase();
 
-    return productsList
+    return sourceList
         .where(
           (product) =>
               product.isActive &&
@@ -231,7 +425,7 @@ class ProductController extends GetxController {
         .toList();
   }
 
-  // Filter products by multiple criteria
+  // Filter products by multiple criteria (now uses API first, falls back to local)
   List<ProductModel> filterProducts({
     String? category,
     double? minPrice,
@@ -240,11 +434,12 @@ class ProductController extends GetxController {
     bool? inStockOnly,
     bool? hasOffers,
   }) {
-    if (!hasProducts) return [];
+    final sourceList = filteredProducts.value?.data ?? productsList;
+    if (sourceList.isEmpty) return [];
 
-    var filtered = productsList.where((product) => product.isActive);
+    var filtered = sourceList.where((product) => product.isActive);
 
-    if (category != null && category.isNotEmpty) {
+    if (category != null && category.isNotEmpty && category != 'All') {
       filtered = filtered.where(
         (p) => p.category.toLowerCase() == category.toLowerCase(),
       );
@@ -342,7 +537,8 @@ class ProductController extends GetxController {
     // This is a simple implementation. In a real app, you'd use user behavior data,
     // purchase history, viewed products, etc., to generate personalized recommendations.
 
-    if (!hasProducts) return [];
+    final sourceList = filteredProducts.value?.data ?? productsList;
+    if (sourceList.isEmpty) return [];
 
     // For now, return a mix of trending and highly rated products
     final trending = getTrendingProducts(limit: limit ~/ 2);
@@ -390,28 +586,38 @@ class ProductController extends GetxController {
   // Helper methods for UI
   bool get hasProducts =>
       products.value != null && products.value!.data.isNotEmpty;
+      
+  bool get hasFilteredProducts =>
+      filteredProducts.value != null && filteredProducts.value!.data.isNotEmpty;
+      
   int get totalProducts => products.value?.data.length ?? 0;
+  
+  int get filteredProductsCount => filteredProducts.value?.data.length ?? 0;
+  
   List<ProductModel> get productsList => products.value?.data ?? [];
+  
+  List<ProductModel> get filteredProductsList => filteredProducts.value?.data ?? [];
 
   // Get statistics
   Map<String, dynamic> getProductStats() {
-    if (!hasProducts) return {};
+    final sourceList = filteredProducts.value?.data ?? productsList;
+    if (sourceList.isEmpty) return {};
 
-    final inStock = productsList.where((p) => p.stock > 0).length;
-    final outOfStock = productsList.where((p) => p.stock == 0).length;
-    final withOffers = productsList
+    final inStock = sourceList.where((p) => p.stock > 0).length;
+    final outOfStock = sourceList.where((p) => p.stock == 0).length;
+    final withOffers = sourceList
         .where(
           (p) =>
               p.offers.any((offer) => offer.validTill.isAfter(DateTime.now())),
         )
         .length;
-    final avgRating = productsList.isEmpty
+    final avgRating = sourceList.isEmpty
         ? 0.0
-        : productsList.map((p) => p.averageRating).reduce((a, b) => a + b) /
-              productsList.length;
+        : sourceList.map((p) => p.averageRating).reduce((a, b) => a + b) /
+              sourceList.length;
 
     return {
-      'total': totalProducts,
+      'total': sourceList.length,
       'inStock': inStock,
       'outOfStock': outOfStock,
       'withOffers': withOffers,
