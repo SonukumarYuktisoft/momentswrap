@@ -19,12 +19,16 @@ class AppConfig {
   //Products APIs Endpoints
   //// List All Products
   String get getListAllProducts => '$baseUrl/api/customer/list-all-products';
-  String get getProductDetailsById => '$baseUrl/api/customer/product-details-by-id';
-  String get listProductsByCategory =>  '$baseUrl/api/customer/list-products-by-category';
-    String get getListProductsByCategory => "$baseUrl/api/customer/list-products-by-category";
+  String get getProductDetailsById =>
+      '$baseUrl/api/customer/product-details-by-id';
+  String get listProductsByCategory =>
+      '$baseUrl/api/customer/list-products-by-category';
+  String get getListProductsByCategory =>
+      "$baseUrl/api/customer/list-products-by-category/";
   String get getFilterProducts => "$baseUrl/api/customer/filter-products";
-  String get getProductDetails => "$baseUrl/api/customer/get-product-details"; // Base URL, append /:id
-  
+  String get getProductDetails =>
+      "$baseUrl/api/customer/get-product-details"; // Base URL, append /:id
+
   // Helper method for product details by ID
   // String  getProductDetailsById(String productId) => "$getProductDetails/$productId";
 
@@ -38,7 +42,7 @@ class AppConfig {
   // Order APIs Endpoints
   String get placeOrder => '$baseUrl/api/customer/place-order';
   String get getOrderHistory => '$baseUrl/api/customer/get-order-history';
-  String get getOrderDetails => '$baseUrl/api/customer/get-order-details';  
+  String get getOrderDetails => '$baseUrl/api/customer/get-order-details';
   String get cancelOrder => '$baseUrl/api/customer/cancel-order';
   String get returnOrder => '$baseUrl/api/customer/return-order';
   String get getAllOrders => '$baseUrl/api/customer/get-all-orders';
@@ -52,5 +56,4 @@ class AppConfig {
   String get deleteReview => '$baseUrl/api/customer/delete-review';
   String get updateReview => '$baseUrl/api/customer/update-review';
   String get getReviewById => '$baseUrl/api/customer/get-review-by-id';
-  
 }

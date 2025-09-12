@@ -17,11 +17,81 @@ class ProductController extends GetxController {
   final RxString selectedCategory = 'All'.obs; // Default to 'All'
   final Rx<ProductResponse?> filteredProducts = Rx<ProductResponse?>(null);
   final RxBool isCategoryLoading = false.obs;
+  final RxBool isCategoriesLoading = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    fetchAllProducts();
+    initializeData();
+  }
+
+  // Initialize data - fetch categories first, then products
+  Future<void> initializeData() async {
+    await Future.wait([fetchCategories(), fetchAllProducts()]);
+  }
+
+  // NEW: Fetch categories from API
+  Future<void> fetchCategories() async {
+    try {
+      isCategoriesLoading.value = true;
+      clearError();
+
+      final dio.Response response = await _apiServices.getRequest(
+        authToken: false,
+        url:
+            'http://moment-wrap-backend.vercel.app/api/customer/list-products-by-category/', // Add this to your AppConfig
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        final dynamic responseData = response.data;
+
+        List<dynamic> categoriesData;
+        if (responseData is List) {
+          categoriesData = responseData;
+        } else if (responseData is Map && responseData.containsKey('data')) {
+          categoriesData = responseData['data'] as List<dynamic>;
+        } else {
+          throw Exception('Invalid response format for categories');
+        }
+
+        // Extract category names from the response
+        final List<String> categoryNames = categoriesData
+            .map((categoryJson) {
+              if (categoryJson is String) {
+                return categoryJson;
+              } else if (categoryJson is Map) {
+                // Assuming the API returns objects with 'name' field
+                return categoryJson['name']?.toString() ?? '';
+              }
+              return '';
+            })
+            .where((name) => name.isNotEmpty)
+            .toList();
+
+        // Always include 'All' at the beginning
+        final Set<String> uniqueCategories = {'All'};
+        uniqueCategories.addAll(categoryNames);
+
+        categories.value = uniqueCategories.toList();
+        print(categories.value);
+
+        // Keep 'All' at the beginning
+        categories.sort((a, b) {
+          if (a == 'All') return -1;
+          if (b == 'All') return 1;
+          return a.compareTo(b);
+        });
+      } else {
+        throw Exception("Failed to load categories: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching categories: $e");
+      // Fallback to default categories
+    
+      setError("Failed to load categories. Using default.");
+    } finally {
+      isCategoriesLoading.value = false;
+    }
   }
 
   // Fetch all products (without filter/search)
@@ -61,10 +131,27 @@ class ProductController extends GetxController {
             .toList();
 
         products.value = ProductResponse(data: productsList);
-        filteredProducts.value = ProductResponse(data: productsList); // Initially show all
+        filteredProducts.value = ProductResponse(data: productsList);
 
-        // Extract unique categories
-        _extractCategories(productsList);
+        // If "All" is selected, show all products, otherwise maintain current filter
+        if (selectedCategory.value == 'All') {
+          filteredProducts.value = ProductResponse(data: productsList);
+        }
+
+        // Extract unique categories from products and update categories.value
+        final Set<String> uniqueCategories = {'All'};
+        for (var product in productsList) {
+          if (product.category.isNotEmpty) {
+            uniqueCategories.add(product.category);
+          }
+        }
+        categories.value = uniqueCategories.toList();
+        // Keep 'All' at the beginning
+        categories.sort((a, b) {
+          if (a == 'All') return -1;
+          if (b == 'All') return 1;
+          return a.compareTo(b);
+        });
       } else {
         throw Exception("Failed to load products: ${response.statusCode}");
       }
@@ -73,17 +160,20 @@ class ProductController extends GetxController {
       setError("Failed to load products. Please try again.");
       products.value = ProductResponse(data: []);
       filteredProducts.value = ProductResponse(data: []);
+      categories.value = ['All'];
     } finally {
       isLoading.value = false;
     }
   }
 
-  // NEW: Fetch products by category using API
+  // NEW: Fetch products by category using POST API
   Future<void> fetchProductsByCategory(String category) async {
+    // Update UI immediately - this gives instant feedback
+    selectedCategory.value = category;
+
     if (category == 'All') {
       // Show all products
       filteredProducts.value = products.value;
-      selectedCategory.value = category;
       return;
     }
 
@@ -91,13 +181,21 @@ class ProductController extends GetxController {
       isCategoryLoading.value = true;
       clearError();
 
-      final dio.Response response = await _apiServices.getRequest(
+      // Prepare POST request body
+      Map<String, dynamic> requestBody = {
+        'category': category,
+        // Add other filter parameters if needed
+      };
+
+      final dio.Response? response = await _apiServices.requestPostForApi(
         authToken: false,
-        url: '${_appConfig.getListProductsByCategory}/$category',
+        url:
+            'http://moment-wrap-backend.vercel.app/filter-products?', // POST endpoint for filtering
+        dictParameter: requestBody,
       );
 
-      if (response.statusCode == 200 && response.data != null) {
-        final dynamic responseData = response.data;
+      if (response?.statusCode == 200 && response?.data != null) {
+        final dynamic responseData = response?.data;
 
         List<dynamic> productsData;
         if (responseData is List) {
@@ -122,9 +220,10 @@ class ProductController extends GetxController {
             .toList();
 
         filteredProducts.value = ProductResponse(data: categoryProductsList);
-        selectedCategory.value = category;
       } else {
-        throw Exception("Failed to load category products: ${response.statusCode}");
+        throw Exception(
+          "Failed to load category products: ${response?.statusCode}",
+        );
       }
     } catch (e) {
       print("Error fetching products by category: $e");
@@ -136,7 +235,7 @@ class ProductController extends GetxController {
     }
   }
 
-  // NEW: Filter products using API with multiple parameters
+  // NEW: Filter products using POST API with multiple parameters
   Future<void> filterProductsAPI({
     String? category,
     double? minPrice,
@@ -148,42 +247,33 @@ class ProductController extends GetxController {
       isCategoryLoading.value = true;
       clearError();
 
-      // Build query parameters
-      Map<String, dynamic> queryParams = {};
-      
+      // Build request body for POST
+      Map<String, dynamic> requestBody = {};
+
       if (category != null && category != 'All') {
-        queryParams['category'] = category;
+        requestBody['category'] = category;
       }
       if (minPrice != null) {
-        queryParams['minPrice'] = minPrice.toString();
+        requestBody['minPrice'] = minPrice;
       }
       if (maxPrice != null) {
-        queryParams['maxPrice'] = maxPrice.toString();
+        requestBody['maxPrice'] = maxPrice;
       }
       if (minStock != null) {
-        queryParams['minStock'] = minStock.toString();
+        requestBody['minStock'] = minStock;
       }
       if (sortBy != null) {
-        queryParams['sortBy'] = sortBy;
+        requestBody['sortBy'] = sortBy;
       }
 
-      // Convert to query string
-      String queryString = queryParams.entries
-          .map((e) => '${e.key}=${e.value}')
-          .join('&');
-
-      String url = _appConfig.getFilterProducts;
-      if (queryString.isNotEmpty) {
-        url += '?$queryString';
-      }
-
-      final dio.Response response = await _apiServices.getRequest(
+      final dio.Response? response = await _apiServices.requestPostForApi(
         authToken: false,
-        url: url,
+        url: '',
+        dictParameter: requestBody,
       );
 
-      if (response.statusCode == 200 && response.data != null) {
-        final dynamic responseData = response.data;
+      if (response?.statusCode == 200 && response?.data != null) {
+        final dynamic responseData = response?.data;
 
         List<dynamic> productsData;
         if (responseData is List) {
@@ -212,7 +302,7 @@ class ProductController extends GetxController {
           selectedCategory.value = category;
         }
       } else {
-        throw Exception("Failed to filter products: ${response.statusCode}");
+        throw Exception("Failed to filter products: ${response?.statusCode}");
       }
     } catch (e) {
       print("Error filtering products: $e");
@@ -230,17 +320,19 @@ class ProductController extends GetxController {
       filteredProducts.value = products.value;
     } else {
       final filtered = productsList
-          .where((product) => 
-              product.category.toLowerCase() == category.toLowerCase() && 
-              product.isActive)
+          .where(
+            (product) =>
+                product.category.toLowerCase() == category.toLowerCase() &&
+                product.isActive,
+          )
           .toList();
-      
+
       filteredProducts.value = ProductResponse(data: filtered);
     }
-    selectedCategory.value = category;
   }
 
-  void _extractCategories(List<ProductModel> productsList) {
+  // Extract categories from products (fallback method)
+  void _extractCategoriesFromProducts(List<ProductModel> productsList) {
     final Set<String> uniqueCategories = {'All'}; // Always include 'All' option
     for (var product in productsList) {
       if (product.category.isNotEmpty) {
@@ -256,10 +348,14 @@ class ProductController extends GetxController {
     });
   }
 
-  // NEW: Method to handle category selection
+  // NEW: Method to handle category selection with instant UI feedback
   void selectCategory(String category) {
     if (selectedCategory.value == category) return; // Already selected
-    
+
+    // Instant UI update - this is key for good UX
+    selectedCategory.value = category;
+
+    // Then fetch data in background
     fetchProductsByCategory(category);
   }
 
@@ -569,7 +665,7 @@ class ProductController extends GetxController {
 
   // Refresh products
   Future<void> refreshProducts() async {
-    await fetchAllProducts();
+    await initializeData();
   }
 
   // Error Handling
@@ -586,17 +682,20 @@ class ProductController extends GetxController {
   // Helper methods for UI
   bool get hasProducts =>
       products.value != null && products.value!.data.isNotEmpty;
-      
+
   bool get hasFilteredProducts =>
       filteredProducts.value != null && filteredProducts.value!.data.isNotEmpty;
-      
+
+  bool get hasCategories => categories.isNotEmpty;
+
   int get totalProducts => products.value?.data.length ?? 0;
-  
+
   int get filteredProductsCount => filteredProducts.value?.data.length ?? 0;
-  
+
   List<ProductModel> get productsList => products.value?.data ?? [];
-  
-  List<ProductModel> get filteredProductsList => filteredProducts.value?.data ?? [];
+
+  List<ProductModel> get filteredProductsList =>
+      filteredProducts.value?.data ?? [];
 
   // Get statistics
   Map<String, dynamic> getProductStats() {

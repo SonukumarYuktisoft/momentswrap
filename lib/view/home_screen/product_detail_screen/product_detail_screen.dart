@@ -6,7 +6,7 @@ import 'package:momentswrap/util/common/auth_utils.dart';
 import 'package:momentswrap/view/home_screen/product_card.dart';
 import 'package:momentswrap/view/home_screen/product_detail_screen/widgets/full_screenImage_viewer.dart';
 import 'package:momentswrap/view/reviews_screen/reviews_screen.dart';
-import 'package:momentswrap/view/search_screens/reviews_screen/reviews_screen.dart';
+import 'package:momentswrap/reviews_screen/reviews_screen.dart';
 import 'package:momentswrap/view/search_screens/search_screen.dart';
 import 'package:momentswrap/view/widgets/all_products_screen.dart';
 import 'package:momentswrap/view/widgets/horizontal_productList.dart';
@@ -115,11 +115,51 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         ),
         centerTitle: true,
         actions: [
+          // 🔍 Search Icon
           IconButton(
-            icon: const Icon(Icons.search, color: Colors.black),
+            icon: Icon(Icons.search, color: AppColors.textColor),
             onPressed: () {
               Get.toNamed(AppRoutes.searchScreen);
             },
+          ),
+
+          // 🛒 Cart Icon with Badge
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Obx(() {
+              final itemCount = cartController.totalItems;
+              return Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.shopping_cart, color: AppColors.textColor),
+                    onPressed: () {
+                      Get.toNamed(AppRoutes.cartScreen);
+                    },
+                  ),
+                  if (itemCount > 0)
+                    Positioned(
+                      right: 6,
+                      top: 6,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          '$itemCount',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            }),
           ),
         ],
       ),

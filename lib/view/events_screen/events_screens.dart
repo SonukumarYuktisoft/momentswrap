@@ -16,6 +16,9 @@ import 'package:momentswrap/view/home_screen/product_card.dart';
 import 'package:momentswrap/view/home_screen/product_detail_screen/product_detail_screen.dart';
 import 'package:momentswrap/view/search_screens/search_screen.dart';
 import 'package:momentswrap/view/widgets/all_products_screen.dart';
+import 'package:momentswrap/view/widgets/build_app_bar.dart';
+import 'package:momentswrap/view/widgets/horizontal_productList.dart'
+    hide HorizontalProductList;
 
 class EventsScreens extends StatelessWidget {
   const EventsScreens({super.key});
@@ -27,21 +30,7 @@ class EventsScreens extends StatelessWidget {
     final CartController cartController = Get.put(CartController());
     final ProfileController profileController = Get.put(ProfileController());
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-
-        title: const Text('Events', style: TextStyle(color: Colors.black)),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search, color: Colors.black),
-            onPressed: () {
-              Get.toNamed(AppRoutes.searchScreen);
-            },
-          ),
-        ],
-      ),
+      appBar: BuildAppBar(title: 'Events'),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -133,6 +122,8 @@ class EventsScreens extends StatelessWidget {
 
               return Column(
                 children: [
+                  SizedBox(height: 16),
+
                   // Featured Products
                   HorizontalProductList(
                     title: "Featured Products",

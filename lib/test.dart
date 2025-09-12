@@ -73,3 +73,49 @@
   // }
 
 
+// Widget _buildIconButton({required IconData icon, required VoidCallback onTap}) {
+//   return Container(
+//     decoration: BoxDecoration(
+//       color: AppColors.secondaryColor.withOpacity(0.1),
+//       borderRadius: BorderRadius.circular(12),
+//     ),
+//     child: IconButton(
+//       onPressed: onTap,
+//       icon: Icon(icon, color: AppColors.secondaryColor),
+//     ),
+//   );
+// }
+
+//  AppBar(
+//         elevation: 0,
+//         backgroundColor: AppColors.primaryColor,
+//         leadingWidth: 100,
+//         title: Text(
+//           'Moments Wrap',
+//           style: TextStyle(
+//             color: AppColors.secondaryColor,
+//             fontWeight: FontWeight.bold,
+//             fontSize: 20,
+//           ),
+//         ),
+//         centerTitle: true,
+//         iconTheme: IconThemeData(color: AppColors.secondaryColor),
+//         actions: [
+//           Container(
+//             margin: EdgeInsets.only(right: 8),
+//             child: Row(
+//               children: [
+//                 _buildIconButton(
+//                   icon: Icons.notifications_outlined,
+//                   onTap: () => Get.toNamed(AppRoutes.notificationsScreen),
+//                 ),
+//                 SizedBox(width: 8),
+//                 _buildIconButton(
+//                   icon: Icons.location_on_outlined,
+//                   onTap: () async => await locationController.getAddress(),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),

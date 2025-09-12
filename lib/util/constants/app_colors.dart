@@ -60,4 +60,21 @@ class AppColors {
   static Color get surface => accentColor;
   static Color get surfaceVariant => backgroundColor;
   static Color get surfaceTint => primaryColor.withOpacity(0.05);
+
+
+  // // Text color variations
+  // static const Color textPrimary = Color(0xFF212121);      // Dark gray for main text
+  // static const Color textSecondary = Color(0xFF757575);    // Medium gray for secondary text
+  // static const Color textHint = Color(0xFF9E9E9E);         // Light gray for hints
+  static const Color textDisabled = Color(0xFFBDBDBD);     // Lighter gray for disabled text
+  static const Color textOnPrimary = Colors.white;         // White text on primary color
+  static const Color textOnSecondary = Colors.white;       // White text on secondary color
+  static const Color textOnSurface = Color(0xFF212121);    // Dark text on surfaces
+  static const Color textOnBackground = Color(0xFF212121); // Dark text on background
+  
+  // Additional utility colors
+  static const Color dividerColor = Color(0xFFE0E0E0);
+  static const Color cardBackground = Colors.white;
+  static const Color shimmerBase = Color(0xFFE0E0E0);
+  static const Color shimmerHighlight = Color(0xFFF5F5F5);
 }

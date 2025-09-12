@@ -140,6 +140,8 @@ class OrderController extends GetxController {
             }
           }
 
+          // Sort latest orders first
+          parsedOrders.sort((a, b) => b.createdAt.compareTo(a.createdAt));
           myOrders.value = parsedOrders;
           print('Successfully parsed ${parsedOrders.length} orders');
         } else if (data is Map<String, dynamic> &&
@@ -162,6 +164,8 @@ class OrderController extends GetxController {
             }
           }
 
+          // Sort latest orders first
+          parsedOrders.sort((a, b) => b.createdAt.compareTo(a.createdAt));
           myOrders.value = parsedOrders;
           print('Successfully parsed ${parsedOrders.length} orders');
         }
@@ -225,7 +229,7 @@ class OrderController extends GetxController {
     }
   }
 
-  Future<void> cancelOrder({required String  orderId,  dynamic  reason}) async {
+  Future<void> cancelOrder({required String orderId, dynamic reason}) async {
     try {
       isLoading.value = true;
 
@@ -235,9 +239,7 @@ class OrderController extends GetxController {
       dio.Response? response = await _apiServices.requestPutForApi(
         authToken: true,
         url: url,
-        dictParameter: {
-         "reason": reason,
-        },
+        dictParameter: {"reason": reason},
       );
 
       if (response != null && response.statusCode == 200) {

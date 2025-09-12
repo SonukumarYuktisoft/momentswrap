@@ -1017,7 +1017,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
                 const SizedBox(width: 12),
 
-                if (order.orderStatus.toLowerCase() == 'pending') ...[
+                if (order.orderStatus.toLowerCase() == 'pending' 
+                || order.paymentStatus.toLowerCase() == 'processing' || order.paymentStatus.toLowerCase() == 'failed') ...[
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(

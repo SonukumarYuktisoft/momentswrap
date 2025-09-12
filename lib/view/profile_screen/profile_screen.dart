@@ -5,6 +5,7 @@ import 'package:momentswrap/routes/app_routes.dart';
 import 'package:momentswrap/util/common/auth_utils.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
 import 'package:momentswrap/util/constants/app_sizes.dart';
+import 'package:momentswrap/view/reviews_screen/my_reviews_screen.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
   const ProfileScreen({super.key});
@@ -356,6 +357,75 @@ class ProfileScreen extends GetView<ProfileController> {
                                   _showModernLogoutConfirmation();
                                 }),
                               ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // My Activity'
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: AppColors.cardGradient,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: AppColors.textColor.withOpacity(0.2),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.textColor.withOpacity(0.1),
+                                blurRadius: 10,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
+                                child: Row(
+                                  children: [
+                                    // Icon(
+                                    //   Icons.rate_review_outlined,
+                                    //   color: AppColors.secondaryColor,
+                                    //   size: 20,
+                                    // ),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      'My Activity',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.secondaryColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              _buildModernProfileItem(
+                                icon: Icons.rate_review_outlined,
+                                title: "My Reviews",
+                                subtitle: "View and manage your reviews",
+                                color: AppColors.secondaryColor,
+                                onTap: () => AuthUtils.runIfLoggedIn(() {
+                                  // _showModernLogoutConfirmation();
+                                  Get.to(MyReviewsScreen());
+                                }),
+                              ),
+
+                              _buildModernDivider(),
+
+                              // _buildModernProfileItem(
+                              //   icon: Icons.logout_outlined,
+                              //   title: "Log Out",
+                              //   subtitle: "Sign out of your account",
+                              //   color: AppColors.warningColor,
+                              //   onTap: () => AuthUtils.runIfLoggedIn(() {
+                              //     _showModernLogoutConfirmation();
+                              //   }),
+                              // ),
                             ],
                           ),
                         ),
