@@ -7,6 +7,8 @@ import 'package:momentswrap/binding/profile_binding/profile_binding.dart';
 import 'package:momentswrap/bottom_navigation.dart';
 import 'package:momentswrap/routes/app_routes.dart';
 import 'package:momentswrap/view/add_to_cart_screen/add_to_cart_screen.dart';
+import 'package:momentswrap/view/ai_assistant/ai_assistant_screen.dart'
+    hide AppRoutes;
 import 'package:momentswrap/view/auth/forget_screen.dart';
 import 'package:momentswrap/view/auth/login_screen.dart';
 import 'package:momentswrap/view/auth/signup_screen.dart';
@@ -144,5 +146,11 @@ class AppPages {
       transitionDuration: const Duration(milliseconds: 300),
       binding: ProfileBinding(),
     ),
+
+    //    GetPage(
+    //   name: AppRoutes.aiAssistant,
+    //   page: () => AIAssistantScreen(),
+    //   transition: Transition.cupertino,
+    // ),
   ];
 }

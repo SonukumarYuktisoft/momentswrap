@@ -57,173 +57,27 @@ class ProfileScreen extends GetView<ProfileController> {
           // onRefresh: () => controller.getCustomerProfile(),
           onRefresh: () => controller.checkLoginAndFetchData(),
           color: AppColors.primaryColor,
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    AppColors.primaryColor.withOpacity(0.1),
-                    AppColors.backgroundColor,
-                  ],
-                ),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  AppColors.primaryColor.withOpacity(0.1),
+                  AppColors.backgroundColor,
+                ],
               ),
-              child: Column(
-                children: [
-                  // Modern Header with Profile
-                  Container(
-                    // padding: EdgeInsets.only(
-                    //   top: AppSizes.appBarHeight + 20,
-                    //   left: 100,
-                    //   right: 100,
-                    //   bottom: 30,
-                    // ),
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).viewPadding.top + 20,
-                      bottom: 30,
-                    ),
-
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30),
-                      ),
-                      image: DecorationImage(
-                        image: AssetImage("assets/images/bgimg.png"),
-                        fit: BoxFit.none,
-                        // colorFilter: ColorFilter.mode(
-                        //   AppColors.primaryColor.withOpacity(
-                        //     0.3,
-                        //   ), // overlay color
-                        //   BlendMode
-                        //       .darken, // ya phir softLight / overlay try kar sakte ho
-                        // ),
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        // Profile Picture with Modern Styling
-                        Stack(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: AppColors.accentColor,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.secondaryColor.withOpacity(
-                                      0.2,
-                                    ),
-                                    blurRadius: 15,
-                                    offset: Offset(0, 8),
-                                  ),
-                                ],
-                              ),
-                              child: CircleAvatar(
-                                radius: 60,
-                                backgroundColor: AppColors.backgroundColor,
-                                backgroundImage:
-                                    controller.profileImage.value != null
-                                    ? FileImage(controller.profileImage.value!)
-                                    : null,
-                                child: controller.profileImage.value == null
-                                    ? Icon(
-                                        Icons.person_outline,
-                                        size: 60,
-                                        color: AppColors.primaryColor,
-                                      )
-                                    : null,
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  gradient: AppColors.secondaryGradient,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: AppColors.accentColor,
-                                    width: 3,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: AppColors.secondaryColor
-                                          .withOpacity(0.3),
-                                      blurRadius: 8,
-                                      offset: Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: Icon(
-                                  Icons.camera_alt_outlined,
-                                  color: AppColors.accentColor,
-                                  size: 18,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        // User Info with Modern Typography
-                        Text(
-                          controller.fullName.isNotEmpty
-                              ? controller.fullName
-                              : 'Welcome User',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.accentColor,
-                          ),
-                        ),
-
-                        const SizedBox(height: 8),
-
-                        if (controller.email.isNotEmpty)
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.accentColor.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              controller.email,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: AppColors.accentColor,
-                              ),
-                            ),
-                          ),
-
-                        const SizedBox(height: 6),
-
-                        if (controller.phoneNumber.isNotEmpty)
-                          Text(
-                            controller.phoneNumber,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.accentColor.withOpacity(0.8),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-
-                  // Modern Menu Options
-                  Padding(
+            ),
+            child: Column(
+              children: [
+                // Modern Header with Profile
+                _buidprofile(context, controller),
+          
+                // Modern Menu Options
+                Expanded(
+                  child: Padding(
                     padding: const EdgeInsets.all(20),
-                    child: Column(
+                    child: ListView(
                       children: [
                         // Quick Actions Card
                         Container(
@@ -249,9 +103,9 @@ class ProfileScreen extends GetView<ProfileController> {
                                   Get.toNamed(AppRoutes.editProfileScreen);
                                 }),
                               ),
-
+                            
                               _buildModernDivider(),
-
+                            
                               _buildModernProfileItem(
                                 icon: Icons.shopping_bag_outlined,
                                 title: "My Orders",
@@ -261,9 +115,9 @@ class ProfileScreen extends GetView<ProfileController> {
                                   Get.toNamed(AppRoutes.orderScreen);
                                 }),
                               ),
-
+                            
                               _buildModernDivider(),
-
+                            
                               _buildModernProfileItem(
                                 icon: Icons.refresh_outlined,
                                 title: "Refresh Profile",
@@ -276,9 +130,9 @@ class ProfileScreen extends GetView<ProfileController> {
                             ],
                           ),
                         ),
-
+                            
                         const SizedBox(height: 20),
-
+                            
                         // Danger Zone Card
                         Container(
                           decoration: BoxDecoration(
@@ -318,7 +172,7 @@ class ProfileScreen extends GetView<ProfileController> {
                                   ],
                                 ),
                               ),
-
+                            
                               Obx(
                                 () => _buildModernProfileItem(
                                   icon: Icons.delete_forever_outlined,
@@ -345,9 +199,9 @@ class ProfileScreen extends GetView<ProfileController> {
                                       : null,
                                 ),
                               ),
-
+                            
                               _buildModernDivider(),
-
+                            
                               _buildModernProfileItem(
                                 icon: Icons.logout_outlined,
                                 title: "Log Out",
@@ -403,7 +257,7 @@ class ProfileScreen extends GetView<ProfileController> {
                                   ],
                                 ),
                               ),
-
+                            
                               _buildModernProfileItem(
                                 icon: Icons.rate_review_outlined,
                                 title: "My Reviews",
@@ -414,9 +268,9 @@ class ProfileScreen extends GetView<ProfileController> {
                                   Get.to(MyReviewsScreen());
                                 }),
                               ),
-
+                            
                               _buildModernDivider(),
-
+                            
                               // _buildModernProfileItem(
                               //   icon: Icons.logout_outlined,
                               //   title: "Log Out",
@@ -429,9 +283,9 @@ class ProfileScreen extends GetView<ProfileController> {
                             ],
                           ),
                         ),
-
+                            
                         const SizedBox(height: 30),
-
+                            
                         // Debug Info (remove in production)
                         if (controller.profile.value != null)
                           Container(
@@ -492,17 +346,153 @@ class ProfileScreen extends GetView<ProfileController> {
                               ],
                             ),
                           ),
-
+                            
                         const SizedBox(height: 20),
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );
       }),
+    );
+  }
+
+  Container _buidprofile(BuildContext context, ProfileController controller) {
+    return Container(
+      // padding: EdgeInsets.only(
+      //   top: AppSizes.appBarHeight + 20,
+      //   left: 100,
+      //   right: 100,
+      //   bottom: 30,
+      // ),
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).viewPadding.top + 20,
+        bottom: 30,
+      ),
+
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: AppColors.primaryGradient,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(30),
+        ),
+        image: DecorationImage(
+          image: AssetImage("assets/images/bgimg.png"),
+          fit: BoxFit.none,
+          // colorFilter: ColorFilter.mode(
+          //   AppColors.primaryColor.withOpacity(
+          //     0.3,
+          //   ), // overlay color
+          //   BlendMode
+          //       .darken, // ya phir softLight / overlay try kar sakte ho
+          // ),
+        ),
+      ),
+      child: Column(
+        children: [
+          // Profile Picture with Modern Styling
+          Stack(
+            children: [
+              Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: AppColors.accentColor,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.secondaryColor.withOpacity(0.2),
+                      blurRadius: 15,
+                      offset: Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundColor: AppColors.backgroundColor,
+                  backgroundImage: controller.profileImage.value != null
+                      ? FileImage(controller.profileImage.value!)
+                      : null,
+                  child: controller.profileImage.value == null
+                      ? Icon(
+                          Icons.person_outline,
+                          size: 60,
+                          color: AppColors.primaryColor,
+                        )
+                      : null,
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    gradient: AppColors.secondaryGradient,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.accentColor, width: 3),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.secondaryColor.withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.camera_alt_outlined,
+                    color: AppColors.accentColor,
+                    size: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 20),
+
+          // User Info with Modern Typography
+          Text(
+            controller.fullName.isNotEmpty
+                ? controller.fullName
+                : 'Welcome User',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: AppColors.accentColor,
+            ),
+          ),
+
+          const SizedBox(height: 8),
+
+          if (controller.email.isNotEmpty)
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.accentColor.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                controller.email,
+                style: TextStyle(fontSize: 14, color: AppColors.accentColor),
+              ),
+            ),
+
+          const SizedBox(height: 6),
+
+          if (controller.phoneNumber.isNotEmpty)
+            Text(
+              controller.phoneNumber,
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColors.accentColor.withOpacity(0.8),
+              ),
+            ),
+        ],
+      ),
     );
   }
 

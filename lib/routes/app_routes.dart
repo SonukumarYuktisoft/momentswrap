@@ -39,6 +39,12 @@ class AppRoutes {
   static const String orderScreen = '/order-screen';
   //Order Details Screen
   static const String orderDetailsScreen = '/order-details-screen';
+  // Payment Screen
+  static const String paymentScreen = '/payment-screen';
+  // Settings Screen
+  static const String settingsScreen = '/settings-screen';
+  // AI Assistant Screen
+  static const String aiAssistant = '/ai-assistant';
 
   /// Not Found
   static const String notFoundScreen = '/not-found';

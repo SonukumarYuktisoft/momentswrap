@@ -4,6 +4,7 @@ import 'package:momentswrap/controllers/order_controller/order_controller.dart';
 import 'package:momentswrap/controllers/review_controller/review_controller.dart';
 import 'package:momentswrap/models/order_model/order_model.dart';
 import 'package:momentswrap/util/constants/app_colors.dart';
+import 'package:momentswrap/view/order_screen/invoice_page.dart';
 import 'package:momentswrap/view/order_screen/widgets/review_button.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
@@ -1447,29 +1448,118 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           ),
           const SizedBox(height: 12),
         ],
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: AppColors.accentColor,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.primaryColor.withOpacity(0.3)),
+        if (order.orderStatus.toLowerCase() == 'delivered') ...[
+          Container(
+            width: double.infinity,
+            // decoration: BoxDecoration(
+            //   // color: AppColors.accentColor,
+            //   borderRadius: BorderRadius.circular(16),
+            //   border: Border.all(
+            //     color: AppColors.primaryColor.withOpacity(0.3),
+            //   ),
+            // ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => Get.back(),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: AppColors.textOnPrimary,
+
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    icon: Icon(Icons.arrow_back_outlined),
+                    label: Text(
+                      'Back to Orders',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 20),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Get.to(InvoicePage(order: order));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: AppColors.textOnPrimary,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    icon: Icon(Icons.download),
+                    label: Text(
+                      'DownloadPDF',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          child: TextButton.icon(
-            onPressed: () => Get.back(),
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.primaryColor,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+        ] else ...[
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: AppColors.accentColor,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: AppColors.primaryColor.withOpacity(0.3),
               ),
             ),
-            icon: Icon(Icons.arrow_back_outlined),
-            label: Text(
-              'Back to Orders',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            child: TextButton.icon(
+              onPressed: () => Get.back(),
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.primaryColor,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              icon: Icon(Icons.arrow_back_outlined),
+              label: Text(
+                'Back to Orders',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
             ),
           ),
-        ),
+        ],
+
+        // Container(
+        //   width: double.infinity,
+        //   decoration: BoxDecoration(
+        //     color: AppColors.accentColor,
+        //     borderRadius: BorderRadius.circular(16),
+        //     border: Border.all(color: AppColors.primaryColor.withOpacity(0.3)),
+        //   ),
+        //   child: TextButton.icon(
+        //     onPressed: () => Get.back(),
+        //     style: TextButton.styleFrom(
+        //       foregroundColor: AppColors.primaryColor,
+        //       padding: const EdgeInsets.symmetric(vertical: 16),
+        //       shape: RoundedRectangleBorder(
+        //         borderRadius: BorderRadius.circular(16),
+        //       ),
+        //     ),
+        //     icon: Icon(Icons.arrow_back_outlined),
+        //     label: Text(
+        //       'Back to Orders',
+        //       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
@@ -1658,189 +1748,188 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   // }
 
   void _showModernCancelOrderDialog(String orderId) {
-  Get.dialog(
-    AlertDialog(
-      backgroundColor: AppColors.accentColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppColors.errorColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: AppColors.accentColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.errorColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.warning_amber_outlined,
+                color: AppColors.errorColor,
+                size: 20,
+              ),
             ),
-            child: Icon(
-              Icons.warning_amber_outlined,
-              color: AppColors.errorColor,
-              size: 20,
+            SizedBox(width: 12),
+            Text(
+              'Cancel Order',
+              style: TextStyle(
+                color: AppColors.textColor,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'Are you sure you want to cancel this order? This action cannot be undone.',
+          style: TextStyle(color: AppColors.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text(
+              'Keep Order',
+              style: TextStyle(color: AppColors.textSecondary),
             ),
           ),
-          SizedBox(width: 12),
-          Text(
-            'Cancel Order',
-            style: TextStyle(
-              color: AppColors.textColor,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.errorColor,
+                  AppColors.errorColor.withOpacity(0.8),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: TextButton(
+              onPressed: () {
+                Get.back(); // Close dialog
+                _showCancelReasonBottomSheet(orderId); // Open reason sheet
+              },
+              child: Text(
+                'Yes, Cancel Order',
+                style: TextStyle(
+                  color: AppColors.accentColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ),
         ],
       ),
-      content: Text(
-        'Are you sure you want to cancel this order? This action cannot be undone.',
-        style: TextStyle(color: AppColors.textSecondary),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Get.back(),
-          child: Text(
-            'Keep Order',
-            style: TextStyle(color: AppColors.textSecondary),
-          ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.errorColor,
-                AppColors.errorColor.withOpacity(0.8),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: TextButton(
-            onPressed: () {
-              Get.back(); // Close dialog
-              _showCancelReasonBottomSheet(orderId); // Open reason sheet
-            },
-            child: Text(
-              'Yes, Cancel Order',
-              style: TextStyle(
+    );
+  }
+
+  void _showCancelReasonBottomSheet(String orderId) {
+    final reasons = [
+      "Ordered by mistake",
+      "Found cheaper elsewhere",
+      "Item no longer needed",
+      "Delivery time too long",
+      "Ordered wrong product",
+      "Better alternative available",
+      "Changed my mind",
+      "Product not required anymore",
+      "Duplicate order",
+      "Incorrect address",
+      "Payment issue",
+      "Gift order canceled",
+      "Not satisfied with delivery options",
+      "Shipping cost too high",
+      "Expected faster delivery",
+      "Review/ratings not good",
+      "Not happy with seller",
+      "Technical issue while ordering",
+      "Applied wrong coupon",
+      "Product not suitable",
+      "Stock issue after order",
+      "Delivery location not serviceable",
+      "Other reason",
+    ];
+
+    String? selectedReason;
+
+    Get.bottomSheet(
+      SafeArea(
+        child: StatefulBuilder(
+          builder: (context, setState) {
+            return Container(
+              height: Get.height * 0.65,
+
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
                 color: AppColors.accentColor,
-                fontWeight: FontWeight.w600,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-void _showCancelReasonBottomSheet(String orderId) {
-  final reasons = [
-    "Ordered by mistake",
-    "Found cheaper elsewhere",
-    "Item no longer needed",
-    "Delivery time too long",
-    "Ordered wrong product",
-    "Better alternative available",
-    "Changed my mind",
-    "Product not required anymore",
-    "Duplicate order",
-    "Incorrect address",
-    "Payment issue",
-    "Gift order canceled",
-    "Not satisfied with delivery options",
-    "Shipping cost too high",
-    "Expected faster delivery",
-    "Review/ratings not good",
-    "Not happy with seller",
-    "Technical issue while ordering",
-    "Applied wrong coupon",
-    "Product not suitable",
-    "Stock issue after order",
-    "Delivery location not serviceable",
-    "Other reason",
-  ];
-
-  String? selectedReason;
-
-  Get.bottomSheet(
-    SafeArea(
-      child: StatefulBuilder(
-        builder: (context, setState) {
-          return Container(
-            height: Get.height * 0.65,
-      
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.accentColor,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 50,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[400],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  "Select a reason for cancellation",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textColor,
-                  ),
-                ),
-                SizedBox(height: 12),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: reasons.length,
-                    itemBuilder: (context, index) {
-                      final reason = reasons[index];
-                      return RadioListTile<String>(
-                        value: reason,
-                        groupValue: selectedReason,
-                        onChanged: (value) {
-                          setState(() => selectedReason = value);
-                        },
-                        title: Text(
-                          reason,
-                          style: TextStyle(color: AppColors.textSecondary),
-                        ),
-                        activeColor: AppColors.errorColor,
-                      );
-                    },
-                  ),
-                ),
-                SizedBox(height: 12),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.errorColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 50,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[400],
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    minimumSize: Size(double.infinity, 45),
                   ),
-                  onPressed: selectedReason == null
-                      ? null
-                      : () async {
-                          Get.back(); // close bottom sheet
-                          await _orderController.cancelOrder(
-                            orderId: orderId,
-                            reason: selectedReason,
-                          );
-                        },
-                  child: Text(
-                    "Confirm Cancellation",
-                    style: TextStyle(color: Colors.white),
+                  SizedBox(height: 16),
+                  Text(
+                    "Select a reason for cancellation",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textColor,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          );
-        },
+                  SizedBox(height: 12),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: reasons.length,
+                      itemBuilder: (context, index) {
+                        final reason = reasons[index];
+                        return RadioListTile<String>(
+                          value: reason,
+                          groupValue: selectedReason,
+                          onChanged: (value) {
+                            setState(() => selectedReason = value);
+                          },
+                          title: Text(
+                            reason,
+                            style: TextStyle(color: AppColors.textSecondary),
+                          ),
+                          activeColor: AppColors.errorColor,
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.errorColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      minimumSize: Size(double.infinity, 45),
+                    ),
+                    onPressed: selectedReason == null
+                        ? null
+                        : () async {
+                            Get.back(); // close bottom sheet
+                            await _orderController.cancelOrder(
+                              orderId: orderId,
+                              reason: selectedReason,
+                            );
+                          },
+                    child: Text(
+                      "Confirm Cancellation",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
-    ),
-    isScrollControlled: true,
-  );
-}
-
+      isScrollControlled: true,
+    );
+  }
 }

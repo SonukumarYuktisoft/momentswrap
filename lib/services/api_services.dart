@@ -38,32 +38,7 @@ class ApiServices {
     throw Exception('Failed to load data');
   }
 
-  // //post request
-  // Future<Response> postRequest({
-  //   required String url,
-  //   Map<String, dynamic>? queryParameters,
-  //   required bool authToken,
-  //   Map<String, dynamic>? data,
-  // }) async {
-  //   try {
-  //     final response = await _dio.post(
-  //       url,
-  //       data: data,
-  //       options: Options(
-  //         headers: await getHeader(authToken),
-
-  //         sendTimeout: const Duration(minutes: 1),
-  //         receiveTimeout: const Duration(minutes: 1),
-  //       ),
-  //     );
-  //     log("postRequest response = ${response.data}");
-  //     return response;
-  //   } catch (e) {
-  //     log("postRequest error = $e");
-  //     rethrow;
-  //   }
-  // }
-
+  
   /// POST
   Future<Response?> requestPostForApi({
     required String url,
