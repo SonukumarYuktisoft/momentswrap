@@ -14,6 +14,18 @@ class AppColors {
   static const Color errorColor = Color(0xFFF44336);
   static const Color infoColor = Color(0xFF2196F3);
 
+  // PDF specific colors
+  static const Color pdfPrimaryColor = Color(0xFF2563EB);    // Blue color for PDF
+  static const Color pdfGreyColor = Color(0xFF6B7280);       // Grey color for PDF
+  static const Color pdfLightGreyColor = Color(0xFFF3F4F6);  // Light grey for PDF backgrounds
+  static const Color pdfDarkColor = Color(0xFF111827);       // Dark color for PDF text
+  static const Color pdfSuccessColor = Color(0xFF10B981);    // Success green for PDF
+  static const Color pdfBorderColor = Color(0xFFD1D5DB);     // Border color for PDF
+  static const Color pdfTableBorderColor = Color(0xFFE5E7EB); // Table border color
+  static const Color pdfHeaderBgColor = Color(0xFFEFF6FF);   // Table header background
+  static const Color pdfSuccessBgColor = Color(0xFFE6FFFA);  // Success background
+  static const Color pdfSummaryBorderColor = Color(0xFFDBEAFE); // Summary border color
+
   // Gradient combinations
   static const LinearGradient primaryGradient = LinearGradient(
     begin: Alignment.topLeft,
@@ -61,11 +73,7 @@ class AppColors {
   static Color get surfaceVariant => backgroundColor;
   static Color get surfaceTint => primaryColor.withOpacity(0.05);
 
-
-  // // Text color variations
-  // static const Color textPrimary = Color(0xFF212121);      // Dark gray for main text
-  // static const Color textSecondary = Color(0xFF757575);    // Medium gray for secondary text
-  // static const Color textHint = Color(0xFF9E9E9E);         // Light gray for hints
+  // Text color variations
   static const Color textDisabled = Color(0xFFBDBDBD);     // Lighter gray for disabled text
   static const Color textOnPrimary = Colors.white;         // White text on primary color
   static const Color textOnSecondary = Colors.white;       // White text on secondary color
@@ -77,4 +85,16 @@ class AppColors {
   static const Color cardBackground = Colors.white;
   static const Color shimmerBase = Color(0xFFE0E0E0);
   static const Color shimmerHighlight = Color(0xFFF5F5F5);
+
+  // PDF Color Hex Strings (for PdfColor.fromHex)
+  static const String pdfPrimaryHex = '#2563EB';
+  static const String pdfGreyHex = '#6B7280';
+  static const String pdfLightGreyHex = '#F3F4F6';
+  static const String pdfDarkHex = '#111827';
+  static const String pdfSuccessHex = '#10B981';
+  static const String pdfBorderHex = '#D1D5DB';
+  static const String pdfTableBorderHex = '#E5E7EB';
+  static const String pdfHeaderBgHex = '#EFF6FF';
+  static const String pdfSuccessBgHex = '#E6FFFA';
+  static const String pdfSummaryBorderHex = '#DBEAFE';
 }

@@ -677,7 +677,7 @@ class _InvoicePageState extends State<InvoicePage> {
     });
 
     try {
-      final pdf = await _generatePDF();
+      final pdf = await _generateEnhancedPDF();
       await Printing.layoutPdf(
         onLayout: (PdfPageFormat format) async => pdf,
         name: 'Invoice_${_getFormattedOrderId(widget.order.id)}.pdf',
@@ -702,7 +702,7 @@ class _InvoicePageState extends State<InvoicePage> {
     });
 
     try {
-      final pdf = await _generatePDF();
+      final pdf = await _generateEnhancedPDF();
       final directory = await getTemporaryDirectory();
       final file = File(
         '${directory.path}/Invoice_${_getFormattedOrderId(widget.order.id)}.pdf',
@@ -726,162 +726,468 @@ class _InvoicePageState extends State<InvoicePage> {
     }
   }
 
-  Future<Uint8List> _generatePDF() async {
+  Future<Uint8List> _generateEnhancedPDF() async {
     final pdf = pw.Document();
 
+    // Define colors for PDF - using PdfColor with opacity values between 0.0 and 1.0
+    final primaryColor = PdfColor.fromHex('#6366F1');
+    final greyColor = PdfColor.fromHex('#6B7280');
+    final lightGreyColor = PdfColor.fromHex('#F8FAFC');
+    final darkColor = PdfColor.fromHex('#1E293B');
+    final successColor = PdfColor.fromHex('#10B981');
+    final borderColor = PdfColor.fromHex('#E2E8F0');
+
     pdf.addPage(
-      pw.Page(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        margin: pw.EdgeInsets.all(30),
         build: (pw.Context context) {
-          return pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              // Header
-              pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          return [
+            // Header Section with Company Info and Invoice Details
+            pw.Container(
+              padding: pw.EdgeInsets.all(20),
+              decoration: pw.BoxDecoration(
+                color: lightGreyColor,
+                borderRadius: pw.BorderRadius.circular(10),
+                border: pw.Border.all(color: borderColor),
+              ),
+              child: pw.Column(
                 children: [
-                  pw.Column(
+                  // Top Row: Company Name and Invoice Title
+                  pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
-                      pw.Text(
-                        'INVOICE',
-                        style: pw.TextStyle(
-                          fontSize: 32,
-                          fontWeight: pw.FontWeight.bold,
+                      pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Text(
+                            'Moment Wrap',
+                            style: pw.TextStyle(
+                              fontSize: 26,
+                              fontWeight: pw.FontWeight.bold,
+                              color: darkColor,
+                            ),
+                          ),
+                          pw.SizedBox(height: 4),
+                          pw.Text(
+                            'Your Premium Shopping Destination',
+                            style: pw.TextStyle(
+                              fontSize: 12,
+                              color: greyColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      pw.Container(
+                        padding: pw.EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        decoration: pw.BoxDecoration(
+                          color: primaryColor,
+                          borderRadius: pw.BorderRadius.circular(8),
                         ),
-                      ),
-                      pw.Text('#${_getFormattedOrderId(widget.order.id)}'),
-                    ],
-                  ),
-                  pw.Text('DELIVERED'),
-                ],
-              ),
-
-              pw.SizedBox(height: 20),
-
-              // Company Info
-              pw.Container(
-                padding: pw.EdgeInsets.all(10),
-                decoration: pw.BoxDecoration(
-                  border: pw.Border.all(),
-                  borderRadius: pw.BorderRadius.circular(5),
-                ),
-                child: pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    pw.Text(
-                      'From:',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                    ),
-                    pw.Text('MomentsWrap'),
-                    pw.Text('Premium Gift & Craft Solutions'),
-                    pw.Text('Email: support@momentswrap.com'),
-                    pw.Text('Phone: +91 9876543210'),
-                  ],
-                ),
-              ),
-
-              pw.SizedBox(height: 20),
-
-              // Customer Info
-              if (widget.order.shippingAddress != null)
-                pw.Container(
-                  padding: pw.EdgeInsets.all(10),
-                  decoration: pw.BoxDecoration(
-                    border: pw.Border.all(),
-                    borderRadius: pw.BorderRadius.circular(5),
-                  ),
-                  child: pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: [
-                      pw.Text(
-                        'Bill To:',
-                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                      ),
-                      pw.Text(widget.order.shippingAddress!.fullName),
-                      pw.Text(
-                        'Phone: ${widget.order.shippingAddress!.phoneNumber}',
-                      ),
-                      pw.Text(widget.order.shippingAddress!.formattedAddress),
-                    ],
-                  ),
-                ),
-
-              pw.SizedBox(height: 20),
-
-              // Order Details
-              pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                children: [
-                  pw.Text(
-                    'Order Date: ${_getFormattedDate(widget.order.createdAt)}',
-                  ),
-                  pw.Text(
-                    'Payment Method: ${widget.order.paymentMethod.toUpperCase()}',
-                  ),
-                ],
-              ),
-
-              pw.SizedBox(height: 20),
-
-              // Products Table
-              pw.Table(
-                border: pw.TableBorder.all(),
-                children: [
-                  // Header
-                  pw.TableRow(
-                    children: [
-                      pw.Padding(
-                        padding: pw.EdgeInsets.all(8),
                         child: pw.Text(
-                          'Item',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                        ),
-                      ),
-                      pw.Padding(
-                        padding: pw.EdgeInsets.all(8),
-                        child: pw.Text(
-                          'Qty',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                        ),
-                      ),
-                      pw.Padding(
-                        padding: pw.EdgeInsets.all(8),
-                        child: pw.Text(
-                          'Rate',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                        ),
-                      ),
-                      pw.Padding(
-                        padding: pw.EdgeInsets.all(8),
-                        child: pw.Text(
-                          'Amount',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  ),
-                  // Products
-                  ...widget.order.products.map(
-                    (product) => pw.TableRow(
-                      children: [
-                        pw.Padding(
-                          padding: pw.EdgeInsets.all(8),
-                          child: pw.Text(product.product.name),
-                        ),
-                        pw.Padding(
-                          padding: pw.EdgeInsets.all(8),
-                          child: pw.Text('${product.quantity}'),
-                        ),
-                        pw.Padding(
-                          padding: pw.EdgeInsets.all(8),
-                          child: pw.Text(
-                            '₹${product.price.toStringAsFixed(0)}',
+                          'INVOICE',
+                          style: pw.TextStyle(
+                            fontSize: 24,
+                            fontWeight: pw.FontWeight.bold,
+                            color: PdfColors.white,
                           ),
                         ),
-                        pw.Padding(
-                          padding: pw.EdgeInsets.all(8),
+                      ),
+                    ],
+                  ),
+                  
+                  pw.SizedBox(height: 20),
+                  
+                  // Company Contact Info and Invoice Details
+                  pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Text(
+                            'Email: support@momentwrap.com',
+                            style: pw.TextStyle(fontSize: 10, color: greyColor),
+                          ),
+                          pw.Text(
+                            'Phone: +91-XXXXXXXXXX',
+                            style: pw.TextStyle(fontSize: 10, color: greyColor),
+                          ),
+                          pw.Text(
+                            'Website: www.momentwrap.com',
+                            style: pw.TextStyle(fontSize: 10, color: greyColor),
+                          ),
+                        ],
+                      ),
+                      pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.end,
+                        children: [
+                          pw.Text(
+                            'Invoice #: INV-${_getFormattedOrderId(widget.order.id)}',
+                            style: pw.TextStyle(
+                              fontSize: 12,
+                              fontWeight: pw.FontWeight.bold,
+                              color: darkColor,
+                            ),
+                          ),
+                          pw.Text(
+                            'Order ID: ${widget.order.id}',
+                            style: pw.TextStyle(fontSize: 10, color: greyColor),
+                          ),
+                          pw.Text(
+                            'Order Date: ${_getFormattedDate(widget.order.createdAt)}',
+                            style: pw.TextStyle(fontSize: 10, color: greyColor),
+                          ),
+                          pw.SizedBox(height: 8),
+                          pw.Container(
+                            padding: pw.EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                            decoration: pw.BoxDecoration(
+                              color: PdfColor.fromHex('#DCFCE7'),
+                              borderRadius: pw.BorderRadius.circular(4),
+                              border: pw.Border.all(color: successColor),
+                            ),
+                            child: pw.Text(
+                              'Status: DELIVERED',
+                              style: pw.TextStyle(
+                                fontSize: 10,
+                                fontWeight: pw.FontWeight.bold,
+                                color: successColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            pw.SizedBox(height: 25),
+
+            // Bill To and Ship To Section
+            pw.Row(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                // Bill To
+                pw.Expanded(
+                  child: pw.Container(
+                    padding: pw.EdgeInsets.all(16),
+                    decoration: pw.BoxDecoration(
+                      color: PdfColors.white,
+                      borderRadius: pw.BorderRadius.circular(8),
+                      border: pw.Border.all(color: borderColor),
+                    ),
+                    child: pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
+                          'BILL TO:',
+                          style: pw.TextStyle(
+                            fontSize: 12,
+                            fontWeight: pw.FontWeight.bold,
+                            color: primaryColor,
+                          ),
+                        ),
+                        pw.SizedBox(height: 10),
+                        if (widget.order.shippingAddress != null) ...[
+                          pw.Text(
+                            widget.order.shippingAddress!.fullName,
+                            style: pw.TextStyle(
+                              fontSize: 14,
+                              fontWeight: pw.FontWeight.bold,
+                              color: darkColor,
+                            ),
+                          ),
+                          pw.SizedBox(height: 4),
+                          pw.Text(
+                            widget.order.shippingAddress!.phoneNumber,
+                            style: pw.TextStyle(fontSize: 12, color: greyColor),
+                          ),
+                          pw.Text(
+                            'Customer ID: ${widget.order.customer}',
+                            style: pw.TextStyle(fontSize: 10, color: greyColor),
+                          ),
+                        ] else ...[
+                          pw.Text(
+                            'Customer ID: ${widget.order.customer}',
+                            style: pw.TextStyle(fontSize: 12, color: darkColor),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+                pw.SizedBox(width: 15),
+                // Ship To
+                pw.Expanded(
+                  child: pw.Container(
+                    padding: pw.EdgeInsets.all(16),
+                    decoration: pw.BoxDecoration(
+                      color: PdfColors.white,
+                      borderRadius: pw.BorderRadius.circular(8),
+                      border: pw.Border.all(color: borderColor),
+                    ),
+                    child: pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
+                          'SHIP TO:',
+                          style: pw.TextStyle(
+                            fontSize: 12,
+                            fontWeight: pw.FontWeight.bold,
+                            color: primaryColor,
+                          ),
+                        ),
+                        pw.SizedBox(height: 10),
+                        if (widget.order.shippingAddress != null) ...[
+                          pw.Text(
+                            widget.order.shippingAddress!.fullName,
+                            style: pw.TextStyle(
+                              fontSize: 14,
+                              fontWeight: pw.FontWeight.bold,
+                              color: darkColor,
+                            ),
+                          ),
+                          pw.SizedBox(height: 4),
+                          pw.Text(
+                            widget.order.shippingAddress!.formattedAddress,
+                            style: pw.TextStyle(fontSize: 12, color: greyColor),
+                          ),
+                        ] else ...[
+                          pw.Text(
+                            'Same as billing address',
+                            style: pw.TextStyle(fontSize: 12, color: greyColor),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            pw.SizedBox(height: 25),
+
+            // Order Information Section
+            pw.Container(
+              width: double.infinity,
+              padding: pw.EdgeInsets.all(16),
+              decoration: pw.BoxDecoration(
+                color: lightGreyColor,
+                borderRadius: pw.BorderRadius.circular(8),
+                border: pw.Border.all(color: borderColor),
+              ),
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text(
+                    'ORDER INFORMATION',
+                    style: pw.TextStyle(
+                      fontSize: 14,
+                      fontWeight: pw.FontWeight.bold,
+                      color: primaryColor,
+                    ),
+                  ),
+                  pw.SizedBox(height: 12),
+                  pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      pw.Text(
+                        'Purchased From: Moment Wrap Online Store',
+                        style: pw.TextStyle(fontSize: 11, color: darkColor),
+                      ),
+                      pw.Text(
+                        'Payment Method: ${widget.order.paymentMethod}',
+                        style: pw.TextStyle(fontSize: 11, color: darkColor),
+                      ),
+                    ],
+                  ),
+                  pw.SizedBox(height: 4),
+                  pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      pw.Text(
+                        'Payment Status: ${widget.order.paymentStatus}',
+                        style: pw.TextStyle(fontSize: 11, color: darkColor),
+                      ),
+                      pw.Text(
+                        'Estimated Delivery: ${_getFormattedDate(widget.order.updatedAt)}',
+                        style: pw.TextStyle(fontSize: 11, color: darkColor),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            pw.SizedBox(height: 25),
+
+            // Order Items Table
+            pw.Text(
+              'ORDER ITEMS',
+              style: pw.TextStyle(
+                fontSize: 16,
+                fontWeight: pw.FontWeight.bold,
+                color: primaryColor,
+              ),
+            ),
+            pw.SizedBox(height: 12),
+
+            pw.Container(
+              decoration: pw.BoxDecoration(
+                borderRadius: pw.BorderRadius.circular(8),
+                border: pw.Border.all(color: borderColor, width: 1),
+              ),
+              child: pw.Table(
+                border: pw.TableBorder(
+                  horizontalInside: pw.BorderSide(color: borderColor, width: 0.5),
+                  verticalInside: pw.BorderSide(color: borderColor, width: 0.5),
+                ),
+                columnWidths: {
+                  0: pw.FixedColumnWidth(30),
+                  1: pw.FlexColumnWidth(3),
+                  2: pw.FixedColumnWidth(40),
+                  3: pw.FixedColumnWidth(80),
+                  4: pw.FixedColumnWidth(80),
+                },
+                children: [
+                  // Table Header
+                  pw.TableRow(
+                    decoration: pw.BoxDecoration(
+                      color: PdfColor.fromHex('#F1F5F9'),
+                    ),
+                    children: [
+                      pw.Container(
+                        padding: pw.EdgeInsets.all(12),
+                        child: pw.Text(
+                          '#',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 12,
+                            color: primaryColor,
+                          ),
+                          textAlign: pw.TextAlign.center,
+                        ),
+                      ),
+                      pw.Container(
+                        padding: pw.EdgeInsets.all(12),
+                        child: pw.Text(
+                          'Product Details',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 12,
+                            color: primaryColor,
+                          ),
+                        ),
+                      ),
+                      pw.Container(
+                        padding: pw.EdgeInsets.all(12),
+                        child: pw.Text(
+                          'Qty',
+                          textAlign: pw.TextAlign.center,
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 12,
+                            color: primaryColor,
+                          ),
+                        ),
+                      ),
+                      pw.Container(
+                        padding: pw.EdgeInsets.all(12),
+                        child: pw.Text(
+                          'Unit Price',
+                          textAlign: pw.TextAlign.right,
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 12,
+                            color: primaryColor,
+                          ),
+                        ),
+                      ),
+                      pw.Container(
+                        padding: pw.EdgeInsets.all(12),
+                        child: pw.Text(
+                          'Total',
+                          textAlign: pw.TextAlign.right,
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 12,
+                            color: primaryColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Product Rows
+                  ...widget.order.products.asMap().entries.map(
+                    (entry) => pw.TableRow(
+                      decoration: pw.BoxDecoration(
+                        color: entry.key % 2 == 0 ? PdfColors.white : PdfColor.fromHex('#FAFAFA'),
+                      ),
+                      children: [
+                        pw.Container(
+                          padding: pw.EdgeInsets.all(12),
                           child: pw.Text(
-                            '₹${(product.price * product.quantity).toStringAsFixed(0)}',
+                            '${entry.key + 1}',
+                            style: pw.TextStyle(fontSize: 11, color: darkColor),
+                            textAlign: pw.TextAlign.center,
+                          ),
+                        ),
+                        pw.Container(
+                          padding: pw.EdgeInsets.all(12),
+                          child: pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            children: [
+                              pw.Text(
+                                entry.value.product.name,
+                                style: pw.TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: pw.FontWeight.bold,
+                                  color: darkColor,
+                                ),
+                              ),
+                              if (entry.value.product.shortDescription.isNotEmpty) ...[
+                                pw.SizedBox(height: 2),
+                                pw.Text(
+                                  entry.value.product.shortDescription,
+                                  style: pw.TextStyle(
+                                    fontSize: 9,
+                                    color: greyColor,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                        pw.Container(
+                          padding: pw.EdgeInsets.all(12),
+                          child: pw.Text(
+                            '${entry.value.quantity}',
+                            textAlign: pw.TextAlign.center,
+                            style: pw.TextStyle(fontSize: 11, color: darkColor),
+                          ),
+                        ),
+                        pw.Container(
+                          padding: pw.EdgeInsets.all(12),
+                          child: pw.Text(
+                            'Rs. ${entry.value.price.toStringAsFixed(2)}',
+                            textAlign: pw.TextAlign.right,
+                            style: pw.TextStyle(fontSize: 11, color: darkColor),
+                          ),
+                        ),
+                        pw.Container(
+                          padding: pw.EdgeInsets.all(12),
+                          child: pw.Text(
+                            'Rs. ${(entry.value.price * entry.value.quantity).toStringAsFixed(2)}',
+                            textAlign: pw.TextAlign.right,
+                            style: pw.TextStyle(
+                              fontSize: 11,
+                              fontWeight: pw.FontWeight.bold,
+                              color: darkColor,
+                            ),
                           ),
                         ),
                       ],
@@ -889,37 +1195,269 @@ class _InvoicePageState extends State<InvoicePage> {
                   ),
                 ],
               ),
+            ),
 
-              pw.SizedBox(height: 20),
+            pw.SizedBox(height: 25),
 
-              // Total
-              pw.Align(
-                alignment: pw.Alignment.centerRight,
-                child: pw.Container(
-                  width: 200,
-                  padding: pw.EdgeInsets.all(10),
-                  decoration: pw.BoxDecoration(border: pw.Border.all()),
+            // Bottom Section with Terms and Order Summary
+            pw.Row(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                // Terms & Conditions
+                pw.Expanded(
+                  flex: 2,
+                  child: pw.Container(
+                    padding: pw.EdgeInsets.all(16),
+                    decoration: pw.BoxDecoration(
+                      color: PdfColors.white,
+                      borderRadius: pw.BorderRadius.circular(8),
+                      border: pw.Border.all(color: borderColor),
+                    ),
+                    child: pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
+                          'Terms & Conditions:',
+                          style: pw.TextStyle(
+                            fontSize: 12,
+                            fontWeight: pw.FontWeight.bold,
+                            color: primaryColor,
+                          ),
+                        ),
+                        pw.SizedBox(height: 10),
+                        pw.Text(
+                          '• All sales are final. Returns accepted within 30 days of delivery.',
+                          style: pw.TextStyle(fontSize: 9, color: darkColor),
+                        ),
+                        pw.SizedBox(height: 4),
+                        pw.Text(
+                          '• Please retain this invoice for warranty claims and returns.',
+                          style: pw.TextStyle(fontSize: 9, color: darkColor),
+                        ),
+                        pw.SizedBox(height: 4),
+                        pw.Text(
+                          '• For support, contact us at support@momentwrap.com',
+                          style: pw.TextStyle(fontSize: 9, color: darkColor),
+                        ),
+                        pw.SizedBox(height: 4),
+                        pw.Text(
+                          '• Quality assurance and customer satisfaction guaranteed.',
+                          style: pw.TextStyle(fontSize: 9, color: darkColor),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                pw.SizedBox(width: 20),
+                // Order Summary
+                pw.Container(
+                  width: 180,
+                  padding: pw.EdgeInsets.all(20),
+                  decoration: pw.BoxDecoration(
+                    color: lightGreyColor,
+                    borderRadius: pw.BorderRadius.circular(8),
+                    border: pw.Border.all(color: primaryColor, width: 2),
+                  ),
                   child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
+                      pw.Text(
+                        'ORDER SUMMARY',
+                        style: pw.TextStyle(
+                          fontSize: 12,
+                          fontWeight: pw.FontWeight.bold,
+                          color: primaryColor,
+                        ),
+                      ),
+                      pw.SizedBox(height: 15),
                       pw.Row(
                         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                         children: [
-                          pw.Text('Total Amount:'),
                           pw.Text(
-                            '₹${widget.order.totalAmount.toStringAsFixed(0)}',
-                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                            'Subtotal:',
+                            style: pw.TextStyle(fontSize: 11, color: darkColor),
+                          ),
+                          pw.Text(
+                            'Rs. ${widget.order.totalAmount.toStringAsFixed(2)}',
+                            style: pw.TextStyle(fontSize: 11, color: darkColor),
+                          ),
+                        ],
+                      ),
+                      pw.SizedBox(height: 8),
+                      pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                        children: [
+                          pw.Text(
+                            'Tax (0%):',
+                            style: pw.TextStyle(fontSize: 11, color: greyColor),
+                          ),
+                          pw.Text(
+                            'Rs. 0.00',
+                            style: pw.TextStyle(fontSize: 11, color: greyColor),
+                          ),
+                        ],
+                      ),
+                      pw.SizedBox(height: 8),
+                      pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                        children: [
+                          pw.Text(
+                            'Shipping:',
+                            style: pw.TextStyle(fontSize: 11, color: greyColor),
+                          ),
+                          pw.Text(
+                            'Free',
+                            style: pw.TextStyle(fontSize: 11, color: successColor),
+                          ),
+                        ],
+                      ),
+                      pw.SizedBox(height: 12),
+                      pw.Container(
+                        width: double.infinity,
+                        height: 1,
+                        color: borderColor,
+                      ),
+                      pw.SizedBox(height: 12),
+                      pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                        children: [
+                          pw.Text(
+                            'TOTAL:',
+                            style: pw.TextStyle(
+                              fontSize: 14,
+                              fontWeight: pw.FontWeight.bold,
+                              color: primaryColor,
+                            ),
+                          ),
+                          pw.Text(
+                            'Rs. ${widget.order.totalAmount.toStringAsFixed(2)}',
+                            style: pw.TextStyle(
+                              fontSize: 14,
+                              fontWeight: pw.FontWeight.bold,
+                              color: successColor,
+                            ),
                           ),
                         ],
                       ),
                     ],
                   ),
                 ),
+              ],
+            ),
+
+            pw.SizedBox(height: 30),
+
+            // Footer Section
+            pw.Container(
+              width: double.infinity,
+              padding: pw.EdgeInsets.all(25),
+              decoration: pw.BoxDecoration(
+                color: PdfColor.fromHex('#F8FAFC'),
+                borderRadius: pw.BorderRadius.circular(10),
+                border: pw.Border.all(color: borderColor),
               ),
+              child: pw.Column(
+                children: [
+                  // Logo placeholder - you can replace this with actual logo
+                  pw.Container(
+                    width: 60,
+                    height: 60,
+                    decoration: pw.BoxDecoration(
+                      color: primaryColor,
+                      borderRadius: pw.BorderRadius.circular(30),
+                    ),
+                    child: pw.Center(
+                      child: pw.Text(
+                        'MW',
+                        style: pw.TextStyle(
+                          fontSize: 20,
+                          fontWeight: pw.FontWeight.bold,
+                          color: PdfColors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  pw.SizedBox(height: 15),
+                  pw.Text(
+                    'Thank you for shopping with Moment Wrap!',
+                    style: pw.TextStyle(
+                      fontSize: 16,
+                      fontWeight: pw.FontWeight.bold,
+                      color: primaryColor,
+                    ),
+                  ),
+                  pw.SizedBox(height: 8),
+                  pw.Text(
+                    'We appreciate your business and hope you love your purchase!',
+                    style: pw.TextStyle(fontSize: 11, color: greyColor),
+                    textAlign: pw.TextAlign.center,
+                  ),
+                  pw.SizedBox(height: 15),
+                  pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.center,
+                    children: [
+                      pw.Text(
+                        'Follow us: ',
+                        style: pw.TextStyle(fontSize: 10, color: greyColor),
+                      ),
+                      pw.Text(
+                        '@momentwrap',
+                        style: pw.TextStyle(
+                          fontSize: 10,
+                          color: primaryColor,
+                          fontWeight: pw.FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
 
-              pw.Spacer(),
-
-              pw.Center(child: pw.Text('Thank you for your business!')),
+            // Notes section if available
+            if (widget.order.notes != null && widget.order.notes!.isNotEmpty) ...[
+              pw.SizedBox(height: 20),
+              pw.Container(
+                width: double.infinity,
+                padding: pw.EdgeInsets.all(16),
+                decoration: pw.BoxDecoration(
+                  color: PdfColor.fromHex('#FEF3CD'),
+                  borderRadius: pw.BorderRadius.circular(8),
+                  border: pw.Border.all(color: PdfColor.fromHex('#F59E0B')),
+                ),
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text(
+                      'Special Notes:',
+                      style: pw.TextStyle(
+                        fontSize: 12,
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColor.fromHex('#D97706'),
+                      ),
+                    ),
+                    pw.SizedBox(height: 8),
+                    pw.Text(
+                      widget.order.notes!,
+                      style: pw.TextStyle(
+                        fontSize: 11,
+                        color: PdfColor.fromHex('#92400E'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
+          ];
+        },
+        footer: (pw.Context context) {
+          return pw.Container(
+            alignment: pw.Alignment.centerRight,
+            margin: pw.EdgeInsets.only(top: 15),
+            child: pw.Text(
+              'Page ${context.pageNumber} of ${context.pagesCount}',
+              style: pw.TextStyle(fontSize: 10, color: greyColor),
+            ),
           );
         },
       ),
