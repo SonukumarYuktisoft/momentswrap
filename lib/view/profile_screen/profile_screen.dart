@@ -72,12 +72,13 @@ class ProfileScreen extends GetView<ProfileController> {
               children: [
                 // Modern Header with Profile
                 _buidprofile(context, controller),
-          
+
                 // Modern Menu Options
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(20),
                     child: ListView(
+                      physics: const BouncingScrollPhysics(),
                       children: [
                         // Quick Actions Card
                         Container(
@@ -103,9 +104,9 @@ class ProfileScreen extends GetView<ProfileController> {
                                   Get.toNamed(AppRoutes.editProfileScreen);
                                 }),
                               ),
-                            
+
                               _buildModernDivider(),
-                            
+
                               _buildModernProfileItem(
                                 icon: Icons.shopping_bag_outlined,
                                 title: "My Orders",
@@ -115,9 +116,9 @@ class ProfileScreen extends GetView<ProfileController> {
                                   Get.toNamed(AppRoutes.orderScreen);
                                 }),
                               ),
-                            
+
                               _buildModernDivider(),
-                            
+
                               _buildModernProfileItem(
                                 icon: Icons.refresh_outlined,
                                 title: "Refresh Profile",
@@ -130,9 +131,9 @@ class ProfileScreen extends GetView<ProfileController> {
                             ],
                           ),
                         ),
-                            
+
                         const SizedBox(height: 20),
-                            
+
                         // Danger Zone Card
                         Container(
                           decoration: BoxDecoration(
@@ -172,7 +173,7 @@ class ProfileScreen extends GetView<ProfileController> {
                                   ],
                                 ),
                               ),
-                            
+
                               Obx(
                                 () => _buildModernProfileItem(
                                   icon: Icons.delete_forever_outlined,
@@ -199,9 +200,9 @@ class ProfileScreen extends GetView<ProfileController> {
                                       : null,
                                 ),
                               ),
-                            
+
                               _buildModernDivider(),
-                            
+
                               _buildModernProfileItem(
                                 icon: Icons.logout_outlined,
                                 title: "Log Out",
@@ -257,7 +258,7 @@ class ProfileScreen extends GetView<ProfileController> {
                                   ],
                                 ),
                               ),
-                            
+
                               _buildModernProfileItem(
                                 icon: Icons.rate_review_outlined,
                                 title: "My Reviews",
@@ -268,9 +269,9 @@ class ProfileScreen extends GetView<ProfileController> {
                                   Get.to(MyReviewsScreen());
                                 }),
                               ),
-                            
+
                               _buildModernDivider(),
-                            
+
                               // _buildModernProfileItem(
                               //   icon: Icons.logout_outlined,
                               //   title: "Log Out",
@@ -283,9 +284,9 @@ class ProfileScreen extends GetView<ProfileController> {
                             ],
                           ),
                         ),
-                            
+
                         const SizedBox(height: 30),
-                            
+
                         // Debug Info (remove in production)
                         if (controller.profile.value != null)
                           Container(
@@ -346,7 +347,7 @@ class ProfileScreen extends GetView<ProfileController> {
                               ],
                             ),
                           ),
-                            
+
                         const SizedBox(height: 20),
                       ],
                     ),
