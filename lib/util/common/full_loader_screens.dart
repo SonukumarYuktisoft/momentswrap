@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:momentswrap/util/constants/app_sizes.dart';
-import 'package:momentswrap/util/helpers/helper_functions.dart';
+import 'package:Xkart/util/constants/app_sizes.dart';
+import 'package:Xkart/util/helpers/helper_functions.dart';
 
 class FullLoaderScreens extends StatelessWidget {
   final String animationPath;

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/pagetast.dart';
-import 'package:momentswrap/routes/app_pages.dart';
-import 'package:momentswrap/routes/app_routes.dart';
-import 'package:momentswrap/test.dart';
-import 'package:momentswrap/util/common/full_loader_screens.dart';
-import 'package:momentswrap/util/not_found_screen/not_fonud_screen.dart';
-import 'package:momentswrap/util/themes/app_theme.dart';
+import 'package:Xkart/pagetast.dart';
+import 'package:Xkart/routes/app_pages.dart';
+import 'package:Xkart/routes/app_routes.dart';
+import 'package:Xkart/test.dart';
+import 'package:Xkart/util/common/full_loader_screens.dart';
+import 'package:Xkart/util/not_found_screen/not_fonud_screen.dart';
+import 'package:Xkart/util/themes/app_theme.dart';
 
 void main() {
   runApp(const MyApp());

@@ -3,20 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:momentswrap/controllers/onbroding_controller/onbroding_controller.dart';
-import 'package:momentswrap/util/common/coustom_curve.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/util/constants/app_images_string.dart';
-import 'package:momentswrap/util/constants/app_sizes.dart';
-import 'package:momentswrap/util/constants/app_text_strings.dart';
-import 'package:momentswrap/util/constants/app_text_theme.dart';
-import 'package:momentswrap/util/device/device_helper.dart';
-import 'package:momentswrap/util/helpers/helper_functions.dart';
+import 'package:Xkart/controllers/onbroding_controller/onbroding_controller.dart';
+import 'package:Xkart/util/common/coustom_curve.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:Xkart/util/constants/app_images_string.dart';
+import 'package:Xkart/util/constants/app_sizes.dart';
+import 'package:Xkart/util/constants/app_text_strings.dart';
+import 'package:Xkart/util/constants/app_text_theme.dart';
+import 'package:Xkart/util/device/device_helper.dart';
+import 'package:Xkart/util/helpers/helper_functions.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingScreens extends StatelessWidget {
   const OnboardingScreens({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +78,6 @@ class OnboardingScreens extends StatelessWidget {
 }
 
 class OnBoardingIndicator extends StatelessWidget {
-  
-
   final controller = OnboardingController.instance;
 
   @override
@@ -88,7 +85,7 @@ class OnBoardingIndicator extends StatelessWidget {
     return Positioned(
       bottom: DeviceHelper.getBottomNavigationBarHeight() + 25,
       left: AppSizes.defaultSpacing,
-    
+
       child: SmoothPageIndicator(
         controller: controller.pageController,
         count: 3,
@@ -124,7 +121,7 @@ class OnBoardingSkip extends StatelessWidget {
         //   ),
         // ),
         onPressed: () => controller.skipOnboarding(),
-       child: Text('Skip',style: Theme.of(context).textTheme.labelMedium,),
+        child: Text('Skip', style: Theme.of(context).textTheme.labelMedium),
       ),
     );
   }
@@ -145,12 +142,12 @@ class OnBoardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          backgroundColor: Color(0xFFE60023),
+      backgroundColor: Color(0xFFE60023),
 
       body: Column(
         children: [
           ClipPath(
-         clipper: CustomCurve(),
+            clipper: CustomCurve(),
             child: Container(
               color: Colors.white,
               width: double.infinity,
@@ -162,22 +159,30 @@ class OnBoardingPage extends StatelessWidget {
               ),
             ),
           ),
-      
+
           const SizedBox(height: AppSizes.spaceBtwItems),
-      
+
           Text(
             title,
             // style: Theme.of(context).textTheme.headlineMedium,
-            style: TextStyle(fontSize: 25,color: Colors.white, fontWeight: FontWeight.w600),
+            style: TextStyle(
+              fontSize: 25,
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
 
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSizes.spaceBtwItems),
-      
+
           Text(
             subtitle,
             // style: Theme.of(context).textTheme.bodyMedium,
-            style: TextStyle(fontSize: 17,color: Colors.white,fontWeight: FontWeight.w400),
+            style: TextStyle(
+              fontSize: 17,
+              color: Colors.white,
+              fontWeight: FontWeight.w400,
+            ),
             textAlign: TextAlign.center,
           ),
         ],

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/util/constants/app_text_theme.dart';
-import 'package:momentswrap/util/themes/app_text_theme.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:Xkart/util/constants/app_text_theme.dart';
+import 'package:Xkart/util/themes/app_text_theme.dart';
 
 class AppTheme {
   static ThemeData light = ThemeData(
@@ -17,7 +17,7 @@ class AppTheme {
         foregroundColor: AppColors.primaryColor,
         backgroundColor: Colors.white,
         side: const BorderSide(color: AppColors.primaryColor, width: 1.0),
-          textStyle: TextStyle(
+        textStyle: TextStyle(
           color: AppColors.textColor,
           fontSize: 18,
           fontWeight: FontWeight.bold,
@@ -46,8 +46,7 @@ class AppTheme {
         ),
       ),
     ),
-  // textTheme
-  textTheme: AppTextTheme.lightTextTheme,
+    // textTheme
+    textTheme: AppTextTheme.lightTextTheme,
   );
-
 }

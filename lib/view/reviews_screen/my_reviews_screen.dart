@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/controllers/review_controller/review_controller.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/view/widgets/build_app_bar.dart';
-import 'package:momentswrap/models/review_model/review_model.dart';
+import 'package:Xkart/controllers/review_controller/review_controller.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:Xkart/view/widgets/build_app_bar.dart';
+import 'package:Xkart/models/review_model/review_model.dart';
 
 class MyReviewsScreen extends StatefulWidget {
   const MyReviewsScreen({super.key});

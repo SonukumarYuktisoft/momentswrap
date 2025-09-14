@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/controllers/review_controller/review_controller.dart';
-import 'package:momentswrap/models/review_model/review_model.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
+import 'package:Xkart/controllers/review_controller/review_controller.dart';
+import 'package:Xkart/models/review_model/review_model.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
 
 class WriteReviewWidget extends StatefulWidget {
   final String productId;
@@ -31,15 +31,16 @@ class WriteReviewWidget extends StatefulWidget {
   State<WriteReviewWidget> createState() => _WriteReviewWidgetState();
 }
 
-class _WriteReviewWidgetState extends State<WriteReviewWidget> with SingleTickerProviderStateMixin {
+class _WriteReviewWidgetState extends State<WriteReviewWidget>
+    with SingleTickerProviderStateMixin {
   late TextEditingController _commentController;
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
-  
+
   int _rating = 0;
   final FocusNode _focusNode = FocusNode();
   bool _isExpanded = false;
-  
+
   // Rating descriptions
   final Map<int, String> _ratingDescriptions = {
     1: 'Poor',
@@ -51,10 +52,30 @@ class _WriteReviewWidgetState extends State<WriteReviewWidget> with SingleTicker
 
   // Review suggestions based on rating
   final Map<int, List<String>> _reviewSuggestions = {
-    5: ['Amazing product!', 'Exceeded expectations', 'Highly recommend', 'Worth every penny'],
-    4: ['Great quality', 'Very satisfied', 'Good value for money', 'Happy with purchase'],
-    3: ['Decent product', 'As expected', 'Average quality', 'Okay for the price'],
-    2: ['Below expectations', 'Could be better', 'Not satisfied', 'Some issues'],
+    5: [
+      'Amazing product!',
+      'Exceeded expectations',
+      'Highly recommend',
+      'Worth every penny',
+    ],
+    4: [
+      'Great quality',
+      'Very satisfied',
+      'Good value for money',
+      'Happy with purchase',
+    ],
+    3: [
+      'Decent product',
+      'As expected',
+      'Average quality',
+      'Okay for the price',
+    ],
+    2: [
+      'Below expectations',
+      'Could be better',
+      'Not satisfied',
+      'Some issues',
+    ],
     1: ['Poor quality', 'Not recommended', 'Disappointed', 'Not worth it'],
   };
 
@@ -65,21 +86,17 @@ class _WriteReviewWidgetState extends State<WriteReviewWidget> with SingleTicker
       text: widget.existingReview?.comment ?? '',
     );
     _rating = widget.existingReview?.rating ?? 0;
-    
+
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutBack,
-    ));
-    
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack),
+    );
+
     _animationController.forward();
-    
+
     // Auto-focus on comment field if editing
     if (widget.isEdit) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -140,7 +157,7 @@ class _WriteReviewWidgetState extends State<WriteReviewWidget> with SingleTicker
     // //     comment: _commentController.text.trim(),
     // //     orderId: widget.existingReview?.orderId ?? '',
     // //   );
-    }
+  }
 
   //   if (success) {
   //     widget.onSubmitted?.call();
@@ -267,9 +284,7 @@ class _WriteReviewWidgetState extends State<WriteReviewWidget> with SingleTicker
       decoration: BoxDecoration(
         color: AppColors.backgroundColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.primaryColor.withOpacity(0.1),
-        ),
+        border: Border.all(color: AppColors.primaryColor.withOpacity(0.1)),
       ),
       child: Row(
         children: [
@@ -352,9 +367,7 @@ class _WriteReviewWidgetState extends State<WriteReviewWidget> with SingleTicker
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.primaryColor.withOpacity(0.1),
-        ),
+        border: Border.all(color: AppColors.primaryColor.withOpacity(0.1)),
       ),
       child: Column(
         children: [
@@ -372,7 +385,7 @@ class _WriteReviewWidgetState extends State<WriteReviewWidget> with SingleTicker
             children: List.generate(5, (index) {
               final starRating = index + 1;
               final isSelected = starRating <= _rating;
-              
+
               return GestureDetector(
                 onTap: () {
                   setState(() {
@@ -386,7 +399,9 @@ class _WriteReviewWidgetState extends State<WriteReviewWidget> with SingleTicker
                   duration: Duration(milliseconds: 200),
                   padding: EdgeInsets.all(8),
                   child: Icon(
-                    isSelected ? Icons.star_rounded : Icons.star_outline_rounded,
+                    isSelected
+                        ? Icons.star_rounded
+                        : Icons.star_outline_rounded,
                     color: isSelected ? Colors.amber : Colors.grey[400],
                     size: isSelected ? 40 : 36,
                   ),
@@ -426,7 +441,7 @@ class _WriteReviewWidgetState extends State<WriteReviewWidget> with SingleTicker
 
   Widget _buildSuggestions() {
     if (_rating == 0) return SizedBox.shrink();
-    
+
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
       height: _isExpanded ? null : 0,
@@ -501,20 +516,11 @@ class _WriteReviewWidgetState extends State<WriteReviewWidget> with SingleTicker
                   color: AppColors.textColor,
                 ),
               ),
-              Text(
-                ' *',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.red,
-                ),
-              ),
+              Text(' *', style: TextStyle(fontSize: 14, color: Colors.red)),
               Spacer(),
               Text(
                 '${_commentController.text.length}/500',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textSecondary,
-                ),
+                style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
               ),
             ],
           ),
@@ -544,7 +550,8 @@ class _WriteReviewWidgetState extends State<WriteReviewWidget> with SingleTicker
                 height: 1.5,
               ),
               decoration: InputDecoration(
-                hintText: 'Share your experience with this product...\n\n• What did you like?\n• What could be improved?\n• Would you recommend it?',
+                hintText:
+                    'Share your experience with this product...\n\n• What did you like?\n• What could be improved?\n• Would you recommend it?',
                 hintStyle: TextStyle(
                   fontSize: 13,
                   color: AppColors.textSecondary.withOpacity(0.6),
@@ -564,7 +571,7 @@ class _WriteReviewWidgetState extends State<WriteReviewWidget> with SingleTicker
   Widget _buildSubmitButton() {
     return Obx(() {
       final isSubmitting = widget.reviewController.isSubmitting.value;
-      
+
       return Container(
         margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         width: double.infinity,

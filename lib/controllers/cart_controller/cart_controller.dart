@@ -3,9 +3,9 @@
 // import 'package:flutter/material.dart';
 // import 'package:get/get_rx/src/rx_types/rx_types.dart';
 // import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-// import 'package:momentswrap/models/cart_models/allcarts_models.dart';
-// import 'package:momentswrap/services/api_services.dart';
-// import 'package:momentswrap/util/helpers/helper_functions.dart';
+// import 'package:Xkart/models/cart_models/allcarts_models.dart';
+// import 'package:Xkart/services/api_services.dart';
+// import 'package:Xkart/util/helpers/helper_functions.dart';
 // import 'package:dio/dio.dart' as dio;
 
 // class CartController extends GetxController {
@@ -199,9 +199,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:momentswrap/models/cart_models/allcarts_models.dart';
-import 'package:momentswrap/services/api_services.dart';
-import 'package:momentswrap/util/helpers/helper_functions.dart';
+import 'package:Xkart/models/cart_models/allcarts_models.dart';
+import 'package:Xkart/services/api_services.dart';
+import 'package:Xkart/util/helpers/helper_functions.dart';
 import 'package:dio/dio.dart' as dio;
 
 class CartController extends GetxController {
@@ -214,7 +214,7 @@ class CartController extends GetxController {
   final Rx<AllCartsModels?> carts = Rx<AllCartsModels?>(null);
   final RxString errorMessage = ''.obs;
   final RxBool isCartLoading = false.obs;
-  
+
   // Local quantity management - Map to store local quantities
   final RxMap<String, int> localQuantities = <String, int>{}.obs;
 
@@ -239,13 +239,14 @@ class CartController extends GetxController {
     try {
       final dio.Response response = await _apiServices.getRequest(
         authToken: true,
-        url: 'https://moment-wrap-backend.vercel.app/api/customer/get-all-carts',
+        url:
+            'https://moment-wrap-backend.vercel.app/api/customer/get-all-carts',
         queryParameters: {},
       );
 
       if (response.statusCode == 200 && response.data != null) {
         print("Cart Response Data: ${response.data}");
-        
+
         if (response.data is Map<String, dynamic>) {
           final responseData = AllCartsModels.fromJson(response.data);
           carts.value = responseData;
@@ -257,10 +258,10 @@ class CartController extends GetxController {
                 .toList(),
           );
         }
-        
+
         // Initialize local quantities with API quantities
         _initializeLocalQuantities();
-        
+
         log('${carts.toString()}');
       } else {
         errorMessage.value = 'Failed to load cart data';
@@ -305,7 +306,7 @@ class CartController extends GetxController {
   // Get final cart data for placing order (with local quantities)
   List<Map<String, dynamic>> getFinalCartData() {
     if (carts.value?.data == null) return [];
-    
+
     return carts.value!.data.map((item) {
       final localQty = getLocalQuantity(item.id);
       return {
@@ -371,7 +372,8 @@ class CartController extends GetxController {
       isRemoveFromCartLoading.value = true;
       final dio.Response response = await _apiServices.deleteRequest(
         authToken: true,
-        url: 'https://moment-wrap-backend.vercel.app/api/customer/remove-from-cart/$cartItemId',
+        url:
+            'https://moment-wrap-backend.vercel.app/api/customer/remove-from-cart/$cartItemId',
       );
 
       log('${response.data}');

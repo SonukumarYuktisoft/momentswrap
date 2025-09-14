@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:momentswrap/util/constants/simmers/banner_shimmer.dart';
-import 'package:momentswrap/util/constants/simmers/category_shimmer.dart';
-import 'package:momentswrap/util/constants/simmers/horizontal_productList_shimmer.dart';
+import 'package:Xkart/util/constants/simmers/banner_shimmer.dart';
+import 'package:Xkart/util/constants/simmers/category_shimmer.dart';
+import 'package:Xkart/util/constants/simmers/horizontal_productList_shimmer.dart';
 
 class HomeShimmer extends StatelessWidget {
   const HomeShimmer({super.key});

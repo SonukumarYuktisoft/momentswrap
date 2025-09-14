@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/controllers/review_controller/review_controller.dart';
-import 'package:momentswrap/models/review_model/review_model.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/view/reviews_screen/widgets/review_card_widget.dart';
-import 'package:momentswrap/view/reviews_screen/widgets/review_stats_widget.dart';
-import 'package:momentswrap/view/reviews_screen/widgets/write_review_widget.dart';
+import 'package:Xkart/controllers/review_controller/review_controller.dart';
+import 'package:Xkart/models/review_model/review_model.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:Xkart/view/reviews_screen/widgets/review_card_widget.dart';
+import 'package:Xkart/view/reviews_screen/widgets/review_stats_widget.dart';
+import 'package:Xkart/view/reviews_screen/widgets/write_review_widget.dart';
 
 class ReviewsScreen extends StatefulWidget {
   final String productId;
@@ -25,13 +25,14 @@ class ReviewsScreen extends StatefulWidget {
   State<ReviewsScreen> createState() => _ReviewsScreenState();
 }
 
-class _ReviewsScreenState extends State<ReviewsScreen> with TickerProviderStateMixin {
+class _ReviewsScreenState extends State<ReviewsScreen>
+    with TickerProviderStateMixin {
   late ReviewController reviewController;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-  
+
   String _sortBy = 'newest';
-  
+
   final List<Map<String, String>> _sortOptions = [
     {'label': 'Newest', 'value': 'newest'},
     {'label': 'Oldest', 'value': 'oldest'},
@@ -50,7 +51,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> with TickerProviderStateM
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
-    
+
     _loadReviews();
     _animationController.forward();
   }
@@ -79,7 +80,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> with TickerProviderStateM
         if (reviewController.isLoading.value) {
           return _buildLoadingState();
         }
-        
+
         if (reviewController.hasError.value) {
           return _buildErrorState();
         }
@@ -98,12 +99,10 @@ class _ReviewsScreenState extends State<ReviewsScreen> with TickerProviderStateM
                     productName: widget.productName,
                   ),
                 ),
-                
+
                 // Sort Section
-                SliverToBoxAdapter(
-                  child: _buildSortSection(),
-                ),
-                
+                SliverToBoxAdapter(child: _buildSortSection()),
+
                 // Reviews List or Empty State
                 reviewController.productReviews.isEmpty
                     ? SliverToBoxAdapter(child: _buildEmptyState())
@@ -128,10 +127,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> with TickerProviderStateM
         children: [
           Text(
             'Reviews',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           Text(
             widget.productName,
@@ -196,10 +192,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> with TickerProviderStateM
           SizedBox(height: 16),
           Text(
             'Loading reviews...',
-            style: TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 14,
-            ),
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
           ),
         ],
       ),
@@ -283,7 +276,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> with TickerProviderStateM
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-                              child: Row(
+              child: Row(
                 children: _sortOptions.map((option) {
                   return Padding(
                     padding: EdgeInsets.only(right: 8),
@@ -325,8 +318,8 @@ class _ReviewsScreenState extends State<ReviewsScreen> with TickerProviderStateM
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
         side: BorderSide(
-          color: isSelected 
-              ? AppColors.primaryColor 
+          color: isSelected
+              ? AppColors.primaryColor
               : AppColors.primaryColor.withOpacity(0.2),
           width: isSelected ? 2 : 1,
         ),
@@ -411,36 +404,37 @@ class _ReviewsScreenState extends State<ReviewsScreen> with TickerProviderStateM
     return SliverPadding(
       padding: EdgeInsets.symmetric(horizontal: 16),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final review = sortedReviews[index];
-            return Padding(
-              padding: EdgeInsets.only(bottom: 16),
-              child: ReviewCardWidget(
-                review: review,
-                onEdit: _canEditReview(review) ? () => _editReview(review) : null,
-                onDelete: _canDeleteReview(review) ? () => _deleteReview(review) : null,
-              ),
-            );
-          },
-          childCount: sortedReviews.length,
-        ),
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final review = sortedReviews[index];
+          return Padding(
+            padding: EdgeInsets.only(bottom: 16),
+            child: ReviewCardWidget(
+              review: review,
+              onEdit: _canEditReview(review) ? () => _editReview(review) : null,
+              onDelete: _canDeleteReview(review)
+                  ? () => _deleteReview(review)
+                  : null,
+            ),
+          );
+        }, childCount: sortedReviews.length),
       ),
     );
   }
 
   Widget _buildWriteReviewFAB() {
-    final hasReviewed = reviewController.hasUserReviewedProduct(widget.productId);
-    
+    final hasReviewed = reviewController.hasUserReviewedProduct(
+      widget.productId,
+    );
+
     return Obx(() {
       if (reviewController.isLoading.value) {
         return SizedBox.shrink();
       }
-      
+
       return FloatingActionButton.extended(
         onPressed: hasReviewed ? null : () => _showWriteReviewDialog(),
-        backgroundColor: hasReviewed 
-            ? Colors.grey[400] 
+        backgroundColor: hasReviewed
+            ? Colors.grey[400]
             : AppColors.primaryColor,
         foregroundColor: AppColors.accentColor,
         icon: Icon(
@@ -582,12 +576,16 @@ class _ReviewsScreenState extends State<ReviewsScreen> with TickerProviderStateM
   }
 
   bool _canEditReview(ReviewModel review) {
-    final userReview = reviewController.getUserReviewForProduct(widget.productId);
+    final userReview = reviewController.getUserReviewForProduct(
+      widget.productId,
+    );
     return userReview != null && userReview.id == review.id;
   }
 
   bool _canDeleteReview(ReviewModel review) {
-    final userReview = reviewController.getUserReviewForProduct(widget.productId);
+    final userReview = reviewController.getUserReviewForProduct(
+      widget.productId,
+    );
     return userReview != null && userReview.id == review.id;
   }
 
@@ -624,21 +622,18 @@ class _ReviewsScreenState extends State<ReviewsScreen> with TickerProviderStateM
           style: TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: Text('Cancel')),
           TextButton(
             onPressed: () async {
               Get.back();
-              final success = await reviewController.deleteReview(widget.productId);
+              final success = await reviewController.deleteReview(
+                widget.productId,
+              );
               if (success) {
                 _refreshReviews();
               }
             },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
-            ),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
             child: Text('Delete'),
           ),
         ],

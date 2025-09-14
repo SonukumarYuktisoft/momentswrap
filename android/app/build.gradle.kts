@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.momentswrap"
+    namespace = "com.example.Xkart"
     compileSdk = 35
     ndkVersion = flutter.ndkVersion
     // Set the minimum SDK version for the project
@@ -28,7 +28,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.momentswrap"
+        applicationId = "com.example.Xkart"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

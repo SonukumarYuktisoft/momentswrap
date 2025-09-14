@@ -1,10 +1,10 @@
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
-// import 'package:momentswrap/controllers/order_controller/order_controller.dart';
-// import 'package:momentswrap/models/order_model/order_model.dart';
-// import 'package:momentswrap/view/order_screen/order_details_screen.dart';
+// import 'package:Xkart/controllers/order_controller/order_controller.dart';
+// import 'package:Xkart/models/order_model/order_model.dart';
+// import 'package:Xkart/view/order_screen/order_details_screen.dart';
 // // Import your model classes here
-// // import 'package:momentswrap/models/order_model.dart';
+// // import 'package:Xkart/models/order_model.dart';
 
 // class OrdersScreen extends StatefulWidget {
 //   const OrdersScreen({super.key});
@@ -450,10 +450,10 @@
 // }
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/controllers/order_controller/order_controller.dart';
-import 'package:momentswrap/models/order_model/order_model.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/view/order_screen/order_details_screen.dart';
+import 'package:Xkart/controllers/order_controller/order_controller.dart';
+import 'package:Xkart/models/order_model/order_model.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:Xkart/view/order_screen/order_details_screen.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -1017,8 +1017,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
                 const SizedBox(width: 12),
 
-                if (order.orderStatus.toLowerCase() == 'pending' 
-                || order.paymentStatus.toLowerCase() == 'processing' || order.paymentStatus.toLowerCase() == 'failed') ...[
+                if (order.orderStatus.toLowerCase() == 'pending' ||
+                    order.paymentStatus.toLowerCase() == 'processing' ||
+                    order.paymentStatus.toLowerCase() == 'failed') ...[
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
@@ -1230,215 +1231,215 @@ class _OrdersScreenState extends State<OrdersScreen> {
   //   );
   // }
   void _showModernCancelOrderDialog(String orderId, String? productName) {
-  Get.dialog(
-    AlertDialog(
-      backgroundColor: AppColors.accentColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppColors.errorColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: AppColors.accentColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.errorColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.warning_amber_outlined,
+                color: AppColors.errorColor,
+                size: 20,
+              ),
             ),
-            child: Icon(
-              Icons.warning_amber_outlined,
-              color: AppColors.errorColor,
-              size: 20,
+            SizedBox(width: 12),
+            Text(
+              'Cancel Order',
+              style: TextStyle(
+                color: AppColors.textColor,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'Are you sure you want to cancel this order'
+          '${productName != null ? ' for $productName' : ''}? '
+          'This action cannot be undone.',
+          style: TextStyle(color: AppColors.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text(
+              'Keep Order',
+              style: TextStyle(color: AppColors.textSecondary),
             ),
           ),
-          SizedBox(width: 12),
-          Text(
-            'Cancel Order',
-            style: TextStyle(
-              color: AppColors.textColor,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.errorColor,
+                  AppColors.errorColor.withOpacity(0.8),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: TextButton(
+              onPressed: () {
+                Get.back(); // pehle dialog band karo
+                _showCancelReasonBottomSheet(orderId, productName);
+              },
+              child: Text(
+                'Yes, Cancel',
+                style: TextStyle(
+                  color: AppColors.accentColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ),
         ],
       ),
-      content: Text(
-        'Are you sure you want to cancel this order'
-        '${productName != null ? ' for $productName' : ''}? '
-        'This action cannot be undone.',
-        style: TextStyle(color: AppColors.textSecondary),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Get.back(),
-          child: Text(
-            'Keep Order',
-            style: TextStyle(color: AppColors.textSecondary),
-          ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.errorColor,
-                AppColors.errorColor.withOpacity(0.8),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: TextButton(
-            onPressed: () {
-              Get.back(); // pehle dialog band karo
-              _showCancelReasonBottomSheet(orderId, productName);
-            },
-            child: Text(
-              'Yes, Cancel',
-              style: TextStyle(
+    );
+  }
+
+  void _showCancelReasonBottomSheet(String orderId, String? productName) {
+    final reasons = [
+      "Ordered by mistake",
+      "Found cheaper elsewhere",
+      "Item no longer needed",
+      "Delivery time too long",
+      "Ordered wrong product",
+      "Better alternative available",
+      "Changed my mind",
+      "Product not required anymore",
+      "Duplicate order",
+      "Incorrect address",
+      "Payment issue",
+      "Gift order canceled",
+      "Not satisfied with delivery options",
+      "Shipping cost too high",
+      "Expected faster delivery",
+      "Review/ratings not good",
+      "Not happy with seller",
+      "Technical issue while ordering",
+      "Applied wrong coupon",
+      "Product not suitable",
+      "Stock issue after order",
+      "Delivery location not serviceable",
+      "Other reason",
+    ];
+
+    String? selectedReason;
+    final customReasonController = TextEditingController();
+
+    Get.bottomSheet(
+      SafeArea(
+        child: StatefulBuilder(
+          builder: (context, setState) {
+            return Container(
+              padding: EdgeInsets.all(16),
+              height: Get.height * 0.65,
+              decoration: BoxDecoration(
                 color: AppColors.accentColor,
-                fontWeight: FontWeight.w600,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-void _showCancelReasonBottomSheet(String orderId, String? productName) {
-  final reasons = [
-    "Ordered by mistake",
-    "Found cheaper elsewhere",
-    "Item no longer needed",
-    "Delivery time too long",
-    "Ordered wrong product",
-    "Better alternative available",
-    "Changed my mind",
-    "Product not required anymore",
-    "Duplicate order",
-    "Incorrect address",
-    "Payment issue",
-    "Gift order canceled",
-    "Not satisfied with delivery options",
-    "Shipping cost too high",
-    "Expected faster delivery",
-    "Review/ratings not good",
-    "Not happy with seller",
-    "Technical issue while ordering",
-    "Applied wrong coupon",
-    "Product not suitable",
-    "Stock issue after order",
-    "Delivery location not serviceable",
-    "Other reason",
-  ];
-
-  String? selectedReason;
-  final customReasonController = TextEditingController();
-
-  Get.bottomSheet(
-    SafeArea(
-      child: StatefulBuilder(
-        builder: (context, setState) {
-          return Container(
-            padding: EdgeInsets.all(16),
-            height: Get.height * 0.65,
-            decoration: BoxDecoration(
-              color: AppColors.accentColor,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 50,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[400],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  "Select a reason for cancelling"
-                  "${productName != null ? ' $productName' : ''}",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textColor,
-                  ),
-                ),
-                SizedBox(height: 12),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: reasons.length,
-                    itemBuilder: (context, index) {
-                      final reason = reasons[index];
-                      return RadioListTile<String>(
-                        value: reason,
-                        groupValue: selectedReason,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedReason = value;
-                            if (value != "Other reason") {
-                              customReasonController.clear();
-                            }
-                          });
-                        },
-                        title: Text(
-                          reason,
-                          style: TextStyle(color: AppColors.textSecondary),
-                        ),
-                        activeColor: AppColors.errorColor,
-                      );
-                    },
-                  ),
-                ),
-                if (selectedReason == "Other reason")
-                  TextField(
-                    controller: customReasonController,
-                    decoration: InputDecoration(
-                      hintText: "Please specify your reason",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 50,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     ),
                   ),
-                SizedBox(height: 12),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.errorColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                  SizedBox(height: 16),
+                  Text(
+                    "Select a reason for cancelling"
+                    "${productName != null ? ' $productName' : ''}",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textColor,
                     ),
-                    minimumSize: Size(double.infinity, 45),
                   ),
-                  onPressed: selectedReason == null
-                      ? null
-                      : () async {
-                          String finalReason = selectedReason == "Other reason"
-                              ? customReasonController.text.trim()
-                              : selectedReason!;
-      
-                          if (finalReason.isEmpty) return;
-      
-                          Get.back(); // close bottom sheet
-                          await _orderController.cancelOrder(
-                            orderId: orderId,
-                            reason: finalReason,
-                          );
-                        },
-                  child: Text(
-                    "Confirm Cancellation",
-                    style: TextStyle(color: Colors.white),
+                  SizedBox(height: 12),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: reasons.length,
+                      itemBuilder: (context, index) {
+                        final reason = reasons[index];
+                        return RadioListTile<String>(
+                          value: reason,
+                          groupValue: selectedReason,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedReason = value;
+                              if (value != "Other reason") {
+                                customReasonController.clear();
+                              }
+                            });
+                          },
+                          title: Text(
+                            reason,
+                            style: TextStyle(color: AppColors.textSecondary),
+                          ),
+                          activeColor: AppColors.errorColor,
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    ),
-    isScrollControlled: true,
-  );
-}
+                  if (selectedReason == "Other reason")
+                    TextField(
+                      controller: customReasonController,
+                      decoration: InputDecoration(
+                        hintText: "Please specify your reason",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  SizedBox(height: 12),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.errorColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      minimumSize: Size(double.infinity, 45),
+                    ),
+                    onPressed: selectedReason == null
+                        ? null
+                        : () async {
+                            String finalReason =
+                                selectedReason == "Other reason"
+                                ? customReasonController.text.trim()
+                                : selectedReason!;
 
+                            if (finalReason.isEmpty) return;
+
+                            Get.back(); // close bottom sheet
+                            await _orderController.cancelOrder(
+                              orderId: orderId,
+                              reason: finalReason,
+                            );
+                          },
+                    child: Text(
+                      "Confirm Cancellation",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+      isScrollControlled: true,
+    );
+  }
 }

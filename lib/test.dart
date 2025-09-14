@@ -1,22 +1,22 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
-import 'package:momentswrap/controllers/location_controller/location_controller.dart';
-import 'package:momentswrap/controllers/product_controller/product_controller.dart';
-import 'package:momentswrap/controllers/profile_controller/profile_controller.dart';
-import 'package:momentswrap/models/product_models/product_model.dart';
-import 'package:momentswrap/routes/app_routes.dart';
-import 'package:momentswrap/util/common/auth_utils.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/util/constants/app_images_string.dart';
-import 'package:momentswrap/util/constants/simmers/horizontal_productList_shimmer.dart';
-import 'package:momentswrap/view/ai_assistant/ai_assistant_screen.dart'
+import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+import 'package:Xkart/controllers/location_controller/location_controller.dart';
+import 'package:Xkart/controllers/product_controller/product_controller.dart';
+import 'package:Xkart/controllers/profile_controller/profile_controller.dart';
+import 'package:Xkart/models/product_models/product_model.dart';
+import 'package:Xkart/routes/app_routes.dart';
+import 'package:Xkart/util/common/auth_utils.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:Xkart/util/constants/app_images_string.dart';
+import 'package:Xkart/util/constants/simmers/horizontal_productList_shimmer.dart';
+import 'package:Xkart/view/ai_assistant/ai_assistant_screen.dart'
     hide AppRoutes;
-import 'package:momentswrap/view/home_screen/product_card.dart';
-import 'package:momentswrap/view/home_screen/product_detail_screen/product_detail_screen.dart';
-import 'package:momentswrap/view/widgets/all_products_screen.dart';
-import 'package:momentswrap/view/events_screen/events_screens.dart';
+import 'package:Xkart/view/home_screen/product_card.dart';
+import 'package:Xkart/view/home_screen/product_detail_screen/product_detail_screen.dart';
+import 'package:Xkart/view/widgets/all_products_screen.dart';
+import 'package:Xkart/view/events_screen/events_screens.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -72,14 +72,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             length: controller.categories.length,
             vsync: this,
           );
-          
+
           // Listen to tab changes and trigger category selection + scroll
           _tabController.addListener(() {
             if (!_tabController.indexIsChanging) {
-              final selectedCategory = controller.categories[_tabController.index];
+              final selectedCategory =
+                  controller.categories[_tabController.index];
               controller.selectCategory(selectedCategory);
               // Delay scroll to allow content to load
-              Future.delayed(const Duration(milliseconds: 100), _scrollToProducts);
+              Future.delayed(
+                const Duration(milliseconds: 100),
+                _scrollToProducts,
+              );
             }
           });
         }
@@ -88,101 +92,108 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           children: [
             NestedScrollView(
               controller: _scrollController,
-              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-                return [
-                  // App Bar
-                  SliverAppBar(
-                    elevation: 0,
-                    backgroundColor: AppColors.primaryColor,
-                    title: Text(
-                      'Moments Wrap',
-                      style: TextStyle(
-                        color: AppColors.secondaryColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
-                    ),
-                    centerTitle: true,
-                    iconTheme: IconThemeData(color: AppColors.secondaryColor),
-                    actions: [
-                      Container(
-                        margin: EdgeInsets.only(right: 8),
-                        child: Row(
-                          children: [
-                            _buildIconButton(
-                              icon: Icons.notifications_outlined,
-                              onTap: () => Get.toNamed(AppRoutes.notificationsScreen),
-                            ),
-                            SizedBox(width: 8),
-                            _buildIconButton(
-                              icon: Icons.location_on_outlined,
-                              onTap: () async => await locationController.getAddress(),
-                            ),
-                          ],
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                    return [
+                      // App Bar
+                      SliverAppBar(
+                        elevation: 0,
+                        backgroundColor: AppColors.primaryColor,
+                        title: Text(
+                          'Moments Wrap',
+                          style: TextStyle(
+                            color: AppColors.secondaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
                         ),
+                        centerTitle: true,
+                        iconTheme: IconThemeData(
+                          color: AppColors.secondaryColor,
+                        ),
+                        actions: [
+                          Container(
+                            margin: EdgeInsets.only(right: 8),
+                            child: Row(
+                              children: [
+                                _buildIconButton(
+                                  icon: Icons.notifications_outlined,
+                                  onTap: () => Get.toNamed(
+                                    AppRoutes.notificationsScreen,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                _buildIconButton(
+                                  icon: Icons.location_on_outlined,
+                                  onTap: () async =>
+                                      await locationController.getAddress(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        pinned: true,
                       ),
-                    ],
-                    pinned: true,
-                  ),
 
-                  // Floating Search Bar
-                  SliverAppBar(
-                    floating: true,
-                    snap: true,
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    toolbarHeight: 70,
-                    flexibleSpace: _buildFloatingSearchBar(),
-                    automaticallyImplyLeading: false,
-                  ),
+                      // Floating Search Bar
+                      SliverAppBar(
+                        floating: true,
+                        snap: true,
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        toolbarHeight: 70,
+                        flexibleSpace: _buildFloatingSearchBar(),
+                        automaticallyImplyLeading: false,
+                      ),
 
-                // TabBar for Categories
-if (controller.categories.isNotEmpty)
-  SliverPersistentHeader(
-    pinned: true,
-    delegate: _SliverHeaderDelegate(
-      minHeight: 60,
-      maxHeight: 60,
-      child: Material(
-        color: AppColors.backgroundColor,
-        elevation: 2,
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.backgroundColor,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 4,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          child: TabBar(
-            controller: _tabController,
-            isScrollable: true,
-            indicatorColor: AppColors.primaryColor,
-            indicatorWeight: 3,
-            labelColor: AppColors.primaryColor,
-            unselectedLabelColor: AppColors.textColor.withOpacity(0.6),
-            labelStyle: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-            unselectedLabelStyle: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            tabs: controller.categories
-                .map((category) => Tab(text: category))
-                .toList(),
-          ),
-        ),
-      ),
-    ),
-  ),
-                ];
-              },
+                      // TabBar for Categories
+                      if (controller.categories.isNotEmpty)
+                        SliverPersistentHeader(
+                          pinned: true,
+                          delegate: _SliverHeaderDelegate(
+                            minHeight: 60,
+                            maxHeight: 60,
+                            child: Material(
+                              color: AppColors.backgroundColor,
+                              elevation: 2,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.backgroundColor,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 4,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: TabBar(
+                                  controller: _tabController,
+                                  isScrollable: true,
+                                  indicatorColor: AppColors.primaryColor,
+                                  indicatorWeight: 3,
+                                  labelColor: AppColors.primaryColor,
+                                  unselectedLabelColor: AppColors.textColor
+                                      .withOpacity(0.6),
+                                  labelStyle: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  unselectedLabelStyle: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 8),
+                                  tabs: controller.categories
+                                      .map((category) => Tab(text: category))
+                                      .toList(),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ];
+                  },
               body: RefreshIndicator(
                 onRefresh: () async {
                   await controller.initializeData();
@@ -194,11 +205,11 @@ if (controller.categories.isNotEmpty)
                     children: [
                       // Welcome Section
                       _buildWelcomeSection(profileController),
-                      
+
                       // Upcoming Events
                       const ModernUpcomingEventsCard(),
                       SizedBox(height: 16),
-                      
+
                       // Special Offers Carousel
                       _buildOffersCarousel(),
                       SizedBox(height: 24),
@@ -259,7 +270,11 @@ class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => maxHeight;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return SizedBox.expand(child: child);
   }
 
@@ -308,7 +323,7 @@ Widget _buildFloatingSearchBar() {
             Text(
               "Search for products...",
               style: TextStyle(
-                color: Colors.grey[600], 
+                color: Colors.grey[600],
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
               ),

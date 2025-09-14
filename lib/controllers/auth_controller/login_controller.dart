@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/models/auth_model/login_model.dart';
-import 'package:momentswrap/routes/app_routes.dart';
-import 'package:momentswrap/services/api_services.dart';
+import 'package:Xkart/models/auth_model/login_model.dart';
+import 'package:Xkart/routes/app_routes.dart';
+import 'package:Xkart/services/api_services.dart';
 import 'package:dio/dio.dart' as dio;
-import 'package:momentswrap/services/shared_preferences_services.dart';
+import 'package:Xkart/services/shared_preferences_services.dart';
 
 class LoginController extends GetxController {
   // Define your login-related methods and properties here
@@ -110,28 +110,48 @@ class LoginController extends GetxController {
           Get.snackbar(
             'Logout Success',
             response?.data['message'] ?? 'Logged out successfully',
-            backgroundColor: const Color.fromRGBO(76, 175, 80, 0.5), // Colors.green.withValues(76, 175, 80, 0.5)
+            backgroundColor: const Color.fromRGBO(
+              76,
+              175,
+              80,
+              0.5,
+            ), // Colors.green.withValues(76, 175, 80, 0.5)
           );
           Get.offAllNamed(AppRoutes.loginScreen);
         } else {
           Get.snackbar(
             'Logout Error',
             response?.data['message'] ?? 'Unknown error',
-            backgroundColor: const Color.fromRGBO(244, 67, 54, 0.5), // Colors.red.withValues(244, 67, 54, 0.5)
+            backgroundColor: const Color.fromRGBO(
+              244,
+              67,
+              54,
+              0.5,
+            ), // Colors.red.withValues(244, 67, 54, 0.5)
           );
         }
       } else {
         Get.snackbar(
           'Logout Error',
           response?.statusMessage ?? 'Unknown error',
-          backgroundColor: const Color.fromRGBO(244, 67, 54, 0.5), // Colors.red.withValues(244, 67, 54, 0.5)
+          backgroundColor: const Color.fromRGBO(
+            244,
+            67,
+            54,
+            0.5,
+          ), // Colors.red.withValues(244, 67, 54, 0.5)
         );
       }
     } catch (e) {
       Get.snackbar(
         'Logout Error',
         e.toString(),
-        backgroundColor: const Color.fromRGBO(244, 67, 54, 0.5), // Colors.red.withValues(244, 67, 54, 0.5)
+        backgroundColor: const Color.fromRGBO(
+          244,
+          67,
+          54,
+          0.5,
+        ), // Colors.red.withValues(244, 67, 54, 0.5)
       );
       debugPrint(e.toString());
     } finally {

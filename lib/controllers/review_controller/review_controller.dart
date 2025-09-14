@@ -1,17 +1,17 @@
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
-import 'package:momentswrap/models/review_model/review_model.dart';
-import 'package:momentswrap/services/api_services.dart';
+import 'package:Xkart/models/review_model/review_model.dart';
+import 'package:Xkart/services/api_services.dart';
 
 class ReviewController extends GetxController {
   final ApiServices _apiServices = ApiServices();
-  
+
   // Observable variables
   var isLoading = false.obs;
   var isSubmitting = false.obs;
   var myReviews = <ReviewModel>[].obs;
   var productReviews = <ReviewModel>[].obs;
-  
+
   // Error handling
   var errorMessage = ''.obs;
   var hasError = false.obs;
@@ -28,9 +28,10 @@ class ReviewController extends GetxController {
       isLoading.value = true;
       hasError.value = false;
       errorMessage.value = '';
-      
+
       final response = await _apiServices.getRequest(
-        url: 'https://moment-wrap-backend.vercel.app/api/products/$productId/reviews',
+        url:
+            'https://moment-wrap-backend.vercel.app/api/products/$productId/reviews',
         authToken: false,
       );
 
@@ -70,7 +71,7 @@ class ReviewController extends GetxController {
       isLoading.value = true;
       hasError.value = false;
       errorMessage.value = '';
-      
+
       final response = await _apiServices.getRequest(
         url: 'https://moment-wrap-backend.vercel.app/api/customer/my-reviews',
         authToken: true,
@@ -126,9 +127,8 @@ class ReviewController extends GetxController {
       if (rating < 1 || rating > 5) {
         throw Exception('Rating must be between 1 and 5');
       }
-      
+
       if (comment.trim().isEmpty) {
-        
         throw Exception('Review comment cannot be empty');
       }
 
@@ -140,11 +140,11 @@ class ReviewController extends GetxController {
           'comment': comment.trim(),
           'orderId': orderId,
           'productId': productId,
-
         },
       );
 
-      if (response != null && (response.statusCode == 201 || response.statusCode == 200)) {
+      if (response != null &&
+          (response.statusCode == 201 || response.statusCode == 200)) {
         final data = response.data ?? {};
         if (data['success'] == true) {
           Get.snackbar(
@@ -155,7 +155,7 @@ class ReviewController extends GetxController {
             snackPosition: SnackPosition.TOP,
             duration: Duration(seconds: 3),
           );
-          
+
           // Refresh product reviews if we're viewing the same product
           await getProductReviews(productId);
           // return true;
@@ -169,7 +169,7 @@ class ReviewController extends GetxController {
     } catch (e) {
       hasError.value = true;
       errorMessage.value = e.toString();
-      
+
       String errorMsg = 'Failed to add review';
       if (e.toString().contains('already reviewed')) {
         errorMsg = 'You have already reviewed this product';
@@ -178,7 +178,7 @@ class ReviewController extends GetxController {
       } else if (e.toString().contains('comment cannot be empty')) {
         errorMsg = 'Please write a review comment';
       }
-      
+
       Get.snackbar(
         'Error',
         errorMsg,
@@ -208,18 +208,16 @@ class ReviewController extends GetxController {
       if (rating < 1 || rating > 5) {
         throw Exception('Rating must be between 1 and 5');
       }
-      
+
       if (comment.trim().isEmpty) {
         throw Exception('Review comment cannot be empty');
       }
 
       final response = await _apiServices.putRequest(
-        url: 'https://moment-wrap-backend.vercel.app/api/customer/update-review/$productId',
+        url:
+            'https://moment-wrap-backend.vercel.app/api/customer/update-review/$productId',
         authToken: true,
-        data: {
-          'rating': rating,
-          'comment': comment.trim(),
-        },
+        data: {'rating': rating, 'comment': comment.trim()},
       );
 
       if (response.statusCode == 200) {
@@ -233,7 +231,7 @@ class ReviewController extends GetxController {
             snackPosition: SnackPosition.TOP,
             duration: Duration(seconds: 3),
           );
-          
+
           // // Refresh reviews
           // await getProductReviews(productId);
           // await getMyReviews();
@@ -248,14 +246,15 @@ class ReviewController extends GetxController {
     } catch (e) {
       hasError.value = true;
       errorMessage.value = e.toString();
-      
+
       String errorMsg = 'Failed to update review';
       if (e.toString().contains('not found')) {
-        errorMsg = 'Review not found or you don\'t have permission to update it';
+        errorMsg =
+            'Review not found or you don\'t have permission to update it';
       } else if (e.toString().contains('Rating must be')) {
         errorMsg = 'Please select a valid rating (1-5 stars)';
       }
-      
+
       Get.snackbar(
         'Error',
         errorMsg,
@@ -278,7 +277,8 @@ class ReviewController extends GetxController {
       errorMessage.value = '';
 
       final response = await _apiServices.deleteRequest(
-        url: 'https://moment-wrap-backend.vercel.app/api/customer/delete-review/$productId',
+        url:
+            'https://moment-wrap-backend.vercel.app/api/customer/delete-review/$productId',
         authToken: true,
       );
 
@@ -293,7 +293,7 @@ class ReviewController extends GetxController {
             snackPosition: SnackPosition.TOP,
             duration: Duration(seconds: 3),
           );
-          
+
           // Refresh reviews
           await getProductReviews(productId);
           await getMyReviews();
@@ -308,12 +308,12 @@ class ReviewController extends GetxController {
     } catch (e) {
       hasError.value = true;
       errorMessage.value = e.toString();
-      
+
       String errorMsg = 'Failed to delete review';
       if (e.toString().contains('not found')) {
         errorMsg = 'Review not found or already deleted';
       }
-      
+
       Get.snackbar(
         'Error',
         errorMsg,
@@ -331,7 +331,7 @@ class ReviewController extends GetxController {
   /// Calculate average rating from reviews list
   double calculateAverageRating(List<ReviewModel> reviews) {
     if (reviews.isEmpty) return 0.0;
-    
+
     double total = reviews.fold(0.0, (sum, review) => sum + review.rating);
     return total / reviews.length;
   }
@@ -339,18 +339,18 @@ class ReviewController extends GetxController {
   /// Get rating distribution for display
   Map<int, int> getRatingDistribution(List<ReviewModel> reviews) {
     Map<int, int> distribution = {5: 0, 4: 0, 3: 0, 2: 0, 1: 0};
-    
+
     for (var review in reviews) {
       distribution[review.rating] = (distribution[review.rating] ?? 0) + 1;
     }
-    
+
     return distribution;
   }
 
   /// Sort reviews by different criteria
   List<ReviewModel> sortReviews(List<ReviewModel> reviews, String sortBy) {
     List<ReviewModel> sortedList = List.from(reviews);
-    
+
     switch (sortBy) {
       case 'newest':
         sortedList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
@@ -368,7 +368,7 @@ class ReviewController extends GetxController {
         // Default to newest
         sortedList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     }
-    
+
     return sortedList;
   }
 
@@ -387,15 +387,17 @@ class ReviewController extends GetxController {
 
   /// Check if user has already reviewed a product
   bool hasUserReviewedProduct(String productId) {
-    return myReviews.any((review) => 
-        review.product != null && review.product!.id == productId);
+    return myReviews.any(
+      (review) => review.product != null && review.product!.id == productId,
+    );
   }
 
   /// Get user's review for a specific product
   ReviewModel? getUserReviewForProduct(String productId) {
     try {
-      return myReviews.firstWhere((review) => 
-          review.product != null && review.product!.id == productId);
+      return myReviews.firstWhere(
+        (review) => review.product != null && review.product!.id == productId,
+      );
     } catch (e) {
       return null;
     }

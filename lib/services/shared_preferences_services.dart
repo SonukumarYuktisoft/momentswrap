@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:momentswrap/models/product_models/product_model.dart';
+import 'package:Xkart/models/product_models/product_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesServices {
@@ -111,8 +111,11 @@ class SharedPreferencesServices {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(_userProfileImageKey);
   }
-// Addresses
-  static Future<void> saveAddresses(List<Map<String, dynamic>> addresses) async {
+
+  // Addresses
+  static Future<void> saveAddresses(
+    List<Map<String, dynamic>> addresses,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
     // Convert List<Map> → JSON String
     String jsonString = jsonEncode(addresses);
@@ -130,7 +133,7 @@ class SharedPreferencesServices {
     return [];
   }
 
- static Future<bool> hasAddresses() async {
+  static Future<bool> hasAddresses() async {
     final addresses = await getAddresses();
     return addresses.isNotEmpty;
   }
@@ -139,7 +142,4 @@ class SharedPreferencesServices {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
   }
-
-
-  
 }

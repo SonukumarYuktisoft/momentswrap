@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:momentswrap/controllers/auth_controller/login_controller.dart';
-import 'package:momentswrap/routes/app_routes.dart';
-import 'package:momentswrap/util/common/coustom_curve.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/util/constants/app_images_string.dart';
-import 'package:momentswrap/util/constants/app_sizes.dart';
-import 'package:momentswrap/util/constants/app_text_strings.dart';
-import 'package:momentswrap/util/common/widgets/app_widgets.dart';
-import 'package:momentswrap/util/constants/app_text_theme.dart';
-import 'package:momentswrap/util/helpers/helper_functions.dart';
-import 'package:momentswrap/util/validator/app_validator.dart';
+import 'package:Xkart/controllers/auth_controller/login_controller.dart';
+import 'package:Xkart/routes/app_routes.dart';
+import 'package:Xkart/util/common/coustom_curve.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:Xkart/util/constants/app_images_string.dart';
+import 'package:Xkart/util/constants/app_sizes.dart';
+import 'package:Xkart/util/constants/app_text_strings.dart';
+import 'package:Xkart/util/common/widgets/app_widgets.dart';
+import 'package:Xkart/util/constants/app_text_theme.dart';
+import 'package:Xkart/util/helpers/helper_functions.dart';
+import 'package:Xkart/util/validator/app_validator.dart';
 
 class LoginScreen extends GetView<LoginController> {
   const LoginScreen({super.key});

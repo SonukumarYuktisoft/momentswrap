@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/controllers/order_controller/order_controller.dart';
-import 'package:momentswrap/controllers/review_controller/review_controller.dart';
-import 'package:momentswrap/models/order_model/order_model.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/view/order_screen/invoice_page.dart';
-import 'package:momentswrap/view/order_screen/widgets/review_button.dart';
+import 'package:Xkart/controllers/order_controller/order_controller.dart';
+import 'package:Xkart/controllers/review_controller/review_controller.dart';
+import 'package:Xkart/models/order_model/order_model.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:Xkart/view/order_screen/invoice_page.dart';
+import 'package:Xkart/view/order_screen/widgets/review_button.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
   final String orderId;

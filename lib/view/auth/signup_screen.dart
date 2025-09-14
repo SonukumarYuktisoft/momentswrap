@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
-import 'package:momentswrap/controllers/auth_controller/signup_controller.dart';
-import 'package:momentswrap/util/common/coustom_curve.dart';
-import 'package:momentswrap/util/common/widgets/app_widgets.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/util/constants/app_images_string.dart';
-import 'package:momentswrap/util/constants/app_sizes.dart';
-import 'package:momentswrap/util/constants/app_text_theme.dart';
-import 'package:momentswrap/util/helpers/helper_functions.dart';
-import 'package:momentswrap/util/validator/app_validator.dart';
+import 'package:Xkart/controllers/auth_controller/signup_controller.dart';
+import 'package:Xkart/util/common/coustom_curve.dart';
+import 'package:Xkart/util/common/widgets/app_widgets.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:Xkart/util/constants/app_images_string.dart';
+import 'package:Xkart/util/constants/app_sizes.dart';
+import 'package:Xkart/util/constants/app_text_theme.dart';
+import 'package:Xkart/util/helpers/helper_functions.dart';
+import 'package:Xkart/util/validator/app_validator.dart';
 
 class SignupScreen extends GetView<SignupController> {
   @override

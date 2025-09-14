@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:momentswrap/controllers/profile_controller/profile_controller.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
+import 'package:Xkart/controllers/profile_controller/profile_controller.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/models/product_models/product_model.dart';
-import 'package:momentswrap/util/common/auth_utils.dart';
-import 'package:momentswrap/view/home_screen/product_card.dart';
-import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/view/home_screen/product_detail_screen/product_detail_screen.dart';
+import 'package:Xkart/models/product_models/product_model.dart';
+import 'package:Xkart/util/common/auth_utils.dart';
+import 'package:Xkart/view/home_screen/product_card.dart';
+import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:Xkart/view/home_screen/product_detail_screen/product_detail_screen.dart';
 
 class HorizontalProductList extends StatelessWidget {
   final String title;
@@ -121,7 +121,6 @@ class HorizontalProductList extends StatelessWidget {
   }
 }
 
-
 class ReusableProductSection extends StatelessWidget {
   final String title;
   final List<ProductModel> products;
@@ -168,11 +167,7 @@ class ReusableProductSection extends StatelessWidget {
         Row(
           children: [
             if (titleIcon != null) ...[
-              Icon(
-                titleIcon!,
-                color: AppColors.primaryColor,
-                size: 20,
-              ),
+              Icon(titleIcon!, color: AppColors.primaryColor, size: 20),
               SizedBox(width: 8),
             ],
             Text(
@@ -238,7 +233,7 @@ class ReusableProductSection extends StatelessWidget {
         separatorBuilder: (context, index) => SizedBox(width: 12),
         itemBuilder: (context, index) {
           final product = products[index];
-          
+
           return Container(
             width: 170,
             margin: EdgeInsets.only(bottom: 8),
@@ -248,7 +243,7 @@ class ReusableProductSection extends StatelessWidget {
               onTap: () {
                 print('Tapped on ${sectionType} product: ${product.name}');
                 print('Product ID: ${product.id}');
-                
+
                 if (onProductTap != null) {
                   onProductTap!(product);
                 } else {
@@ -256,9 +251,8 @@ class ReusableProductSection extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ProductDetailScreen(
-                        product: product,
-                      ),
+                      builder: (context) =>
+                          ProductDetailScreen(product: product),
                     ),
                   );
                 }
@@ -284,16 +278,14 @@ class ReusableProductSection extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.surfaceTint,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.primaryColor.withOpacity(0.1)),
+              border: Border.all(
+                color: AppColors.primaryColor.withOpacity(0.1),
+              ),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  _getEmptyStateIcon(),
-                  size: 40,
-                  color: Colors.grey[400],
-                ),
+                Icon(_getEmptyStateIcon(), size: 40, color: Colors.grey[400]),
                 SizedBox(height: 8),
                 Text(
                   _getEmptyStateMessage(),

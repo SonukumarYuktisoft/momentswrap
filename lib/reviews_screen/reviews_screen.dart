@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/models/product_models/product_model.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/util/common/auth_utils.dart';
+import 'package:Xkart/models/product_models/product_model.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:Xkart/util/common/auth_utils.dart';
 
 class ReviewsPage extends StatefulWidget {
   final ProductModel product;

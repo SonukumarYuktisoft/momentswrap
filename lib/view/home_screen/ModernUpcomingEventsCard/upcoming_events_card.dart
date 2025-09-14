@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Event {

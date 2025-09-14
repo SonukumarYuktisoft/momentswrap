@@ -1,10 +1,10 @@
 // // import 'package:flutter/material.dart';
 // // import 'package:get/get.dart';
-// // import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
-// // import 'package:momentswrap/controllers/order_controller/order_controller.dart';
-// // import 'package:momentswrap/util/constants/app_sizes.dart';
-// // import 'package:momentswrap/util/helpers/date_time_helper.dart';
-// // import 'package:momentswrap/view/add_to_cart_screen/cart_Item_card.dart';
+// // import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+// // import 'package:Xkart/controllers/order_controller/order_controller.dart';
+// // import 'package:Xkart/util/constants/app_sizes.dart';
+// // import 'package:Xkart/util/helpers/date_time_helper.dart';
+// // import 'package:Xkart/view/add_to_cart_screen/cart_Item_card.dart';
 
 // // class AddToCartScreen extends StatefulWidget {
 // //   const AddToCartScreen({super.key});
@@ -425,11 +425,11 @@
 // // }
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
-// import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
-// import 'package:momentswrap/controllers/order_controller/order_controller.dart';
-// import 'package:momentswrap/util/constants/app_sizes.dart';
-// import 'package:momentswrap/util/helpers/date_time_helper.dart';
-// import 'package:momentswrap/view/add_to_cart_screen/cart_Item_card.dart';
+// import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+// import 'package:Xkart/controllers/order_controller/order_controller.dart';
+// import 'package:Xkart/util/constants/app_sizes.dart';
+// import 'package:Xkart/util/helpers/date_time_helper.dart';
+// import 'package:Xkart/view/add_to_cart_screen/cart_Item_card.dart';
 
 // class AddToCartScreen extends StatefulWidget {
 //   const AddToCartScreen({super.key});
@@ -753,14 +753,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
-import 'package:momentswrap/controllers/order_controller/order_controller.dart';
-import 'package:momentswrap/controllers/order_controller/place_order_controller.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/util/constants/app_sizes.dart';
-import 'package:momentswrap/util/helpers/date_time_helper.dart';
-import 'package:momentswrap/util/helpers/helper_functions.dart';
-import 'package:momentswrap/view/add_to_cart_screen/cart_Item_card.dart';
+import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+import 'package:Xkart/controllers/order_controller/order_controller.dart';
+import 'package:Xkart/controllers/order_controller/place_order_controller.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:Xkart/util/constants/app_sizes.dart';
+import 'package:Xkart/util/helpers/date_time_helper.dart';
+import 'package:Xkart/util/helpers/helper_functions.dart';
+import 'package:Xkart/view/add_to_cart_screen/cart_Item_card.dart';
 
 class AddToCartScreen extends StatefulWidget {
   const AddToCartScreen({super.key});

@@ -1,8 +1,7 @@
 import 'package:get/get.dart';
-import 'package:momentswrap/controllers/auth_controller/forget_controller.dart';
-import 'package:momentswrap/controllers/auth_controller/login_controller.dart';
-import 'package:momentswrap/controllers/auth_controller/signup_controller.dart';
-
+import 'package:Xkart/controllers/auth_controller/forget_controller.dart';
+import 'package:Xkart/controllers/auth_controller/login_controller.dart';
+import 'package:Xkart/controllers/auth_controller/signup_controller.dart';
 
 class AuthBinding extends Bindings {
   @override

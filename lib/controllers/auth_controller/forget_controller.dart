@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/models/auth_model/login_model.dart';
-import 'package:momentswrap/routes/app_routes.dart';
-import 'package:momentswrap/services/api_services.dart';
+import 'package:Xkart/models/auth_model/login_model.dart';
+import 'package:Xkart/routes/app_routes.dart';
+import 'package:Xkart/services/api_services.dart';
 import 'package:dio/dio.dart' as dio;
-import 'package:momentswrap/services/shared_preferences_services.dart';
+import 'package:Xkart/services/shared_preferences_services.dart';
 
 class ForgetController extends GetxController {
   // Define your login-related methods and properties here

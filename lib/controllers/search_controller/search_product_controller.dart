@@ -3,9 +3,9 @@ import 'dart:ffi';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
-import 'package:momentswrap/models/product_models/product_model.dart';
-import 'package:momentswrap/services/api_services.dart';
+import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+import 'package:Xkart/models/product_models/product_model.dart';
+import 'package:Xkart/services/api_services.dart';
 import 'package:dio/dio.dart' as dio;
 
 import 'dart:async';
@@ -358,27 +358,26 @@ class SearchProductController extends GetxController {
   //   });
   // }
   // Debounced search functionality
-void _debounceSearch() {
-  _searchDebouncer?.cancel();
-  _searchDebouncer = Timer(_searchDebounceDelay, () {
-    if (searchQuery.value.isNotEmpty) {
-      generateSearchSuggestions();
-      applyLocalFilters();
-    } else {
-      searchSuggestions.clear();
-      if (hasActiveFilters()) {
-        applyLocalFilters();
-      } else if (searchQuery.value.isNotEmpty) {
-        // Agar query hai to filter lagao
+  void _debounceSearch() {
+    _searchDebouncer?.cancel();
+    _searchDebouncer = Timer(_searchDebounceDelay, () {
+      if (searchQuery.value.isNotEmpty) {
+        generateSearchSuggestions();
         applyLocalFilters();
       } else {
-        // Bilkul fresh case me hi reset karo
-        products.value = allProducts.value;
+        searchSuggestions.clear();
+        if (hasActiveFilters()) {
+          applyLocalFilters();
+        } else if (searchQuery.value.isNotEmpty) {
+          // Agar query hai to filter lagao
+          applyLocalFilters();
+        } else {
+          // Bilkul fresh case me hi reset karo
+          products.value = allProducts.value;
+        }
       }
-    }
-  });
-}
-
+    });
+  }
 
   // Generate search suggestions
   void generateSearchSuggestions() {

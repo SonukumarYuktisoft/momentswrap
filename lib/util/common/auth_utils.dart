@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/routes/app_routes.dart';
-import 'package:momentswrap/services/shared_preferences_services.dart';
+import 'package:Xkart/routes/app_routes.dart';
+import 'package:Xkart/services/shared_preferences_services.dart';
 
 class AuthUtils {
   /// For actions like "Add to Cart"

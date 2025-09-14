@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
-import 'package:momentswrap/routes/app_routes.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
+import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+import 'package:Xkart/routes/app_routes.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
 
 class BuildAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -26,10 +26,10 @@ class BuildAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false, // Flutter default back ko disable kiya
       leading: showBack
           ? (leadingIcon ??
-              IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                onPressed: () => Get.back(),
-              ))
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                  onPressed: () => Get.back(),
+                ))
           : null,
       toolbarHeight: 70,
       title: Text(

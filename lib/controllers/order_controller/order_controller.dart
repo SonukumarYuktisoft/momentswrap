@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
-import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
-import 'package:momentswrap/models/order_model/order_model.dart';
-import 'package:momentswrap/services/api_services.dart';
-import 'package:momentswrap/services/app_config.dart';
-import 'package:momentswrap/util/helpers/helper_functions.dart';
+import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+import 'package:Xkart/models/order_model/order_model.dart';
+import 'package:Xkart/services/api_services.dart';
+import 'package:Xkart/services/app_config.dart';
+import 'package:Xkart/util/helpers/helper_functions.dart';
 
 class OrderController extends GetxController {
   final ApiServices _apiServices = ApiServices();

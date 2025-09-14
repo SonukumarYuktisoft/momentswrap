@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
-import 'package:momentswrap/models/product_models/product_model.dart';
-import 'package:momentswrap/services/api_services.dart';
-import 'package:momentswrap/services/app_config.dart';
+import 'package:Xkart/models/product_models/product_model.dart';
+import 'package:Xkart/services/api_services.dart';
+import 'package:Xkart/services/app_config.dart';
 
 class ProductController extends GetxController {
   final ApiServices _apiServices = ApiServices();
@@ -87,7 +87,7 @@ class ProductController extends GetxController {
     } catch (e) {
       print("Error fetching categories: $e");
       // Fallback to default categories
-    
+
       setError("Failed to load categories. Using default.");
     } finally {
       isCategoriesLoading.value = false;

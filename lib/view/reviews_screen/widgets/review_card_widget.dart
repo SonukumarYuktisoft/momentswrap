@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:momentswrap/models/review_model/review_model.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
+import 'package:Xkart/models/review_model/review_model.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
 
 class ReviewCardWidget extends StatelessWidget {
   final ReviewModel review;
@@ -23,9 +23,7 @@ class ReviewCardWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.accentColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.primaryColor.withOpacity(0.1),
-        ),
+        border: Border.all(color: AppColors.primaryColor.withOpacity(0.1)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
@@ -67,7 +65,7 @@ class ReviewCardWidget extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 12),
-              
+
               // User Info
               Expanded(
                 child: Column(
@@ -86,7 +84,10 @@ class ReviewCardWidget extends StatelessWidget {
                         if (review.isRecent) ...[
                           SizedBox(width: 8),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.primaryColor.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(8),
@@ -114,7 +115,7 @@ class ReviewCardWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               // Rating Stars
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -148,7 +149,7 @@ class ReviewCardWidget extends StatelessWidget {
               ),
             ],
           ),
-          
+
           // Product Info (if showing product)
           if (showProduct && review.product != null) ...[
             SizedBox(height: 12),
@@ -222,9 +223,9 @@ class ReviewCardWidget extends StatelessWidget {
               ),
             ),
           ],
-          
+
           SizedBox(height: 12),
-          
+
           // Review Comment
           Container(
             padding: EdgeInsets.all(14),
@@ -241,9 +242,9 @@ class ReviewCardWidget extends StatelessWidget {
               ),
             ),
           ),
-          
+
           SizedBox(height: 12),
-          
+
           // Action Buttons
           Row(
             children: [
@@ -270,9 +271,9 @@ class ReviewCardWidget extends StatelessWidget {
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
               ),
-              
+
               Spacer(),
-              
+
               // Edit and Delete buttons (if available)
               if (onEdit != null) ...[
                 TextButton.icon(
@@ -296,22 +297,15 @@ class ReviewCardWidget extends StatelessWidget {
                   ),
                 ),
               ],
-              
+
               if (onDelete != null) ...[
                 SizedBox(width: 8),
                 TextButton.icon(
                   onPressed: onDelete,
-                  icon: Icon(
-                    Icons.delete_outline,
-                    size: 16,
-                    color: Colors.red,
-                  ),
+                  icon: Icon(Icons.delete_outline, size: 16, color: Colors.red),
                   label: Text(
                     'Delete',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.red,
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.red),
                   ),
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),

@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
-import 'package:momentswrap/controllers/location_controller/location_controller.dart';
-import 'package:momentswrap/routes/app_routes.dart';
-import 'package:momentswrap/services/api_services.dart';
-import 'package:momentswrap/services/shared_preferences_services.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/util/helpers/helper_functions.dart';
+import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+import 'package:Xkart/controllers/location_controller/location_controller.dart';
+import 'package:Xkart/routes/app_routes.dart';
+import 'package:Xkart/services/api_services.dart';
+import 'package:Xkart/services/shared_preferences_services.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:Xkart/util/helpers/helper_functions.dart';
 
 class PlaceOrderController extends GetxController {
   final ApiServices _apiServices = ApiServices();
@@ -35,7 +35,9 @@ class PlaceOrderController extends GetxController {
 
   // Order type tracking
   final RxString orderType = 'cart'.obs; // 'cart' or 'single'
-  final Rx<Map<String, dynamic>?> singleProductData = Rx<Map<String, dynamic>?>(null);
+  final Rx<Map<String, dynamic>?> singleProductData = Rx<Map<String, dynamic>?>(
+    null,
+  );
 
   // Step constants
   static const int STEP_ADDRESS = 0;
@@ -85,7 +87,10 @@ class PlaceOrderController extends GetxController {
   }
 
   /// Buy Now function for SINGLE product with same step-by-step process
-  Future<void> buyProduct({required String productId, required int quantity}) async {
+  Future<void> buyProduct({
+    required String productId,
+    required int quantity,
+  }) async {
     try {
       // Check if user is logged in
       final isLoggedIn = await SharedPreferencesServices.getIsLoggedIn();
@@ -96,10 +101,7 @@ class PlaceOrderController extends GetxController {
 
       // Set order type to single product
       orderType.value = 'single';
-      singleProductData.value = {
-        'productId': productId,
-        'quantity': quantity,
-      };
+      singleProductData.value = {'productId': productId, 'quantity': quantity};
 
       // Load addresses and show step-by-step dialog
       await loadProfileAddresses();
@@ -124,7 +126,10 @@ class PlaceOrderController extends GetxController {
             children: [
               Icon(Icons.shopping_cart_checkout, color: AppColors.primaryColor),
               SizedBox(width: 8),
-              Obx(() => Text(orderType.value == 'cart' ? 'Place Order' : 'Buy Now')),
+              Obx(
+                () =>
+                    Text(orderType.value == 'cart' ? 'Place Order' : 'Buy Now'),
+              ),
             ],
           ),
           content: Container(
@@ -162,7 +167,9 @@ class PlaceOrderController extends GetxController {
 
             // Next/Place Order Button
             Obx(() {
-              final isLoading = orderType.value == 'cart' ? isPlacingOrder.value : isBuyProductLoading.value;
+              final isLoading = orderType.value == 'cart'
+                  ? isPlacingOrder.value
+                  : isBuyProductLoading.value;
               return ElevatedButton(
                 onPressed: isLoading ? null : _handleNextStep,
                 child: isLoading
@@ -173,7 +180,9 @@ class PlaceOrderController extends GetxController {
                       )
                     : Text(
                         currentStep.value == STEP_PAYMENT
-                            ? (orderType.value == 'cart' ? 'Place Order' : 'Buy Now')
+                            ? (orderType.value == 'cart'
+                                  ? 'Place Order'
+                                  : 'Buy Now')
                             : 'Next',
                       ),
               );
@@ -397,7 +406,7 @@ class PlaceOrderController extends GetxController {
   Widget _buildOrderSummary() {
     double itemsPrice = 0.0;
     int itemCount = 0;
-    
+
     if (orderType.value == 'cart') {
       itemsPrice = cartController.totalPrice;
       itemCount = cartController.totalItems;
@@ -417,10 +426,7 @@ class PlaceOrderController extends GetxController {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Order Summary',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          Text('Order Summary', style: TextStyle(fontWeight: FontWeight.bold)),
           SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -496,7 +502,7 @@ class PlaceOrderController extends GetxController {
           {
             'productId': singleProductData.value!['productId'].toString(),
             'quantity': singleProductData.value!['quantity'],
-          }
+          },
         ];
       }
 
@@ -537,8 +543,11 @@ class PlaceOrderController extends GetxController {
 
         HelperFunctions.showSnackbar(
           title: 'Success',
-          message: data['message'] ?? 
-              (orderType.value == 'cart' ? 'Order placed successfully' : 'Product purchased successfully'),
+          message:
+              data['message'] ??
+              (orderType.value == 'cart'
+                  ? 'Order placed successfully'
+                  : 'Product purchased successfully'),
           backgroundColor: Colors.green,
         );
 
@@ -546,7 +555,7 @@ class PlaceOrderController extends GetxController {
         if (orderType.value == 'cart') {
           // cartController.clearCart();
         }
-        
+
         await fetchMyOrders();
       } else {
         throw Exception('Failed to place order');

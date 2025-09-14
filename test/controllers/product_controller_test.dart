@@ -2,9 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
-import 'package:momentswrap/controllers/search_controller/search_product_controller.dart';
-import 'package:momentswrap/services/api_services.dart';
-import 'package:momentswrap/models/product_models/product_model.dart';
+import 'package:Xkart/controllers/search_controller/search_product_controller.dart';
+import 'package:Xkart/services/api_services.dart';
+import 'package:Xkart/models/product_models/product_model.dart';
 import 'package:dio/dio.dart' as dio;
 
 // Generate mock classes

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:momentswrap/util/constants/simmers/widgets/product_card_shimmer.dart';
+import 'package:Xkart/util/constants/simmers/widgets/product_card_shimmer.dart';
 
 class HorizontalProductListShimmer extends StatelessWidget {
   const HorizontalProductListShimmer({super.key});

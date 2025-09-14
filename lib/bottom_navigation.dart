@@ -1,17 +1,13 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/view/add_to_cart_screen/add_to_cart_screen.dart';
-import 'package:momentswrap/view/events_screen/events_screens.dart';
-import 'package:momentswrap/view/home_screen/home_screen.dart';
-import 'package:momentswrap/view/profile_screen/profile_screen.dart';
-
-
-
+import 'package:Xkart/view/add_to_cart_screen/add_to_cart_screen.dart';
+import 'package:Xkart/view/events_screen/events_screens.dart';
+import 'package:Xkart/view/home_screen/home_screen.dart';
+import 'package:Xkart/view/profile_screen/profile_screen.dart';
 
 /// Controller to manage the selected tab
 class NavController extends GetxController {
@@ -21,15 +17,11 @@ class NavController extends GetxController {
   // Your actual pages
   final pages = const <Widget>[
     HomeScreen(),
-     EventsScreens(),
+    EventsScreens(),
     AddToCartScreen(),
     ProfileScreen(),
   ];
 }
-
-
-
-
 
 class BottomNavigation extends StatelessWidget {
   const BottomNavigation({super.key});
@@ -52,10 +44,7 @@ class BottomNavigation extends StatelessWidget {
               icon: Icon(Icons.home_rounded),
               label: 'Home',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.event),
-              label: 'Events',
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Events'),
             BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart_rounded),
               label: 'Cart',

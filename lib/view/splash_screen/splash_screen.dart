@@ -1,10 +1,10 @@
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
-// import 'package:momentswrap/controllers/auth_controller/login_controller.dart';
-// import 'package:momentswrap/routes/app_routes.dart';
-// import 'package:momentswrap/services/shared_preferences_services.dart';
-// import 'package:momentswrap/util/constants/app_colors.dart';
-// import 'package:momentswrap/util/constants/app_images_string.dart';
+// import 'package:Xkart/controllers/auth_controller/login_controller.dart';
+// import 'package:Xkart/routes/app_routes.dart';
+// import 'package:Xkart/services/shared_preferences_services.dart';
+// import 'package:Xkart/util/constants/app_colors.dart';
+// import 'package:Xkart/util/constants/app_images_string.dart';
 
 // class SplashScreen extends StatefulWidget {
 //   const SplashScreen({super.key});

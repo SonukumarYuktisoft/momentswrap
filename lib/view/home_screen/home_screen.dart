@@ -1,22 +1,23 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
-import 'package:momentswrap/controllers/location_controller/location_controller.dart';
-import 'package:momentswrap/controllers/product_controller/product_controller.dart';
-import 'package:momentswrap/controllers/profile_controller/profile_controller.dart';
-import 'package:momentswrap/models/product_models/product_model.dart';
-import 'package:momentswrap/routes/app_routes.dart';
-import 'package:momentswrap/util/common/auth_utils.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/util/constants/app_images_string.dart';
-import 'package:momentswrap/util/constants/simmers/horizontal_productList_shimmer.dart';
-import 'package:momentswrap/view/ai_assistant/ai_assistant_screen.dart'
+import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+import 'package:Xkart/controllers/location_controller/location_controller.dart';
+import 'package:Xkart/controllers/product_controller/product_controller.dart';
+import 'package:Xkart/controllers/profile_controller/profile_controller.dart';
+import 'package:Xkart/models/product_models/product_model.dart';
+import 'package:Xkart/routes/app_routes.dart';
+import 'package:Xkart/util/common/auth_utils.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:Xkart/util/constants/app_images_string.dart';
+import 'package:Xkart/util/constants/simmers/horizontal_productList_shimmer.dart';
+import 'package:Xkart/view/ai_assistant/ai_assistant_screen.dart'
     hide AppRoutes;
-import 'package:momentswrap/view/home_screen/product_card.dart';
-import 'package:momentswrap/view/home_screen/product_detail_screen/product_detail_screen.dart';
-import 'package:momentswrap/view/widgets/all_products_screen.dart';
-import 'package:momentswrap/view/events_screen/events_screens.dart';
+import 'package:Xkart/view/home_screen/ModernUpcomingEventsCard/upcoming_events_card.dart';
+import 'package:Xkart/view/home_screen/product_card.dart';
+import 'package:Xkart/view/home_screen/product_detail_screen/product_detail_screen.dart';
+import 'package:Xkart/view/widgets/all_products_screen.dart';
+import 'package:Xkart/view/events_screen/events_screens.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -103,6 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         _buildWelcomeSection(profileController),
                         const ModernUpcomingEventsCard(),
+                        // EventsSection(),
                         SizedBox(height: 16),
                         _buildOffersCarousel(),
                         SizedBox(height: 24),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/controllers/search_controller/search_product_controller.dart';
-import 'package:momentswrap/util/common/auth_utils.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/util/helpers/helper_functions.dart';
-import 'package:momentswrap/view/home_screen/product_card.dart';
-import 'package:momentswrap/view/home_screen/product_detail_screen/product_detail_screen.dart';
+import 'package:Xkart/controllers/search_controller/search_product_controller.dart';
+import 'package:Xkart/util/common/auth_utils.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:Xkart/util/helpers/helper_functions.dart';
+import 'package:Xkart/view/home_screen/product_card.dart';
+import 'package:Xkart/view/home_screen/product_detail_screen/product_detail_screen.dart';
 
 class SearchAndFiltersBar extends StatefulWidget {
   SearchAndFiltersBar({Key? key}) : super(key: key);

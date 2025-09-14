@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/routes/app_routes.dart';
+import 'package:Xkart/routes/app_routes.dart';
 
 class OnboardingController extends GetxController {
   static OnboardingController get instance => Get.find();

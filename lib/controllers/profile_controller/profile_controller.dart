@@ -2,10 +2,10 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:momentswrap/models/profile_models/customer_profile_model.dart';
-import 'package:momentswrap/routes/app_routes.dart';
-import 'package:momentswrap/services/shared_preferences_services.dart';
-import 'package:momentswrap/services/api_services.dart';
+import 'package:Xkart/models/profile_models/customer_profile_model.dart';
+import 'package:Xkart/routes/app_routes.dart';
+import 'package:Xkart/services/shared_preferences_services.dart';
+import 'package:Xkart/services/api_services.dart';
 
 class ProfileController extends GetxController {
   final ApiServices _apiServices = ApiServices();

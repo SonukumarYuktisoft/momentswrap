@@ -1,8 +1,7 @@
 import 'package:get/get.dart';
-import 'package:momentswrap/controllers/cart_controller/cart_controller.dart';
-import 'package:momentswrap/controllers/order_controller/order_controller.dart';
-import 'package:momentswrap/controllers/profile_controller/profile_controller.dart';
-
+import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+import 'package:Xkart/controllers/order_controller/order_controller.dart';
+import 'package:Xkart/controllers/profile_controller/profile_controller.dart';
 
 class CartBinding extends Bindings {
   @override

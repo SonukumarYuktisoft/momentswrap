@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:momentswrap/controllers/profile_controller/profile_controller.dart';
-import 'package:momentswrap/routes/app_routes.dart';
-import 'package:momentswrap/util/common/auth_utils.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
-import 'package:momentswrap/util/constants/app_sizes.dart';
-import 'package:momentswrap/view/reviews_screen/my_reviews_screen.dart';
+import 'package:Xkart/controllers/profile_controller/profile_controller.dart';
+import 'package:Xkart/routes/app_routes.dart';
+import 'package:Xkart/util/common/auth_utils.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:Xkart/util/constants/app_sizes.dart';
+import 'package:Xkart/view/reviews_screen/my_reviews_screen.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
   const ProfileScreen({super.key});

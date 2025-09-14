@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:momentswrap/services/shared_preferences_services.dart';
+import 'package:Xkart/services/shared_preferences_services.dart';
 
 class ApiServices {
   final Dio _dio = Dio();
@@ -38,7 +38,6 @@ class ApiServices {
     throw Exception('Failed to load data');
   }
 
-  
   /// POST
   Future<Response?> requestPostForApi({
     required String url,
@@ -77,7 +76,8 @@ class ApiServices {
       return null;
     }
   }
-/// POST
+
+  /// POST
   Future<Response?> requestPostonlyOrdersApi({
     required String url,
     required dynamic dictParameter,
@@ -128,8 +128,6 @@ class ApiServices {
       print("putRequest data = $data");
       print("putRequest queryParameters  = $queryParameters");
       // print("putRequest data = $authToken");
-
-
 
       final response = await _dio.put(
         url,

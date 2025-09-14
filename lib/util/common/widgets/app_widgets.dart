@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
 import 'package:shimmer/shimmer.dart';
 
 class AppWidgets {

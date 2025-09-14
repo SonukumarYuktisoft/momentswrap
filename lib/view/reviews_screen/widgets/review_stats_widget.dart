@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:momentswrap/models/review_model/review_model.dart';
-import 'package:momentswrap/util/constants/app_colors.dart';
+import 'package:Xkart/models/review_model/review_model.dart';
+import 'package:Xkart/util/constants/app_colors.dart';
 
 class ReviewStatsWidget extends StatelessWidget {
   final List<ReviewModel> reviews;
@@ -60,28 +60,22 @@ class ReviewStatsWidget extends StatelessWidget {
             Row(
               children: [
                 // Overall Rating Section
-                Expanded(
-                  flex: 2,
-                  child: _buildOverallRating(stats),
-                ),
+                Expanded(flex: 2, child: _buildOverallRating(stats)),
                 SizedBox(width: 20),
                 // Rating Distribution
-                Expanded(
-                  flex: 3,
-                  child: _buildRatingDistribution(stats),
-                ),
+                Expanded(flex: 3, child: _buildRatingDistribution(stats)),
               ],
             ),
-            
+
             SizedBox(height: 16),
-            
+
             // Additional Stats
             _buildAdditionalStats(stats),
           ] else ...[
             // _buildNoReviewsState(),
           ],
         ],
-      )
+      ),
     );
   }
 
@@ -122,8 +116,8 @@ class ReviewStatsWidget extends StatelessWidget {
                 index < stats.averageRating.floor()
                     ? Icons.star_rounded
                     : index < stats.averageRating
-                        ? Icons.star_half_rounded
-                        : Icons.star_border_rounded,
+                    ? Icons.star_half_rounded
+                    : Icons.star_border_rounded,
                 color: Colors.amber,
                 size: 20,
               );
@@ -148,14 +142,18 @@ class ReviewStatsWidget extends StatelessWidget {
     return Column(
       children: [
         for (int i = 5; i >= 1; i--)
-          _buildRatingBar(i, stats.ratingDistribution[i] ?? 0, stats.totalReviews),
+          _buildRatingBar(
+            i,
+            stats.ratingDistribution[i] ?? 0,
+            stats.totalReviews,
+          ),
       ],
     );
   }
 
   Widget _buildRatingBar(int stars, int count, int total) {
     final percentage = total > 0 ? (count / total) : 0.0;
-    
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 3),
       child: Row(
@@ -176,7 +174,7 @@ class ReviewStatsWidget extends StatelessWidget {
           SizedBox(width: 4),
           Icon(Icons.star_rounded, color: Colors.amber, size: 14),
           SizedBox(width: 8),
-          
+
           // Progress bar
           Expanded(
             child: Container(
@@ -203,7 +201,7 @@ class ReviewStatsWidget extends StatelessWidget {
             ),
           ),
           SizedBox(width: 8),
-          
+
           // Count
           SizedBox(
             width: 24,
@@ -235,7 +233,8 @@ class ReviewStatsWidget extends StatelessWidget {
           _buildStatItem(
             icon: Icons.thumb_up_outlined,
             label: 'Positive',
-            value: '${(stats.ratingDistribution[4] ?? 0) + (stats.ratingDistribution[5] ?? 0)}',
+            value:
+                '${(stats.ratingDistribution[4] ?? 0) + (stats.ratingDistribution[5] ?? 0)}',
             // value: '${_getPositivePercentage(stats)}%',
             color: Colors.green,
           ),
@@ -270,11 +269,7 @@ class ReviewStatsWidget extends StatelessWidget {
             color: color.withOpacity(0.1),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(
-            icon,
-            size: 16,
-            color: color,
-          ),
+          child: Icon(icon, size: 16, color: color),
         ),
         SizedBox(height: 4),
         Text(
@@ -311,6 +306,5 @@ class ReviewStatsWidget extends StatelessWidget {
   //           child: Icon(
   //             Icons.rate_review_outlined,
 
-          //  size: 32
-
+  //  size: 32
 }
