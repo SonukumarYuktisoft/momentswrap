@@ -39,7 +39,85 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.primaryColor,
-        leadingWidth: 100,
+        leadingWidth: 120,
+        leading: Container(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          child: Row(
+            children: [
+              // Container(
+              //   width: 35,
+              //   height: 35,
+              //   decoration: BoxDecoration(
+              //     color: AppColors.secondaryColor.withOpacity(0.2),
+              //     shape: BoxShape.circle,
+              //     border: Border.all(
+              //       color: AppColors.secondaryColor.withOpacity(0.3),
+              //       width: 1,
+              //     ),
+              //   ),
+              //   child: Icon(
+              //     Icons.person,
+              //     color: AppColors.secondaryColor,
+              //     size: 18,
+              //   ),
+              // ),
+              SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: AppColors.secondaryColor.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppColors.secondaryColor.withOpacity(0.3),
+                          width: 1,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.person,
+                        color: AppColors.secondaryColor,
+                        size: 18,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          'Hi,',
+                          style: TextStyle(
+                            color: AppColors.secondaryColor.withOpacity(0.8),
+                            fontSize: 9,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        SizedBox(width: 4),
+                        Obx(() {
+                          String firstName = profileController.firstName ?? 'User';
+                          String displayName = firstName.length > 5
+                              ? firstName.substring(0, 5)
+                              : firstName;
+                          return Text(
+                            displayName,
+                            style: TextStyle(
+                              color: AppColors.secondaryColor,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          );
+                        }),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
         title: Text(
           'Moments Wrap',
           style: TextStyle(
@@ -102,8 +180,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   SliverToBoxAdapter(
                     child: Column(
                       children: [
-                        _buildWelcomeSection(profileController),
-                        const ModernUpcomingEventsCard(),
+                        // _buildWelcomeSection(profileController),
+                        // const ModernUpcomingEventsCard(),
                         // EventsSection(),
                         SizedBox(height: 16),
                         _buildOffersCarousel(),
@@ -306,7 +384,7 @@ Widget _buildPinnedCategoriesSection(ProductController controller) {
                       Container(
                         width: 50,
                         height: 50,
-                                                  decoration: BoxDecoration(
+                        decoration: BoxDecoration(
                           gradient: isSelected
                               ? LinearGradient(
                                   begin: Alignment.topCenter,
@@ -334,7 +412,9 @@ Widget _buildPinnedCategoriesSection(ProductController controller) {
                           boxShadow: isSelected
                               ? [
                                   BoxShadow(
-                                    color: AppColors.primaryColor.withOpacity(0.3),
+                                    color: AppColors.primaryColor.withOpacity(
+                                      0.3,
+                                    ),
                                     blurRadius: 8,
                                     offset: Offset(0, 3),
                                   ),
@@ -371,7 +451,7 @@ Widget _buildPinnedCategoriesSection(ProductController controller) {
                         ),
                       ),
                       SizedBox(height: 6),
-                      
+
                       // Category Name
                       Container(
                         width: 70,
@@ -392,7 +472,7 @@ Widget _buildPinnedCategoriesSection(ProductController controller) {
                           ),
                         ),
                       ),
-                      
+
                       // Selected Indicator
                       if (isSelected)
                         Container(
@@ -421,6 +501,7 @@ Widget _buildPinnedCategoriesSection(ProductController controller) {
     }),
   );
 }
+
 /// 🔹 Loading Shimmers
 Widget _buildLoadingShimmers() {
   return Column(
