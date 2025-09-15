@@ -59,11 +59,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: Icons.notifications_outlined,
                   onTap: () => Get.toNamed(AppRoutes.notificationsScreen),
                 ),
-                // SizedBox(width: 8),
-                // _buildIconButton(
-                //   icon: Icons.location_on_outlined,
-                //   onTap: () async => await locationController.getAddress(),
-                // ),
+                SizedBox(width: 8),
+                _buildIconButton(
+                  icon: Icons.location_on_outlined,
+                  onTap: () async => await locationController.getAddress(),
+                ),
               ],
             ),
           ),
@@ -103,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       children: [
                         _buildWelcomeSection(profileController),
-                        // const ModernUpcomingEventsCard(),
+                        const ModernUpcomingEventsCard(),
                         // EventsSection(),
                         SizedBox(height: 16),
                         _buildOffersCarousel(),
@@ -198,160 +198,229 @@ Widget _buildPinnedCategoriesSection(ProductController controller) {
   return Container(
     width: double.infinity,
     color: Colors.white,
-    // padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+    padding: const EdgeInsets.symmetric(vertical: 8),
     child: Obx(() {
       return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: controller.categories.map((category) {
-            bool isSelected = controller.selectedCategory.value == category;
+          children: [
+            SizedBox(width: 12), // Start padding
+            ...controller.categories.map((category) {
+              bool isSelected = controller.selectedCategory.value == category;
 
-            IconData iconData;
-            switch (category) {
-              case "Kitchen & Dining":
-                iconData = Icons.kitchen;
-                break;
-              case "Wall Art":
-                iconData = Icons.image;
-                break;
-              case "Home Decor":
-                iconData = Icons.home;
-                break;
-              case "Accessories":
-                iconData = Icons.shopping_bag;
-                break;
-              case "Stationery":
-                iconData = Icons.edit;
-                break;
-              case "Games & Puzzles":
-                iconData = Icons.extension;
-                break;
-              case "Apparel":
-                iconData = Icons.checkroom;
-                break;
-              case "Ethnic Wear":
-                iconData = Icons.emoji_events;
-                break;
-              case "Home & Fragrance":
-                iconData = Icons.local_florist;
-                break;
-              case "Plants & Gardens":
-                iconData = Icons.park;
-                break;
-              case "Romantic Gifts":
-                iconData = Icons.favorite;
-                break;
-              case "Self-Care":
-                iconData = Icons.spa;
-                break;
-              case "Wellness":
-                iconData = Icons.health_and_safety;
-                break;
-              case "Memorials":
-                iconData = Icons.star;
-                break;
-              case "Edible Gifts":
-                iconData = Icons.cake;
-                break;
-              case "Jewelry":
-                iconData = Icons.watch;
-                break;
-              case "Electronics":
-                iconData = Icons.headphones;
-                break;
-              default:
-                iconData = Icons.category;
-            }
+              String imageAsset;
+              switch (category) {
+                case "Kitchen & Dining":
+                  imageAsset = AppImagesString.kitchenDiningIcon;
+                  break;
+                case "Wall Art":
+                  imageAsset = AppImagesString.wallArtIcon;
+                  break;
+                case "Home Decor":
+                  imageAsset = AppImagesString.homeDecorIcon;
+                  break;
+                case "Accessories":
+                  imageAsset = AppImagesString.accessoriesIcon;
+                  break;
+                case "Stationery":
+                  imageAsset = AppImagesString.stationeryIcon;
+                  break;
+                case "Games & Puzzles":
+                  imageAsset = AppImagesString.gamesPuzzlesIcon;
+                  break;
+                case "Apparel":
+                  imageAsset = AppImagesString.apparelIcon;
+                  break;
+                case "Ethnic Wear":
+                  imageAsset = AppImagesString.ethnicWearIcon;
+                  break;
+                case "Home & Fragrance":
+                  imageAsset = AppImagesString.homeFragranceIcon;
+                  break;
+                case "Plants & Gardens":
+                  imageAsset = AppImagesString.plantsGardensIcon;
+                  break;
+                case "Romantic Gifts":
+                  imageAsset = AppImagesString.romanticGiftsIcon;
+                  break;
+                case "Self-Care":
+                  imageAsset = AppImagesString.selfCareIcon;
+                  break;
+                case "Wellness":
+                  imageAsset = AppImagesString.wellnessIcon;
+                  break;
+                case "Memorials":
+                  imageAsset = AppImagesString.memorialsIcon;
+                  break;
+                case "Edible Gifts":
+                  imageAsset = AppImagesString.edibleGiftsIcon;
+                  break;
+                case "Jewelry":
+                  imageAsset = AppImagesString.jewelryIcon;
+                  break;
+                case "Electronics":
+                  imageAsset = AppImagesString.electronicsIcon;
+                  break;
+                case "Beauty":
+                  imageAsset = AppImagesString.beautyIcon;
+                  break;
+                case "Decorative":
+                  imageAsset = AppImagesString.decorativeIcon;
+                  break;
+                case "Entertainment":
+                  imageAsset = AppImagesString.entertainmentIcon;
+                  break;
+                case "Games & Toys":
+                  imageAsset = AppImagesString.gamesToysIcon;
+                  break;
+                case "Gardening":
+                  imageAsset = AppImagesString.gardeningIcon;
+                  break;
+                case "Memory Keepsake":
+                  imageAsset = AppImagesString.memoryKeepsakeIcon;
+                  break;
+                case "Mindfulness":
+                  imageAsset = AppImagesString.mindfulnessIcon;
+                  break;
+                case "Outdoor":
+                  imageAsset = AppImagesString.outdoorIcon;
+                  break;
+                case "Spiritual":
+                  imageAsset = AppImagesString.spiritualIcon;
+                  break;
+                case "Travel":
+                  imageAsset = AppImagesString.travelIcon;
+                  break;
+                default:
+                  imageAsset = AppImagesString.categoryDefaultIcon;
+              }
 
-            return GestureDetector(
-              onTap: () => controller.selectCategory(category),
-              child: Container(
-                margin: EdgeInsets.only(right: 4),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        gradient: isSelected
-                            ? LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  AppColors.primaryColor.withOpacity(0.1),
-                                  AppColors.backgroundColor,
-                                ],
-                              )
-                            : LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  AppColors.primaryColor.withOpacity(0.1),
-                                  AppColors.backgroundColor,
-
-                                  // Colors.transparent,
-                                ],
-                              ),
-                        // color: isSelected
-                        //     ? AppColors.primaryColor.withOpacity(0.1)
-                        //     : Colors.grey.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: isSelected
-                              ? AppColors.primaryColor
-                              : Colors.transparent,
-                          width: 2,
-                        ),
-                      ),
-                      child: Icon(
-                        iconData,
-                        size: 28,
-                        color: isSelected
-                            ? AppColors.primaryColor
-                            : Colors.grey[600],
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Container(
-                      width: 60,
-                      child: Text(
-                        category,
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: isSelected
-                              ? AppColors.primaryColor
-                              : AppColors.textColor,
-                          fontWeight: isSelected
-                              ? FontWeight.w600
-                              : FontWeight.w400,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                    if (isSelected)
+              return GestureDetector(
+                onTap: () => controller.selectCategory(category),
+                child: Container(
+                  margin: EdgeInsets.only(right: 8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Image Container with Gradient Background
                       Container(
-                        margin: EdgeInsets.only(top: 2),
-                        width: 20,
-                        height: 2,
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryColor,
-                          borderRadius: BorderRadius.circular(2),
+                        width: 50,
+                        height: 50,
+                                                  decoration: BoxDecoration(
+                          gradient: isSelected
+                              ? LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    AppColors.primaryColor.withOpacity(0.1),
+                                    AppColors.backgroundColor,
+                                  ],
+                                )
+                              : LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.grey.withOpacity(0.1),
+                                    Colors.grey.withOpacity(0.05),
+                                  ],
+                                ),
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            color: isSelected
+                                ? AppColors.primaryColor.withOpacity(0.8)
+                                : Colors.grey.withOpacity(0.2),
+                            width: isSelected ? 2.5 : 1,
+                          ),
+                          boxShadow: isSelected
+                              ? [
+                                  BoxShadow(
+                                    color: AppColors.primaryColor.withOpacity(0.3),
+                                    blurRadius: 8,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ]
+                              : [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.1),
+                                    blurRadius: 4,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Image.asset(
+                            imageAsset,
+                            width: 30,
+                            height: 30,
+                            fit: BoxFit.contain,
+                            // color: isSelected
+                            //     ? AppColors.primaryColor
+                            //     : Colors.grey[600],
+                            errorBuilder: (context, error, stackTrace) {
+                              // Fallback to icon if image fails to load
+                              return Icon(
+                                Icons.category,
+                                size: 26,
+                                color: isSelected
+                                    ? AppColors.primaryColor
+                                    : Colors.grey[600],
+                              );
+                            },
+                          ),
                         ),
                       ),
-                  ],
+                      SizedBox(height: 6),
+                      
+                      // Category Name
+                      Container(
+                        width: 70,
+                        child: Text(
+                          category,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: isSelected
+                                ? AppColors.primaryColor
+                                : AppColors.textColor,
+                            fontWeight: isSelected
+                                ? FontWeight.w700
+                                : FontWeight.w500,
+                            fontSize: 11,
+                            height: 1.2,
+                          ),
+                        ),
+                      ),
+                      
+                      // Selected Indicator
+                      if (isSelected)
+                        Container(
+                          margin: EdgeInsets.only(top: 4),
+                          width: 25,
+                          height: 3,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                AppColors.primaryColor,
+                                AppColors.primaryColor.withOpacity(0.7),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }).toList(),
+              );
+            }).toList(),
+            SizedBox(width: 12), // End padding
+          ],
         ),
       );
     }),
   );
 }
-
 /// 🔹 Loading Shimmers
 Widget _buildLoadingShimmers() {
   return Column(
