@@ -15,43 +15,48 @@ class AppColors {
   static const Color infoColor = Color(0xFF2196F3);
 
   // PDF specific colors
-  static const Color pdfPrimaryColor = Color(0xFF2563EB);    // Blue color for PDF
-  static const Color pdfGreyColor = Color(0xFF6B7280);       // Grey color for PDF
-  static const Color pdfLightGreyColor = Color(0xFFF3F4F6);  // Light grey for PDF backgrounds
-  static const Color pdfDarkColor = Color(0xFF111827);       // Dark color for PDF text
-  static const Color pdfSuccessColor = Color(0xFF10B981);    // Success green for PDF
-  static const Color pdfBorderColor = Color(0xFFD1D5DB);     // Border color for PDF
-  static const Color pdfTableBorderColor = Color(0xFFE5E7EB); // Table border color
-  static const Color pdfHeaderBgColor = Color(0xFFEFF6FF);   // Table header background
-  static const Color pdfSuccessBgColor = Color(0xFFE6FFFA);  // Success background
-  static const Color pdfSummaryBorderColor = Color(0xFFDBEAFE); // Summary border color
+  static const Color pdfPrimaryColor = Color(0xFF2563EB); // Blue color for PDF
+  static const Color pdfGreyColor = Color(0xFF6B7280); // Grey color for PDF
+  static const Color pdfLightGreyColor = Color(
+    0xFFF3F4F6,
+  ); // Light grey for PDF backgrounds
+  static const Color pdfDarkColor = Color(
+    0xFF111827,
+  ); // Dark color for PDF text
+  static const Color pdfSuccessColor = Color(
+    0xFF10B981,
+  ); // Success green for PDF
+  static const Color pdfBorderColor = Color(0xFFD1D5DB); // Border color for PDF
+  static const Color pdfTableBorderColor = Color(
+    0xFFE5E7EB,
+  ); // Table border color
+  static const Color pdfHeaderBgColor = Color(
+    0xFFEFF6FF,
+  ); // Table header background
+  static const Color pdfSuccessBgColor = Color(
+    0xFFE6FFFA,
+  ); // Success background
+  static const Color pdfSummaryBorderColor = Color(
+    0xFFDBEAFE,
+  ); // Summary border color
 
   // Gradient combinations
   static const LinearGradient primaryGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [
-      Color(0xFFE594A3),
-      Color(0xFFD87A8C),
-    ],
+    colors: [Color(0xFFE594A3), Color(0xFFD87A8C)],
   );
 
   static const LinearGradient secondaryGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [
-      Color(0xFF31354E),
-      Color(0xFF404762),
-    ],
+    colors: [Color(0xFF31354E), Color(0xFF404762)],
   );
 
   static const LinearGradient cardGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [
-      Colors.white,
-      Color(0xFFFFFCFD),
-    ],
+    colors: [Colors.white, Color(0xFFFFFCFD)],
   );
 
   // Opacity variations
@@ -74,12 +79,18 @@ class AppColors {
   static Color get surfaceTint => primaryColor.withOpacity(0.05);
 
   // Text color variations
-  static const Color textDisabled = Color(0xFFBDBDBD);     // Lighter gray for disabled text
-  static const Color textOnPrimary = Colors.white;         // White text on primary color
-  static const Color textOnSecondary = Colors.white;       // White text on secondary color
-  static const Color textOnSurface = Color(0xFF212121);    // Dark text on surfaces
-  static const Color textOnBackground = Color(0xFF212121); // Dark text on background
-  
+  static const Color textDisabled = Color(
+    0xFFBDBDBD,
+  ); // Lighter gray for disabled text
+  static const Color textOnPrimary =
+      Colors.white; // White text on primary color
+  static const Color textOnSecondary =
+      Colors.white; // White text on secondary color
+  static const Color textOnSurface = Color(0xFF212121); // Dark text on surfaces
+  static const Color textOnBackground = Color(
+    0xFF212121,
+  ); // Dark text on background
+
   // Additional utility colors
   static const Color dividerColor = Color(0xFFE0E0E0);
   static const Color cardBackground = Colors.white;

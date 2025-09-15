@@ -829,7 +829,7 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
               margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
+                gradient: AppColors.secondaryGradient,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(

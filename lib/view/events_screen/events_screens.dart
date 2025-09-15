@@ -122,6 +122,8 @@ class EventsScreens extends StatelessWidget {
 
               return Column(
                 children: [
+                        const ModernUpcomingEventsCard(),
+
                   SizedBox(height: 16),
 
                   // Featured Products

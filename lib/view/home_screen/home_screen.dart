@@ -59,11 +59,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: Icons.notifications_outlined,
                   onTap: () => Get.toNamed(AppRoutes.notificationsScreen),
                 ),
-                SizedBox(width: 8),
-                _buildIconButton(
-                  icon: Icons.location_on_outlined,
-                  onTap: () async => await locationController.getAddress(),
-                ),
+                // SizedBox(width: 8),
+                // _buildIconButton(
+                //   icon: Icons.location_on_outlined,
+                //   onTap: () async => await locationController.getAddress(),
+                // ),
               ],
             ),
           ),
@@ -103,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       children: [
                         _buildWelcomeSection(profileController),
-                        const ModernUpcomingEventsCard(),
+                        // const ModernUpcomingEventsCard(),
                         // EventsSection(),
                         SizedBox(height: 16),
                         _buildOffersCarousel(),
