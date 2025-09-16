@@ -44,27 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             children: [
-              // Container(
-              //   width: 35,
-              //   height: 35,
-              //   decoration: BoxDecoration(
-              //     color: AppColors.secondaryColor.withOpacity(0.2),
-              //     shape: BoxShape.circle,
-              //     border: Border.all(
-              //       color: AppColors.secondaryColor.withOpacity(0.3),
-              //       width: 1,
-              //     ),
-              //   ),
-              //   child: Icon(
-              //     Icons.person,
-              //     color: AppColors.secondaryColor,
-              //     size: 18,
-              //   ),
-              // ),
-              SizedBox(width: 8),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
@@ -84,34 +66,31 @@ class _HomeScreenState extends State<HomeScreen> {
                         size: 18,
                       ),
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          'Hi,',
-                          style: TextStyle(
-                            color: AppColors.secondaryColor.withOpacity(0.8),
-                            fontSize: 9,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        SizedBox(width: 4),
-                        Obx(() {
-                          String firstName = profileController.firstName ?? 'User';
-                          String displayName = firstName.length > 5
-                              ? firstName.substring(0, 5)
-                              : firstName;
-                          return Text(
-                            displayName,
-                            style: TextStyle(
-                              color: AppColors.secondaryColor,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          );
-                        }),
-                      ],
+                    SizedBox(width: 6),
+                    Text(
+                      'Hi,',
+                      style: TextStyle(
+                        color: AppColors.secondaryColor.withOpacity(0.8),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
+                    SizedBox(width: 4),
+                    Obx(() {
+                      String firstName = profileController.firstName ?? 'User';
+                      String displayName = firstName.length > 5
+                          ? firstName.substring(0, 5)
+                          : firstName;
+                      return Text(
+                        displayName,
+                        style: TextStyle(
+                          color: AppColors.secondaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      );
+                    }),
                   ],
                 ),
               ),
@@ -133,15 +112,32 @@ class _HomeScreenState extends State<HomeScreen> {
             margin: EdgeInsets.only(right: 8),
             child: Row(
               children: [
-                _buildIconButton(
-                  icon: Icons.notifications_outlined,
-                  onTap: () => Get.toNamed(AppRoutes.notificationsScreen),
-                ),
-                SizedBox(width: 8),
-                _buildIconButton(
-                  icon: Icons.location_on_outlined,
-                  onTap: () async => await locationController.getAddress(),
-                ),
+                Obx(() {
+                  return profileController.isLoggedIn.value
+                      ? IconButton(
+                          onPressed: () {
+                            profileController.logOut();
+                          },
+                          icon: Icon(
+                            Icons.logout,
+                            color: AppColors.secondaryColor,
+                          ),
+                        )
+                      : _buildIconButton(
+                          icon: Icons.login,
+                          onTap: () => Get.toNamed(AppRoutes.loginScreen),
+                        );
+                }),
+
+                // _buildIconButton(
+                //   icon: Icons.notifications_outlined,
+                //   onTap: () => Get.toNamed(AppRoutes.notificationsScreen),
+                // ),
+                // SizedBox(width: 8),
+                // _buildIconButton(
+                //   icon: Icons.location_on_outlined,
+                //   onTap: () async => await locationController.getAddress(),
+                // ),
               ],
             ),
           ),

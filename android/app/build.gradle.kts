@@ -7,16 +7,14 @@ plugins {
 
 android {
     namespace = "com.example.Xkart"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
+    
     // Set the minimum SDK version for the project
     buildFeatures {
         // You can enable/disable build features here if needed
     }
-    // Explicitly set minSdkVersion (overrides if needed)
-    defaultConfig {
-        minSdk = flutter.minSdkVersion
-    }
+    
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -39,8 +37,17 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // FIXED: Kotlin DSL syntax
+            signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = false
+            isShrinkResources = false
+            
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+        debug {
             signingConfig = signingConfigs.getByName("debug")
         }
     }

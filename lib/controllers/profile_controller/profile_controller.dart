@@ -527,4 +527,10 @@ class ProfileController extends GetxController {
       'createdAt': profile.value!.createdAt?.toString() ?? 'Unknown',
     };
   }
+
+  RxBool isLoggedIn = false.obs;
+  Future<bool> isologin() async {
+    isLoggedIn.value = await SharedPreferencesServices.getIsLoggedIn();
+    return isLoggedIn.value;
+  }
 }

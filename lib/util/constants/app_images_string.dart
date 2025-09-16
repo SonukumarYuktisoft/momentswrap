@@ -4,7 +4,8 @@ class AppImagesString {
 
   //authentication images
   static const String loginImage = 'assets/images/login.png';
-  static const String signupImage ='https://m.media-amazon.com/images/I/81w8xa+XkSL._SX679_.jpg';
+  static const String signupImage =
+      'https://m.media-amazon.com/images/I/81w8xa+XkSL._SX679_.jpg';
 
   //offer product images
   static const String offerBanner1 = 'assets/images/offer_banner1.png';
