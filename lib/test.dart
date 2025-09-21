@@ -916,7 +916,7 @@ class ModernBannerCard extends StatelessWidget {
             Container(
               height: 180,
               width: double.infinity,
-              child: Image.asset(
+              child: Image.network(
                 imageUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {

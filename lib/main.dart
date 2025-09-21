@@ -30,8 +30,7 @@ class MyApp extends StatelessWidget {
         name: AppRoutes.notFoundScreen,
         page: () => NotFoundScreen(),
       ),
-
-      // home: LoginPage(),
+      // home: Pagetast(),
 
       // home: FullLoaderScreens(animationPath: 'assets/animations/addtocart.json'),
     );

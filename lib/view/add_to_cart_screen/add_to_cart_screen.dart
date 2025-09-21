@@ -1405,8 +1405,12 @@ class _ModernCartItemCardState extends State<ModernCartItemCard> {
                       _ModernQuantityButton(
                         icon: Icons.remove,
                         onPressed: () {
-                          cartController.decreaseLocalQuantity(
-                            widget.cartItemId,
+                          // cartController.decreaseLocalQuantity(
+                          //   widget.cartItemId,
+                          // );
+                          cartController.decrementCart(
+                            productId: widget.productId,
+                            quantity: 1,
                           );
                         },
                       ),
@@ -1433,8 +1437,12 @@ class _ModernCartItemCardState extends State<ModernCartItemCard> {
                       _ModernQuantityButton(
                         icon: Icons.add,
                         onPressed: () {
-                          cartController.increaseLocalQuantity(
-                            widget.cartItemId,
+                          // cartController.increaseLocalQuantity(
+                          //   widget.cartItemId,
+                          // );
+                          cartController.incrementCart(
+                            productId: widget.productId,
+                            quantity: 1,
                           );
                         },
                       ),

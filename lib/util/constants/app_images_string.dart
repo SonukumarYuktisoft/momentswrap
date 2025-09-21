@@ -1,5 +1,6 @@
 class AppImagesString {
-  static const String appLogo = 'assets/icons/app_icon.jpeg';
+  static const String appLogs = 'assets/icons/app_icon.jpeg';
+  static const String appLogo = 'assets/images/appLogo.png';
   // static const String splashIma';
 
   //authentication images

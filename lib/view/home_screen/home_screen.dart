@@ -1,3 +1,5 @@
+import 'package:Xkart/util/constants/simmers/category_shimmer.dart';
+import 'package:Xkart/view/slider/home_slider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -172,7 +174,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     delegate: _StickyHeaderDelegate(
                       minHeight: 100,
                       maxHeight: 100,
-                      child: _buildPinnedCategoriesSection(controller),
+                      child: Obx(() {
+                        if (controller.isLoading.value) {
+                          return SizedBox(child: CategoryShimmer());
+                        }
+                        return _buildPinnedCategoriesSection(controller);
+                      }),
                     ),
                   ),
 
@@ -184,7 +191,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         // const ModernUpcomingEventsCard(),
                         // EventsSection(),
                         SizedBox(height: 16),
-                        _buildOffersCarousel(),
+                        // _buildOffersCarousel(),
+                        HomeSlider(),
                         SizedBox(height: 24),
                       ],
                     ),
@@ -390,8 +398,8 @@ Widget _buildPinnedCategoriesSection(ProductController controller) {
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                   colors: [
-                                    AppColors.primaryColor.withOpacity(0.1),
-                                    AppColors.backgroundColor,
+                                Colors.grey.withOpacity(0.1),
+                                    Colors.grey.withOpacity(0.05),
                                   ],
                                 )
                               : LinearGradient(

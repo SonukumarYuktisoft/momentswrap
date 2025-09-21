@@ -159,6 +159,9 @@ class ApiServices {
     Map<String, dynamic>? data,
   }) async {
     try {
+      print("putRequest url = $url");
+      print("putRequest data = $data");
+      print("putRequest queryParameters  = $queryParameters");
       final response = await _dio.delete(
         url,
         data: data,
@@ -201,6 +204,45 @@ class ApiServices {
       Response response = await _dio.put(
         url,
         data: dictParameter,
+        options: Options(
+          followRedirects: false,
+          validateStatus: (status) => true,
+          headers: await getHeader(authToken),
+        ),
+      );
+
+      print("Response: $response");
+      print("Response_headers: ${response.headers}");
+      print("Response_real_url: ${response.realUri}");
+
+      return response;
+    } catch (error) {
+      print("Exception_Main: $error");
+      return null;
+    }
+  }
+
+  /// PATCH
+  Future<Response?> requestPatchForApi({
+    required String url,
+    required Map<String, dynamic> dictParameter,
+    required bool authToken,
+  }) async {
+    try {
+      print("Url:  $url");
+      print("DictParameter: $dictParameter");
+
+      BaseOptions options = BaseOptions(
+        receiveTimeout: const Duration(minutes: 1),
+        connectTimeout: const Duration(minutes: 1),
+        headers: await getHeader(authToken),
+      );
+      _dio.options = options;
+
+      Response response = await _dio.patch(
+        url,
+        data: dictParameter,
+
         options: Options(
           followRedirects: false,
           validateStatus: (status) => true,

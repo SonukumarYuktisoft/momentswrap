@@ -416,6 +416,92 @@ class CartController extends GetxController {
     }
   }
 
+  //incrementCart
+  RxBool isUpdatevLoading = false.obs;
+  Future<void> incrementCart({
+    required String productId,
+
+    required int quantity,
+  }) async {
+    try {
+      isUpdatevLoading.value = true;
+      dio.Response? response = await _apiServices.requestPatchForApi(
+        authToken: true,
+        url:
+            'https://moment-wrap-backend.vercel.app/api/customer/cart/increment/$productId',
+        dictParameter: {'quantity': quantity},
+      );
+
+      log('${response!.data}');
+
+      if (response.statusCode == 200) {
+        HelperFunctions.showSnackbar(
+          message: 'Successfully added to cart',
+          title: 'Added To Cart',
+          backgroundColor: Colors.green,
+        );
+        fetchCarts(); // Refresh cart data
+      } else {
+        HelperFunctions.showSnackbar(
+          message: 'Failed to add item to cart',
+          title: 'Failed To Add Item',
+          backgroundColor: Colors.red,
+        );
+      }
+    } catch (e) {
+      HelperFunctions.showSnackbar(
+        message: 'An error occurred while adding to cart.',
+        title: 'Error Adding To Cart',
+        backgroundColor: Colors.red,
+      );
+      print(e);
+    } finally {
+      isUpdatevLoading.value = false;
+    }
+  }
+
+  //decrementCart
+  Future<void> decrementCart({
+    required String productId,
+    required int quantity,
+  }) async {
+    try {
+      isUpdatevLoading.value = true;
+      dio.Response? response = await _apiServices.requestPatchForApi(
+        authToken: true,
+        url:
+            'https://moment-wrap-backend.vercel.app/api/customer/cart/decrement/$productId',
+        dictParameter: {'quantity': quantity},
+      );
+
+      log('${response!.data}');
+
+      if (response.statusCode == 200) {
+        HelperFunctions.showSnackbar(
+          message: 'Successfully added to cart',
+          title: 'Added To Cart',
+          backgroundColor: Colors.green,
+        );
+        fetchCarts(); // Refresh cart data
+      } else {
+        HelperFunctions.showSnackbar(
+          message: 'Failed to add item to cart',
+          title: 'Failed To Add Item',
+          backgroundColor: Colors.red,
+        );
+      }
+    } catch (e) {
+      HelperFunctions.showSnackbar(
+        message: 'An error occurred while adding to cart.',
+        title: 'Error Adding To Cart',
+        backgroundColor: Colors.red,
+      );
+      print(e);
+    } finally {
+      isUpdatevLoading.value = false;
+    }
+  }
+
   // Calculate total cart value using local quantities
   double get totalPrice {
     if (carts.value == null) return 0.0;

@@ -179,6 +179,7 @@ class PlaceOrderController extends GetxController {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : Text(
+                      style: TextStyle(color: AppColors.cardBackground),
                         currentStep.value == STEP_PAYMENT
                             ? (orderType.value == 'cart'
                                   ? 'Place Order'
@@ -692,6 +693,7 @@ class PlaceOrderController extends GetxController {
         actions: [
           TextButton(onPressed: () => Get.back(), child: Text('Cancel')),
           ElevatedButton(
+            
             onPressed: () async {
               final newAddress = {
                 'fullName': nameController.text,
