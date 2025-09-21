@@ -56,13 +56,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: AppColors.secondaryColor.withOpacity(0.2),
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: AppColors.secondaryColor.withOpacity(0.3),
+                          color: AppColors.primaryForegroundColor.withOpacity(
+                            0.3,
+                          ),
                           width: 1,
                         ),
                       ),
                       child: Icon(
                         Icons.person,
-                        color: AppColors.secondaryColor,
+                        color: AppColors.primaryForegroundColor,
                         size: 18,
                       ),
                     ),
@@ -70,7 +72,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       'Hi,',
                       style: TextStyle(
-                        color: AppColors.secondaryColor.withOpacity(0.8),
+                        color: AppColors.primaryForegroundColor.withOpacity(
+                          0.8,
+                        ),
                         fontSize: 10,
                         fontWeight: FontWeight.w400,
                       ),
@@ -84,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       return Text(
                         displayName,
                         style: TextStyle(
-                          color: AppColors.secondaryColor,
+                          color: AppColors.primaryForegroundColor,
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
                         ),
@@ -100,13 +104,13 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(
           'Moments Wrap',
           style: TextStyle(
-            color: AppColors.secondaryColor,
+            color: AppColors.primaryForegroundColor,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
         ),
         centerTitle: true,
-        iconTheme: IconThemeData(color: AppColors.secondaryColor),
+        iconTheme: IconThemeData(color: AppColors.primaryForegroundColor),
         actions: [
           Container(
             margin: EdgeInsets.only(right: 8),
@@ -120,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                           icon: Icon(
                             Icons.logout,
-                            color: AppColors.secondaryColor,
+                            color: AppColors.primaryForegroundColor,
                           ),
                         )
                       : _buildIconButton(
@@ -648,12 +652,12 @@ Widget _buildWelcomeSection(ProfileController profileController) {
 Widget _buildIconButton({required IconData icon, required VoidCallback onTap}) {
   return Container(
     decoration: BoxDecoration(
-      color: AppColors.secondaryColor.withOpacity(0.1),
+      color: AppColors.primaryForegroundColor.withOpacity(0.1),
       borderRadius: BorderRadius.circular(12),
     ),
     child: IconButton(
       onPressed: onTap,
-      icon: Icon(icon, color: AppColors.secondaryColor),
+      icon: Icon(icon, color: AppColors.primaryForegroundColor),
     ),
   );
 }

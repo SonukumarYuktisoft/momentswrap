@@ -191,6 +191,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       // Rating Section
                       _buildRatingSection(),
                       SizedBox(height: 20),
+                      // Stock Status
+                      _buildStockStatus(),
+                      SizedBox(height: 20),
 
                       // Valid Offers Section
                       if (validOffers.isNotEmpty) ...[
@@ -211,9 +214,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       _buildDescriptionSection(),
                       SizedBox(height: 20),
 
-                      // Stock Status
-                      _buildStockStatus(),
-                      SizedBox(height: 20),
+                      // // Stock Status
+                      // _buildStockStatus(),
+                      // SizedBox(height: 20),
 
                       // Material & Warranty Info
                       _buildProductInfo(),
@@ -716,31 +719,31 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     right: 20,
                     child: Column(
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
-                            shape: BoxShape.circle,
-                          ),
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.favorite_border,
-                              color: Colors.black,
-                            ),
-                            onPressed: () {
-                              // Add to favorites functionality
-                            },
-                          ),
-                        ),
+                        // Container(
+                        //   decoration: BoxDecoration(
+                        //     color: Colors.white.withOpacity(0.9),
+                        //     shape: BoxShape.circle,
+                        //   ),
+                        //   child: IconButton(
+                        //     icon: Icon(
+                        //       Icons.favorite_border,
+                        //       color: Colors.black,
+                        //     ),
+                        //     onPressed: () {
+                        //       // Add to favorites functionality
+                        //     },
+                        //   ),
+                        // ),
                         SizedBox(height: 12),
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
+                            color: AppColors.primaryColor.withOpacity(0.9),
                             shape: BoxShape.circle,
                           ),
                           child: IconButton(
                             icon: Icon(
                               Icons.share_outlined,
-                              color: Colors.black,
+                              color: AppColors.primaryForegroundColor,
                             ),
                             onPressed: () {
                               ShareHelper.shareProduct(
@@ -1104,20 +1107,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ],
           ),
         ),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.primaryLight,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.favorite_border,
-              color: AppColors.primaryColor,
-              size: 24,
-            ),
-          ),
-        ),
+        // Container(
+        //   decoration: BoxDecoration(
+        //     color: AppColors.primaryLight,
+        //     borderRadius: BorderRadius.circular(12),
+        //   ),
+        //   child: IconButton(
+        //     onPressed: () {},
+        //     icon: Icon(
+        //       Icons.favorite_border,
+        //       color: AppColors.primaryColor,
+        //       size: 24,
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
