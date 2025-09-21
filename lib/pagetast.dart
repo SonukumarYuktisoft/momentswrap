@@ -1,5 +1,6 @@
 import 'package:Xkart/controllers/slider_controller/slider_controller.dart';
 import 'package:Xkart/test.dart';
+import 'package:Xkart/view/home_screen/home_screen.dart' hide ModernBannerCard;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

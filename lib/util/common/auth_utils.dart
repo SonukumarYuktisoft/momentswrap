@@ -1,3 +1,4 @@
+import 'package:Xkart/util/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:Xkart/routes/app_routes.dart';
@@ -51,7 +52,7 @@ class AuthUtils {
               Get.back();
               Get.toNamed(AppRoutes.loginScreen);
             },
-            child: const Text('Log In'),
+            child: const Text('Log In',style: TextStyle(color: AppColors.primaryForegroundColor),),
           ),
         ],
       ),

@@ -478,7 +478,7 @@ class _SearchAndFiltersBarState extends State<SearchAndFiltersBar> {
                             )
                           : Text(
                               "Apply Filters",
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,color: AppColors.primaryForegroundColor),
                             ),
                     ),
                   ),

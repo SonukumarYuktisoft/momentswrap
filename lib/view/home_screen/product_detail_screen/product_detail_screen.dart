@@ -763,7 +763,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
 
                   // Page Indicators (only if no thumbnails or single image)
-                  if (images.length > 1 && images.length <= 3)
+                  if (images.length > 1)
                     Positioned(
                       bottom: 20,
                       left: 0,

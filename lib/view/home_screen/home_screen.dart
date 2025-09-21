@@ -172,8 +172,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   SliverPersistentHeader(
                     pinned: true,
                     delegate: _StickyHeaderDelegate(
-                      minHeight: 100,
-                      maxHeight: 100,
+                      minHeight: 110,
+                      maxHeight: 110,
                       child: Obx(() {
                         if (controller.isLoading.value) {
                           return SizedBox(child: CategoryShimmer());
