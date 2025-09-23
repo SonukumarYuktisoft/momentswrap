@@ -341,7 +341,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
               ),
             ),
           ],
-          icon: const Icon(Icons.more_vert, color: AppColors.textOnSecondary),
+          icon: const Icon(Icons.more_vert, color: AppColors.primaryColor),
         ),
       ],
     );
