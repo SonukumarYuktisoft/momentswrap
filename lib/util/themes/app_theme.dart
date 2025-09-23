@@ -14,8 +14,8 @@ class AppTheme {
     /// Outlined Button
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.primaryColor,
-        backgroundColor: Colors.white,
+        foregroundColor: AppColors.primaryForegroundColor,
+        backgroundColor: AppColors.primaryColor,
         side: const BorderSide(color: AppColors.primaryColor, width: 1.0),
         textStyle: TextStyle(
           color: AppColors.textColor,
@@ -35,7 +35,7 @@ class AppTheme {
       style: ElevatedButton.styleFrom(
         elevation: 1,
         shadowColor: Colors.black.withOpacity(0.1),
-        foregroundColor: AppColors.secondaryColor,
+        foregroundColor: AppColors.primaryForegroundColor,
         backgroundColor: AppColors.primaryColor,
         // padding: const EdgeInsets.symmetric(vertical: 18),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),

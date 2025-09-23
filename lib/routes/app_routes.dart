@@ -46,6 +46,10 @@ class AppRoutes {
   // AI Assistant Screen
   static const String aiAssistant = '/ai-assistant';
 
+  //reviews_screen
+  static const String reviewsScreen = '/reviews-screen';
+  static const String myReviewsScreen = '/my-reviews-screen';
+
   /// Not Found
   static const String notFoundScreen = '/not-found';
 
@@ -56,6 +60,15 @@ class AppRoutes {
     signUpScreen,
     bottomNavigation,
     home,
+    notificationsScreen,
+    searchScreen,
+    cartScreen,
+    profileScreen,
+    editProfileScreen,
+    orderScreen,
+    orderDetailsScreen,
+    reviewsScreen,
+    myReviewsScreen,
     notFoundScreen,
   ];
 }

@@ -3,6 +3,7 @@ class ReviewModel {
   final ProductInfo? product;
   final String customerId;
   final String customerName;
+  final String customerProfileImage;
   final int rating;
   final String comment;
   final DateTime createdAt;
@@ -13,6 +14,7 @@ class ReviewModel {
     this.product,
     required this.customerId,
     required this.customerName,
+    this.customerProfileImage = '',
     required this.rating,
     required this.comment,
     required this.createdAt,
@@ -20,11 +22,43 @@ class ReviewModel {
   });
 
   factory ReviewModel.fromJson(Map<String, dynamic> json) {
+    String customerId = '';
+    String customerName = 'Customer';
+    String profileImage = '';
+
+    // Handle customer data structure
+    if (json['customer'] != null) {
+      final customer = json['customer'] as Map<String, dynamic>;
+      customerId = customer['_id'] ?? '';
+      
+      // Build full name from firstName and lastName
+      final firstName = customer['firstName'] ?? '';
+      final lastName = customer['lastName'] ?? '';
+      
+      if (firstName.isNotEmpty && lastName.isNotEmpty) {
+        customerName = '$firstName $lastName';
+      } else if (firstName.isNotEmpty) {
+        customerName = firstName;
+      } else if (lastName.isNotEmpty) {
+        customerName = lastName;
+      } else if (customer['name'] != null) {
+        customerName = customer['name'];
+      }
+      
+      profileImage = customer['profileImage'] ?? '';
+    } else {
+      // Fallback to direct fields
+      customerId = json['customerId'] ?? '';
+      customerName = json['customerName'] ?? 'Customer';
+      profileImage = json['customerProfileImage'] ?? '';
+    }
+
     return ReviewModel(
       id: json['_id'] ?? '',
       product: json['product'] != null ? ProductInfo.fromJson(json['product']) : null,
-      customerId: json['customer']?['_id'] ?? json['customerId'] ?? '',
-      customerName: json['customer']?['name'] ?? json['customerName'] ?? 'Anonymous User',
+      customerId: customerId,
+      customerName: customerName,
+      customerProfileImage: profileImage,
       rating: json['rating'] ?? 0,
       comment: json['comment'] ?? '',
       createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
@@ -38,6 +72,7 @@ class ReviewModel {
       'product': product?.toJson(),
       'customerId': customerId,
       'customerName': customerName,
+      'customerProfileImage': customerProfileImage,
       'rating': rating,
       'comment': comment,
       'createdAt': createdAt.toIso8601String(),
@@ -69,7 +104,20 @@ class ReviewModel {
   }
 
   String get customerInitial {
-    return customerName.isNotEmpty ? customerName[0].toUpperCase() : 'A';
+    if (customerName.isEmpty || customerName == 'Customer') {
+      return 'C';
+    }
+    
+    // Get initials from first and last name
+    final parts = customerName.trim().split(' ');
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return customerName[0].toUpperCase();
+  }
+
+  bool get hasProfileImage {
+    return customerProfileImage.isNotEmpty;
   }
 
   bool get isRecent {
@@ -81,6 +129,7 @@ class ReviewModel {
     ProductInfo? product,
     String? customerId,
     String? customerName,
+    String? customerProfileImage,
     int? rating,
     String? comment,
     DateTime? createdAt,
@@ -91,6 +140,7 @@ class ReviewModel {
       product: product ?? this.product,
       customerId: customerId ?? this.customerId,
       customerName: customerName ?? this.customerName,
+      customerProfileImage: customerProfileImage ?? this.customerProfileImage,
       rating: rating ?? this.rating,
       comment: comment ?? this.comment,
       createdAt: createdAt ?? this.createdAt,
@@ -203,6 +253,14 @@ class ReviewStats {
     );
   }
 
+  // Constructor from API response
+  factory ReviewStats.fromApiResponse(Map<String, dynamic> json) {
+    final reviewsData = json['reviews'] as List<dynamic>? ?? [];
+    final reviews = reviewsData.map((reviewJson) => ReviewModel.fromJson(reviewJson)).toList();
+    
+    return ReviewStats.fromReviews(reviews);
+  }
+
   String get formattedAverageRating {
     return averageRating.toStringAsFixed(1);
   }
@@ -225,6 +283,44 @@ class ReviewStats {
       'averageRating': averageRating,
       'ratingDistribution': ratingDistribution,
       'recentReviews': recentReviews,
+    };
+  }
+}
+
+// Helper class to parse the complete API response
+class ReviewResponse {
+  final bool success;
+  final int count;
+  final double averageRating;
+  final List<ReviewModel> reviews;
+
+  ReviewResponse({
+    required this.success,
+    required this.count,
+    required this.averageRating,
+    required this.reviews,
+  });
+
+  factory ReviewResponse.fromJson(Map<String, dynamic> json) {
+    final reviewsData = json['reviews'] as List<dynamic>? ?? [];
+    final reviews = reviewsData.map((reviewJson) => ReviewModel.fromJson(reviewJson)).toList();
+
+    return ReviewResponse(
+      success: json['success'] ?? false,
+      count: json['count'] ?? 0,
+      averageRating: (json['averageRating'] ?? 0.0).toDouble(),
+      reviews: reviews,
+    );
+  }
+
+  ReviewStats get stats => ReviewStats.fromReviews(reviews);
+
+  Map<String, dynamic> toJson() {
+    return {
+      'success': success,
+      'count': count,
+      'averageRating': averageRating,
+      'reviews': reviews.map((review) => review.toJson()).toList(),
     };
   }
 }

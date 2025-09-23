@@ -189,10 +189,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       SizedBox(height: 20),
 
                       // Rating Section
-                      _buildRatingSection(),
-                      SizedBox(height: 20),
-                      // Stock Status
-                      _buildStockStatus(),
+                      Row(
+                        children: [
+                          _buildRatingSection(),
+                          SizedBox(width: 10),
+                          // Stock Status
+                          _buildStockStatus(),
+                        ],
+                      ),
                       SizedBox(height: 20),
 
                       // Valid Offers Section
@@ -931,7 +935,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   void _navigateToReviews() {
-    Get.to(() => ReviewsPage(product: widget.product));
+    Get.to(
+      () => ReviewsScreen(
+        productId: widget.product.id,
+        productName: widget.product.name,
+      ),
+    );
   }
 
   // Rest of the widget methods remain the same...
@@ -1265,32 +1274,33 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   Widget _buildRatingSection() {
-    return Container(
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceTint,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primaryColor.withOpacity(0.1)),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.star_rounded, color: Colors.amber, size: 24),
-          SizedBox(width: 8),
-          SizedBox(width: 12),
-          Text(
-            '${widget.product.averageRating.toStringAsFixed(1)}',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textColor,
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceTint,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.primaryColor.withOpacity(0.1)),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.star_rounded, color: Colors.amber, size: 24),
+            SizedBox(width: 8),
+            Text(
+              '${widget.product.averageRating.toStringAsFixed(1)}',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textColor,
+              ),
             ),
-          ),
-          SizedBox(width: 8),
-          Text(
-            '(${widget.product.reviews.length} reviews)',
-            style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
-          ),
-        ],
+            SizedBox(width: 8),
+            Text(
+              '(${widget.product.reviews.length} reviews)',
+              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1337,21 +1347,43 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
                 child: Row(
                   children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        '${offer.discountPercentage}% OFF',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
+                    if (offer.discountPercentage != 0) ...[
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          '${offer.discountPercentage}% OFF',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
-                    ),
+                      SizedBox(width: 12),
+                    ],
+
+                    // Container(
+                    //   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    //   decoration: BoxDecoration(
+                    //     color: Colors.green,
+                    //     borderRadius: BorderRadius.circular(8),
+                    //   ),
+                    //   child: Text(
+                    //     '${offer.discountPercentage}% OFF',
+                    //     style: TextStyle(
+                    //       color: Colors.white,
+                    //       fontWeight: FontWeight.bold,
+                    //       fontSize: 12,
+                    //     ),
+                    //   ),
+                    // ),
                     SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -1377,7 +1409,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               offer.offerDescription,
                               style: TextStyle(
                                 color: AppColors.textSecondary,
-                                fontSize: 12,
+                                fontSize: 20,
                               ),
                             ),
 
@@ -1554,57 +1586,59 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   Widget _buildStockStatus() {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: widget.product.stock > 0
-            ? Colors.green.withOpacity(0.1)
-            : Colors.red.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
           color: widget.product.stock > 0
-              ? Colors.green.withOpacity(0.3)
-              : Colors.red.withOpacity(0.3),
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            widget.product.stock > 0
-                ? Icons.check_circle_outline
-                : Icons.cancel_outlined,
+              ? Colors.green.withOpacity(0.1)
+              : Colors.red.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
             color: widget.product.stock > 0
-                ? Colors.green[700]
-                : Colors.red[700],
-            size: 20,
+                ? Colors.green.withOpacity(0.3)
+                : Colors.red.withOpacity(0.3),
           ),
-          SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.product.stock > 0 ? 'In Stock' : 'Out of Stock',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: widget.product.stock > 0
-                        ? Colors.green[700]
-                        : Colors.red[700],
-                    fontSize: 14,
-                  ),
-                ),
-                if (widget.product.stock > 0)
+        ),
+        child: Row(
+          children: [
+            Icon(
+              widget.product.stock > 0
+                  ? Icons.check_circle_outline
+                  : Icons.cancel_outlined,
+              color: widget.product.stock > 0
+                  ? Colors.green[700]
+                  : Colors.red[700],
+              size: 20,
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    '${widget.product.stock} items available',
+                    widget.product.stock > 0 ? 'In Stock' : 'Out of Stock',
                     style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: widget.product.stock > 0
+                          ? Colors.green[700]
+                          : Colors.red[700],
+                      fontSize: 14,
                     ),
                   ),
-              ],
+                  if (widget.product.stock > 0)
+                    Text(
+                      '${widget.product.stock} items available',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 12,
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

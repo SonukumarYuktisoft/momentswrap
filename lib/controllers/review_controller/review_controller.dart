@@ -19,6 +19,7 @@ class ReviewController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    
     // Initialize if needed
   }
 
@@ -31,7 +32,7 @@ class ReviewController extends GetxController {
 
       final response = await _apiServices.getRequest(
         url:
-            'https://moment-wrap-backend.vercel.app/api/products/$productId/reviews',
+            'https://moment-wrap-backend.vercel.app/api/customer/product-reviews/$productId',
         authToken: false,
       );
 

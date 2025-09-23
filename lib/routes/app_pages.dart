@@ -1,5 +1,6 @@
 import 'package:Xkart/routes/app_routes.dart';
 import 'package:Xkart/view/onboarding_screens/onboarding_screens.dart';
+import 'package:Xkart/view/reviews_screen/my_reviews_screen.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:Xkart/binding/auth_binding/auth_binding.dart';
@@ -7,22 +8,16 @@ import 'package:Xkart/binding/cart_binding/cart_binding.dart';
 import 'package:Xkart/binding/home_binding/home_binding.dart';
 import 'package:Xkart/binding/profile_binding/profile_binding.dart';
 import 'package:Xkart/bottom_navigation.dart';
-import 'package:Xkart/routes/app_routes.dart';
 import 'package:Xkart/view/add_to_cart_screen/add_to_cart_screen.dart';
-import 'package:Xkart/view/ai_assistant/ai_assistant_screen.dart'
-    hide AppRoutes;
 import 'package:Xkart/view/auth/forget_screen.dart';
 import 'package:Xkart/view/auth/login_screen.dart';
 import 'package:Xkart/view/auth/signup_screen.dart';
 import 'package:Xkart/view/home_screen/home_screen.dart';
 import 'package:Xkart/view/notifications_screen/notifications_screen.dart';
-import 'package:Xkart/view/onboarding_screens/onboarding_screens.dart';
-import 'package:Xkart/view/order_screen/order_details_screen.dart';
 import 'package:Xkart/view/order_screen/orders_screen.dart';
 import 'package:Xkart/view/profile_screen/edit_profile_screen.dart';
 import 'package:Xkart/view/profile_screen/profile_screen.dart';
 import 'package:Xkart/view/search_screens/search_screen.dart';
-import 'package:Xkart/view/splash_screen/splash_screen.dart';
 
 class AppPages {
   static const initial = AppRoutes.bottomNavigation;
@@ -147,6 +142,15 @@ class AppPages {
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 300),
       binding: ProfileBinding(),
+    ),
+
+    //reviews_screen
+    GetPage(
+      name: AppRoutes.myReviewsScreen,
+      page: () => MyReviewsScreen(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      // binding: ProfileBinding(),
     ),
 
     //    GetPage(
