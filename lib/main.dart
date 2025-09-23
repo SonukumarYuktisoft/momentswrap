@@ -1,4 +1,3 @@
-import 'package:Xkart/view/reviews_screen/reviews_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:Xkart/pagetast.dart';
@@ -31,7 +30,7 @@ class MyApp extends StatelessWidget {
         name: AppRoutes.notFoundScreen,
         page: () => NotFoundScreen(),
       ),
-      // home: ReviewsScreen(productId: '68c7c43e38c266609a2d45e6', productName: 'Custom Chess Set – Faces of Your Family',),
+      // home: AdvancedSuccessExample(),
 
       // home: FullLoaderScreens(animationPath: 'assets/animations/addtocart.json'),
     );
