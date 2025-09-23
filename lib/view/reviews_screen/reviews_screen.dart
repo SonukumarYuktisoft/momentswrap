@@ -49,10 +49,12 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black87,
         onPressed: () {
           Get.toNamed(AppRoutes.myReviewsScreen);
         },
-        label: const Text('My Review'),
+        label: const Text('My Review', style: TextStyle(fontWeight: FontWeight.w600)),
         // icon: const Icon(Icons.add),
       ),
       appBar: AppBar(
