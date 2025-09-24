@@ -1,3 +1,4 @@
+import 'package:Xkart/util/common/auth_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:Xkart/controllers/review_controller/review_controller.dart';
@@ -30,7 +31,9 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
   }
 
   Future<void> _loadMyReviews() async {
-    await _reviewController.getMyReviews();
+    AuthUtils.runIfLoggedIn(() async {
+      await _reviewController.getMyReviews();
+    });
   }
 
   @override

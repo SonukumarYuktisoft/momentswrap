@@ -975,114 +975,155 @@ class HorizontalProductList extends StatelessWidget {
   }
 }
 
-class ModernUpcomingEventsCard extends StatelessWidget {
+class ModernUpcomingEventsCard extends StatefulWidget {
   const ModernUpcomingEventsCard({super.key});
 
   @override
+  State<ModernUpcomingEventsCard> createState() => _ModernUpcomingEventsCardState();
+}
+
+class _ModernUpcomingEventsCardState extends State<ModernUpcomingEventsCard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _borderController;
+
+  @override
+  void initState() {
+    super.initState();
+    _borderController = AnimationController(
+      duration: const Duration(seconds: 3),
+      vsync: this,
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _borderController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.accentColor,
-            AppColors.accentColor.withOpacity(0.95),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primaryColor.withOpacity(0.15),
-            blurRadius: 12,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Modern Title Row
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryColor.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  Icons.calendar_today_outlined,
-                  color: AppColors.primaryColor,
-                  size: 18,
-                ),
-              ),
-              SizedBox(width: 12),
-              Text(
-                "Upcoming Events",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textColor,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          // Modern Event Items
-          _ModernEventRow(
-            icon: Icons.cake_outlined,
-            title: "Tara's Birthday",
-            subtitle: "29 Years",
-            date: "1 November",
-          ),
-          const SizedBox(height: 12),
-
-          _ModernEventRow(
-            icon: Icons.cake_outlined,
-            title: "Laila's Birthday",
-            subtitle: "22 Years",
-            date: "1 November",
-          ),
-
-          const SizedBox(height: 16),
-
-          // Modern See More Button
-          Align(
-            alignment: Alignment.centerRight,
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: TextButton.icon(
-                onPressed: () {
-                  Get.to(EventsScreens());
-                },
-                icon: Text(
-                  'See More',
-                  style: TextStyle(
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                label: Icon(
-                  Icons.arrow_forward_rounded,
-                  color: AppColors.primaryColor,
-                  size: 16,
-                ),
-              ),
+    return AnimatedBuilder(
+      animation: _borderController,
+      builder: (context, child) {
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.all(3), // Border thickness
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(19),
+            gradient: SweepGradient(
+              center: Alignment.center,
+              startAngle: _borderController.value * 2 * 3.14159,
+              colors: const [
+                Colors.purple,
+                Colors.blue,
+                Colors.cyan,
+                Colors.green,
+                Colors.yellow,
+                Colors.orange,
+                Colors.red,
+                Colors.pink,
+                Colors.purple,
+              ],
             ),
           ),
-        ],
-      ),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.accentColor,
+                  AppColors.accentColor.withOpacity(0.95),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Modern Title Row
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.calendar_today_outlined,
+                        color: AppColors.primaryColor,
+                        size: 18,
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Text(
+                      "Upcoming Events",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textColor,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                
+                // Modern Event Items
+                _ModernEventRow(
+                  icon: Icons.cake_outlined,
+                  title: "Tara's Birthday",
+                  subtitle: "29 Years",
+                  date: "1 November",
+                ),
+                const SizedBox(height: 12),
+                
+                _ModernEventRow(
+                  icon: Icons.cake_outlined,
+                  title: "Laila's Birthday",
+                  subtitle: "22 Years",
+                  date: "1 November",
+                ),
+                
+                const SizedBox(height: 16),
+                
+                // Modern See More Button
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: TextButton.icon(
+                      onPressed: () {
+                        Get.to(EventsScreens());
+                      },
+                      icon: Text(
+                        'See More',
+                        style: TextStyle(
+                          color: AppColors.primaryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      label: Icon(
+                        Icons.arrow_forward_rounded,
+                        color: AppColors.primaryColor,
+                        size: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
-
 class _ModernEventRow extends StatelessWidget {
   final IconData icon;
   final String title;
