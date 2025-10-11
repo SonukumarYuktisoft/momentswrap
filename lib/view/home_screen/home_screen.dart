@@ -48,63 +48,63 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             children: [
-              Expanded(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: AppColors.secondaryColor.withOpacity(0.2),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: AppColors.primaryForegroundColor.withOpacity(
-                            0.3,
-                          ),
-                          width: 1,
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.person,
-                        color: AppColors.primaryForegroundColor,
-                        size: 18,
-                      ),
-                    ),
-                    SizedBox(width: 6),
-                    Text(
-                      'Hi,',
-                      style: TextStyle(
-                        color: AppColors.primaryForegroundColor.withOpacity(
-                          0.8,
-                        ),
-                        fontSize: 10,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    SizedBox(width: 4),
-                    Obx(() {
-                      String firstName = profileController.firstName ?? 'User';
-                      String displayName = firstName.length > 5
-                          ? firstName.substring(0, 5)
-                          : firstName;
-                      return Text(
-                        displayName,
-                        style: TextStyle(
-                          color: AppColors.primaryForegroundColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      );
-                    }),
-                  ],
+              // 👤 Profile Icon
+              Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: AppColors.secondaryColor.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.primaryForegroundColor.withOpacity(0.3),
+                    width: 1,
+                  ),
                 ),
+                child: Icon(
+                  Icons.person,
+                  color: AppColors.primaryForegroundColor,
+                  size: 18,
+                ),
+              ),
+
+              SizedBox(width: 8),
+
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Hi,',
+                    style: TextStyle(
+                      color: AppColors.primaryForegroundColor.withOpacity(0.8),
+                      fontSize: 10,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+
+                  SizedBox(height: 2),
+
+                  Obx(() {
+                    String firstName = profileController.firstName ?? 'User';
+                    String displayName = firstName.length > 5
+                        ? firstName.substring(0, 5)
+                        : firstName;
+                    return Text(
+                      displayName,
+                      style: TextStyle(
+                        color: AppColors.primaryForegroundColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    );
+                  }),
+                ],
               ),
             ],
           ),
         ),
+
         title: Text(
           'Moments Wrap',
           style: TextStyle(
