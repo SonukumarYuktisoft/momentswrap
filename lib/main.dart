@@ -1,3 +1,4 @@
+import 'package:Xkart/view/slider/home_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:Xkart/pagetast.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         name: AppRoutes.notFoundScreen,
         page: () => NotFoundScreen(),
       ),
-      // home: AdvancedSuccessExample(),
+      // home: HomeSlider(),
 
       // home: FullLoaderScreens(animationPath: 'assets/animations/addtocart.json'),
     );

@@ -1,15 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:Xkart/controllers/onbroding_controller/onbroding_controller.dart';
+import 'package:Xkart/view/onboarding_screens/controller/onbroding_controller.dart';
 import 'package:Xkart/util/common/coustom_curve.dart';
-import 'package:Xkart/util/constants/app_colors.dart';
 import 'package:Xkart/util/constants/app_images_string.dart';
 import 'package:Xkart/util/constants/app_sizes.dart';
 import 'package:Xkart/util/constants/app_text_strings.dart';
-import 'package:Xkart/util/constants/app_text_theme.dart';
 import 'package:Xkart/util/device/device_helper.dart';
 import 'package:Xkart/util/helpers/helper_functions.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';

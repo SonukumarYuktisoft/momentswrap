@@ -1,19 +1,19 @@
+import 'package:Xkart/util/common/build_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:Xkart/controllers/order_controller/place_order_controller.dart';
+import 'package:Xkart/view/order_screen/controller/place_order_controller.dart';
 import 'package:Xkart/routes/app_routes.dart';
 import 'package:Xkart/util/common/auth_utils.dart';
 import 'package:Xkart/view/home_screen/product_card.dart';
 import 'package:Xkart/view/home_screen/product_detail_screen/widgets/full_screenImage_viewer.dart';
 import 'package:Xkart/view/reviews_screen/reviews_screen.dart';
-import 'package:Xkart/reviews_screen/reviews_screen.dart';
 import 'package:Xkart/view/search_screens/search_screen.dart';
 import 'package:Xkart/view/widgets/all_products_screen.dart';
 import 'package:Xkart/view/widgets/horizontal_productList.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
-import 'package:Xkart/controllers/order_controller/order_controller.dart';
+import 'package:Xkart/view/add_to_cart_screen/controller/cart_controller.dart';
+import 'package:Xkart/view/order_screen/controller/order_controller.dart';
 import 'package:Xkart/controllers/product_controller/product_controller.dart';
 import 'package:Xkart/models/product_models/product_model.dart';
 import 'package:Xkart/util/constants/app_colors.dart';
@@ -102,67 +102,68 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: const Text(
-          'Product Details',
-          style: TextStyle(color: Colors.black),
-        ),
-        centerTitle: true,
-        actions: [
-          // 🔍 Search Icon
-          IconButton(
-            icon: Icon(Icons.search, color: AppColors.textColor),
-            onPressed: () {
-              Get.toNamed(AppRoutes.searchScreen);
-            },
-          ),
+      appBar: BuildAppBar(title: 'Product Details', showBack: true),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.white,
+      //   elevation: 0,
+      //   leading: IconButton(
+      //     icon: const Icon(Icons.arrow_back, color: Colors.black),
+      //     onPressed: () => Navigator.of(context).pop(),
+      //   ),
+      //   title: const Text(
+      //     'Product Details',
+      //     style: TextStyle(color: Colors.black),
+      //   ),
+      //   centerTitle: true,
+      //   actions: [
+      //     // 🔍 Search Icon
+      //     IconButton(
+      //       icon: Icon(Icons.search, color: AppColors.textColor),
+      //       onPressed: () {
+      //         Get.toNamed(AppRoutes.searchScreen);
+      //       },
+      //     ),
 
-          // 🛒 Cart Icon with Badge
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Obx(() {
-              final itemCount = cartController.totalItems;
-              return Stack(
-                alignment: Alignment.topRight,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.shopping_cart, color: AppColors.textColor),
-                    onPressed: () {
-                      Get.toNamed(AppRoutes.cartScreen);
-                    },
-                  ),
-                  if (itemCount > 0)
-                    Positioned(
-                      right: 6,
-                      top: 6,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          '$itemCount',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              );
-            }),
-          ),
-        ],
-      ),
+      //     // 🛒 Cart Icon with Badge
+      //     Padding(
+      //       padding: const EdgeInsets.only(right: 8.0),
+      //       child: Obx(() {
+      //         final itemCount = cartController.totalItems;
+      //         return Stack(
+      //           alignment: Alignment.topRight,
+      //           children: [
+      //             IconButton(
+      //               icon: Icon(Icons.shopping_cart, color: AppColors.textColor),
+      //               onPressed: () {
+      //                 Get.toNamed(AppRoutes.cartScreen);
+      //               },
+      //             ),
+      //             if (itemCount > 0)
+      //               Positioned(
+      //                 right: 6,
+      //                 top: 6,
+      //                 child: Container(
+      //                   padding: const EdgeInsets.all(4),
+      //                   decoration: const BoxDecoration(
+      //                     color: Colors.red,
+      //                     shape: BoxShape.circle,
+      //                   ),
+      //                   child: Text(
+      //                     '$itemCount',
+      //                     style: const TextStyle(
+      //                       color: Colors.white,
+      //                       fontSize: 12,
+      //                       fontWeight: FontWeight.bold,
+      //                     ),
+      //                   ),
+      //                 ),
+      //               ),
+      //           ],
+      //         );
+      //       }),
+      //     ),
+      //   ],
+      // ),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [

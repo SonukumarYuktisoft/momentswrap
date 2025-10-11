@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
-import 'package:Xkart/models/review_model/review_model.dart';
+import 'package:Xkart/view/reviews_screen/review_model/review_model.dart';
 import 'package:Xkart/services/api_services.dart';
 
 class ReviewController extends GetxController {

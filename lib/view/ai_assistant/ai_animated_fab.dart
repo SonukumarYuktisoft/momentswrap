@@ -139,13 +139,13 @@ class _AIAnimatedFABState extends State<AIAnimatedFAB>
                 child: Container(
                   width: 80.0,
                   height: 80.0,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.blue.withOpacity(0.3 - i * 0.1),
-                      width: 2.0,
-                    ),
-                  ),
+                  // decoration: BoxDecoration(
+                  //   shape: BoxShape.circle,
+                  //   border: Border.all(
+                  //     color: Colors.blue.withOpacity(0.3 - i * 0.1),
+                  //     width: 2.0,
+                  //   ),
+                  // ),
                 ),
               ),
             
@@ -311,62 +311,62 @@ class _AIAnimatedFABState extends State<AIAnimatedFAB>
   }
 }
 
-// Usage Example Screen
-class ExampleScreen extends StatelessWidget {
-  const ExampleScreen({super.key});
+// // Usage Example Screen
+// class ExampleScreen extends StatelessWidget {
+//   const ExampleScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('AI Animated FAB Demo'),
-        backgroundColor: Colors.blueGrey[900],
-        foregroundColor: Colors.white,
-      ),
-      backgroundColor: Colors.grey[900],
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'AI-Powered Interface',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Tap the AI button to interact',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white70,
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: AIAnimatedFAB(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Row(
-                children: [
-                  Icon(Icons.psychology, color: Colors.white),
-                  SizedBox(width: 8),
-                  Text('AI Assistant Activated!'),
-                ],
-              ),
-              backgroundColor: Colors.purple,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('AI Animated FAB Demo'),
+//         backgroundColor: Colors.blueGrey[900],
+//         foregroundColor: Colors.white,
+//       ),
+//       backgroundColor: Colors.grey[900],
+//       body: const Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Text(
+//               'AI-Powered Interface',
+//               style: TextStyle(
+//                 fontSize: 24,
+//                 fontWeight: FontWeight.bold,
+//                 color: Colors.white,
+//               ),
+//             ),
+//             SizedBox(height: 20),
+//             Text(
+//               'Tap the AI button to interact',
+//               style: TextStyle(
+//                 fontSize: 16,
+//                 color: Colors.white70,
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//       floatingActionButton: AIAnimatedFAB(
+//         onPressed: () {
+//           ScaffoldMessenger.of(context).showSnackBar(
+//             SnackBar(
+//               content: const Row(
+//                 children: [
+//                   Icon(Icons.psychology, color: Colors.white),
+//                   SizedBox(width: 8),
+//                   Text('AI Assistant Activated!'),
+//                 ],
+//               ),
+//               backgroundColor: Colors.purple,
+//               behavior: SnackBarBehavior.floating,
+//               shape: RoundedRectangleBorder(
+//                 borderRadius: BorderRadius.circular(10),
+//               ),
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }

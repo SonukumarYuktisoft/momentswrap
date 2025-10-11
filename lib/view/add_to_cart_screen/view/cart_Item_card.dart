@@ -239,7 +239,7 @@
 // }
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+import 'package:Xkart/view/add_to_cart_screen/controller/cart_controller.dart';
 
 class CartItemCard extends StatefulWidget {
   final String imageUrl;

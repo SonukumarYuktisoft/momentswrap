@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:Xkart/controllers/review_controller/review_controller.dart';
-import 'package:Xkart/models/review_model/review_model.dart';
+import 'package:Xkart/view/reviews_screen/review_controller/review_controller.dart';
+import 'package:Xkart/view/reviews_screen/review_model/review_model.dart';
 import 'package:Xkart/util/constants/app_colors.dart';
 
 class WriteReviewWidget extends StatefulWidget {

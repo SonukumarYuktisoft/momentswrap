@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+import 'package:Xkart/view/add_to_cart_screen/controller/cart_controller.dart';
 import 'package:Xkart/controllers/location_controller/location_controller.dart';
 import 'package:Xkart/routes/app_routes.dart';
 import 'package:Xkart/services/api_services.dart';

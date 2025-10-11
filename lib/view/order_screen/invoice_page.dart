@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:Xkart/models/order_model/order_model.dart';
+import 'package:Xkart/view/order_screen/model/order_model.dart';
 import 'package:Xkart/util/constants/app_colors.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;

@@ -1,12 +1,13 @@
+import 'package:Xkart/view/slider/slider_controller/slider_controller.dart';
 import 'package:Xkart/util/constants/simmers/category_shimmer.dart';
 import 'package:Xkart/view/slider/home_slider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+import 'package:Xkart/view/add_to_cart_screen/controller/cart_controller.dart';
 import 'package:Xkart/controllers/location_controller/location_controller.dart';
 import 'package:Xkart/controllers/product_controller/product_controller.dart';
-import 'package:Xkart/controllers/profile_controller/profile_controller.dart';
+import 'package:Xkart/view/profile_screen/profile_controller/profile_controller.dart';
 import 'package:Xkart/models/product_models/product_model.dart';
 import 'package:Xkart/routes/app_routes.dart';
 import 'package:Xkart/util/common/auth_utils.dart';
@@ -35,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final LocationController locationController = Get.put(LocationController());
     final CartController cartController = Get.put(CartController());
     final ProfileController profileController = Get.put(ProfileController());
+    final SliderController sliderController = Get.put(SliderController());
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -156,6 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onRefresh: () async {
                 await controller.initializeData();
                 await controller.filterProducts();
+                await sliderController.fetchSliders();
               },
               color: AppColors.primaryColor,
               child: CustomScrollView(
@@ -398,7 +401,7 @@ Widget _buildPinnedCategoriesSection(ProductController controller) {
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                   colors: [
-                                Colors.grey.withOpacity(0.1),
+                                    Colors.grey.withOpacity(0.1),
                                     Colors.grey.withOpacity(0.05),
                                   ],
                                 )
@@ -979,7 +982,8 @@ class ModernUpcomingEventsCard extends StatefulWidget {
   const ModernUpcomingEventsCard({super.key});
 
   @override
-  State<ModernUpcomingEventsCard> createState() => _ModernUpcomingEventsCardState();
+  State<ModernUpcomingEventsCard> createState() =>
+      _ModernUpcomingEventsCardState();
 }
 
 class _ModernUpcomingEventsCardState extends State<ModernUpcomingEventsCard>
@@ -1070,7 +1074,7 @@ class _ModernUpcomingEventsCardState extends State<ModernUpcomingEventsCard>
                   ],
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Modern Event Items
                 _ModernEventRow(
                   icon: Icons.cake_outlined,
@@ -1079,16 +1083,16 @@ class _ModernUpcomingEventsCardState extends State<ModernUpcomingEventsCard>
                   date: "1 November",
                 ),
                 const SizedBox(height: 12),
-                
+
                 _ModernEventRow(
                   icon: Icons.cake_outlined,
                   title: "Laila's Birthday",
                   subtitle: "22 Years",
                   date: "1 November",
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Modern See More Button
                 Align(
                   alignment: Alignment.centerRight,
@@ -1124,6 +1128,7 @@ class _ModernUpcomingEventsCardState extends State<ModernUpcomingEventsCard>
     );
   }
 }
+
 class _ModernEventRow extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -1237,7 +1242,7 @@ class ModernBannerCard extends StatelessWidget {
             Container(
               height: 180,
               width: double.infinity,
-              child: Image.asset(
+              child: Image.network(
                 imageUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {

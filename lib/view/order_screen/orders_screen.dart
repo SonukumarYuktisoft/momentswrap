@@ -450,8 +450,8 @@
 // }
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:Xkart/controllers/order_controller/order_controller.dart';
-import 'package:Xkart/models/order_model/order_model.dart';
+import 'package:Xkart/view/order_screen/controller/order_controller.dart';
+import 'package:Xkart/view/order_screen/model/order_model.dart';
 import 'package:Xkart/util/constants/app_colors.dart';
 import 'package:Xkart/view/order_screen/order_details_screen.dart';
 

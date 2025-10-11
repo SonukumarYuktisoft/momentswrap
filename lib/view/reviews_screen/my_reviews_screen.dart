@@ -1,10 +1,10 @@
 import 'package:Xkart/util/common/auth_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:Xkart/controllers/review_controller/review_controller.dart';
+import 'package:Xkart/view/reviews_screen/review_controller/review_controller.dart';
 import 'package:Xkart/util/constants/app_colors.dart';
-import 'package:Xkart/view/widgets/build_app_bar.dart';
-import 'package:Xkart/models/review_model/review_model.dart';
+import 'package:Xkart/util/common/build_app_bar.dart';
+import 'package:Xkart/view/reviews_screen/review_model/review_model.dart';
 
 class MyReviewsScreen extends StatefulWidget {
   const MyReviewsScreen({super.key});
@@ -40,7 +40,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: BuildAppBar(title: 'My Reviews', showBack: false),
+      appBar: BuildAppBar(title: 'My Reviews', showBack: true),
       body: Obx(() {
         if (_reviewController.isLoading.value) {
           return _buildLoadingState();

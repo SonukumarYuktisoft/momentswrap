@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:Xkart/controllers/order_controller/order_controller.dart';
-import 'package:Xkart/controllers/review_controller/review_controller.dart';
-import 'package:Xkart/models/order_model/order_model.dart';
+import 'package:Xkart/view/order_screen/controller/order_controller.dart';
+import 'package:Xkart/view/reviews_screen/review_controller/review_controller.dart';
+import 'package:Xkart/view/order_screen/model/order_model.dart';
 import 'package:Xkart/util/constants/app_colors.dart';
 import 'package:Xkart/view/order_screen/invoice_page.dart';
 import 'package:Xkart/view/order_screen/widgets/review_button.dart';
@@ -765,7 +765,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          '₹${orderProduct.price.toStringAsFixed(0)} each',
+                          '₹${productInfo.price.toStringAsFixed(0)} each',
                           style: TextStyle(
                             fontSize: 11,
                             color: AppColors.textSecondary,
@@ -782,7 +782,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
-                            '₹${(orderProduct.price * orderProduct.quantity).toStringAsFixed(0)}',
+                            '₹${(productInfo.price * orderProduct.quantity).toStringAsFixed(0)}',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:Xkart/controllers/review_controller/review_controller.dart';
+import 'package:Xkart/view/reviews_screen/review_controller/review_controller.dart';
 import 'package:Xkart/util/constants/app_colors.dart';
 
 class AddReviewPopup extends StatefulWidget {

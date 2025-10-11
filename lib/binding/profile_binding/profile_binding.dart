@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:Xkart/controllers/profile_controller/profile_controller.dart';
+import 'package:Xkart/view/profile_screen/profile_controller/profile_controller.dart';
 
 class ProfileBinding extends Bindings {
   @override

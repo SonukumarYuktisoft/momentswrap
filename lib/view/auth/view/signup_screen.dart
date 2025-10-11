@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
-import 'package:Xkart/controllers/auth_controller/signup_controller.dart';
+import 'package:Xkart/view/auth/controllers/signup_controller.dart';
 import 'package:Xkart/util/common/coustom_curve.dart';
 import 'package:Xkart/util/common/widgets/app_widgets.dart';
 import 'package:Xkart/util/constants/app_colors.dart';

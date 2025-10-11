@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:Xkart/controllers/search_controller/search_product_controller.dart';
+import 'package:Xkart/view/search_screens/search_controller/search_product_controller.dart';
 import 'package:Xkart/util/common/auth_utils.dart';
 import 'package:Xkart/util/constants/app_colors.dart';
 import 'package:Xkart/util/helpers/helper_functions.dart';

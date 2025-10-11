@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+import 'package:Xkart/view/add_to_cart_screen/controller/cart_controller.dart';
 import 'package:Xkart/routes/app_routes.dart';
 import 'package:Xkart/util/constants/app_colors.dart';
 
@@ -36,16 +36,16 @@ class BuildAppBar extends StatelessWidget implements PreferredSizeWidget {
         title,
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          color: AppColors.textColor,
+          color: AppColors.primaryForegroundColor,
         ),
       ),
-      backgroundColor: AppColors.accentColor,
-      foregroundColor: AppColors.textColor,
+      backgroundColor: AppColors.primaryColor,
+      foregroundColor: AppColors.primaryForegroundColor,
       elevation: 0,
       actions: [
         // 🔍 Search Icon
         IconButton(
-          icon: Icon(Icons.search, color: AppColors.textColor),
+          icon: Icon(Icons.search, color: AppColors.primaryForegroundColor),
           onPressed: () {
             Get.toNamed(AppRoutes.searchScreen);
           },
@@ -60,7 +60,10 @@ class BuildAppBar extends StatelessWidget implements PreferredSizeWidget {
               alignment: Alignment.topRight,
               children: [
                 IconButton(
-                  icon: Icon(Icons.shopping_cart, color: AppColors.textColor),
+                  icon: Icon(
+                    Icons.shopping_cart,
+                    color: AppColors.primaryForegroundColor,
+                  ),
                   onPressed: () {
                     Get.toNamed(AppRoutes.cartScreen);
                   },

@@ -5,7 +5,7 @@ import 'package:Xkart/routes/app_routes.dart';
 import 'package:Xkart/view/home_screen/product_card.dart';
 import 'package:Xkart/util/constants/app_colors.dart';
 import 'package:Xkart/util/common/auth_utils.dart';
-import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+import 'package:Xkart/view/add_to_cart_screen/controller/cart_controller.dart';
 
 class AllProductsPage extends StatefulWidget {
   final String title;

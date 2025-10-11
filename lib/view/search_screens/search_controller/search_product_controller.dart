@@ -3,7 +3,7 @@ import 'dart:ffi';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
+import 'package:Xkart/view/add_to_cart_screen/controller/cart_controller.dart';
 import 'package:Xkart/models/product_models/product_model.dart';
 import 'package:Xkart/services/api_services.dart';
 import 'package:dio/dio.dart' as dio;

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:Xkart/controllers/review_controller/review_controller.dart';
+import 'package:Xkart/view/reviews_screen/review_controller/review_controller.dart';
 import 'package:Xkart/util/constants/app_colors.dart';
 import 'package:Xkart/view/order_screen/widgets/add_review_popup.dart';
 

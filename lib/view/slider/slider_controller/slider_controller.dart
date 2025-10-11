@@ -1,5 +1,5 @@
 // controllers/slider_controller.dart
-import 'package:Xkart/models/slider_mode/slider_model.dart';
+import 'package:Xkart/view/slider/slider_mode/slider_model.dart';
 import 'package:Xkart/services/api_services.dart';
 import 'package:get/get.dart';
 

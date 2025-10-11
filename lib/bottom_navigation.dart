@@ -4,7 +4,7 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:Xkart/view/add_to_cart_screen/add_to_cart_screen.dart';
+import 'package:Xkart/view/add_to_cart_screen/view/add_to_cart_screen.dart';
 import 'package:Xkart/view/events_screen/events_screens.dart';
 import 'package:Xkart/view/home_screen/home_screen.dart';
 import 'package:Xkart/view/profile_screen/profile_screen.dart';

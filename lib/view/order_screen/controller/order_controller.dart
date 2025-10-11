@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
-import 'package:Xkart/controllers/cart_controller/cart_controller.dart';
-import 'package:Xkart/models/order_model/order_model.dart';
+import 'package:Xkart/view/add_to_cart_screen/controller/cart_controller.dart';
+import 'package:Xkart/view/order_screen/model/order_model.dart';
 import 'package:Xkart/services/api_services.dart';
 import 'package:Xkart/services/app_config.dart';
 import 'package:Xkart/util/helpers/helper_functions.dart';

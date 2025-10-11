@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:Xkart/controllers/cart_controller/cart_controller.dart'
+import 'package:Xkart/view/add_to_cart_screen/controller/cart_controller.dart'
     show CartController;
 import 'package:Xkart/controllers/location_controller/location_controller.dart';
 import 'package:Xkart/controllers/product_controller/product_controller.dart';
-import 'package:Xkart/controllers/search_controller/search_product_controller.dart';
-import 'package:Xkart/controllers/profile_controller/profile_controller.dart';
+import 'package:Xkart/view/search_screens/search_controller/search_product_controller.dart';
+import 'package:Xkart/view/profile_screen/profile_controller/profile_controller.dart';
 import 'package:Xkart/routes/app_routes.dart';
 import 'package:Xkart/util/common/auth_utils.dart';
 import 'package:Xkart/util/constants/app_colors.dart';
@@ -16,7 +16,7 @@ import 'package:Xkart/view/home_screen/product_card.dart';
 import 'package:Xkart/view/home_screen/product_detail_screen/product_detail_screen.dart';
 import 'package:Xkart/view/search_screens/search_screen.dart';
 import 'package:Xkart/view/widgets/all_products_screen.dart';
-import 'package:Xkart/view/widgets/build_app_bar.dart';
+import 'package:Xkart/util/common/build_app_bar.dart';
 import 'package:Xkart/view/widgets/horizontal_productList.dart'
     hide HorizontalProductList;
 

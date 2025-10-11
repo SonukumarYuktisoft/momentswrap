@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:Xkart/controllers/profile_controller/profile_controller.dart';
+import 'package:Xkart/view/profile_screen/profile_controller/profile_controller.dart';
 import 'package:Xkart/routes/app_routes.dart';
 import 'package:Xkart/util/common/auth_utils.dart';
 import 'package:Xkart/util/constants/app_colors.dart';

@@ -196,10 +196,10 @@
 
 import 'dart:developer';
 
+import 'package:Xkart/view/add_to_cart_screen/models/allcarts_models.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:Xkart/models/cart_models/allcarts_models.dart';
 import 'package:Xkart/services/api_services.dart';
 import 'package:Xkart/util/helpers/helper_functions.dart';
 import 'package:dio/dio.dart' as dio;

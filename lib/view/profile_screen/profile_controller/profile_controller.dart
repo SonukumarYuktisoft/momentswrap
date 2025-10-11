@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:Xkart/models/profile_models/customer_profile_model.dart';
+import 'package:Xkart/view/profile_screen/profile_models/customer_profile_model.dart';
 import 'package:Xkart/routes/app_routes.dart';
 import 'package:Xkart/services/shared_preferences_services.dart';
 import 'package:Xkart/services/api_services.dart';

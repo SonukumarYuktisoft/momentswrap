@@ -1,4 +1,4 @@
-import 'package:Xkart/models/review_model/review_model.dart';
+import 'package:Xkart/view/reviews_screen/review_model/review_model.dart';
 import 'package:flutter/material.dart';
 
 class ReviewCard extends StatelessWidget {

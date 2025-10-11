@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
-import 'package:Xkart/controllers/search_controller/search_product_controller.dart';
+import 'package:Xkart/view/search_screens/search_controller/search_product_controller.dart';
 import 'package:Xkart/services/api_services.dart';
 import 'package:Xkart/models/product_models/product_model.dart';
 import 'package:dio/dio.dart' as dio;

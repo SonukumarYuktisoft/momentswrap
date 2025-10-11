@@ -1,5 +1,5 @@
-import 'package:Xkart/controllers/review_controller/review_controller.dart';
-import 'package:Xkart/models/review_model/review_model.dart';
+import 'package:Xkart/view/reviews_screen/review_controller/review_controller.dart';
+import 'package:Xkart/view/reviews_screen/review_model/review_model.dart';
 import 'package:Xkart/routes/app_routes.dart';
 import 'package:Xkart/view/reviews_screen/widgets/review_card.dart';
 import 'package:flutter/material.dart';

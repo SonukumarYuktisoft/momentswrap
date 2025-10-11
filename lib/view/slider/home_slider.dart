@@ -1,4 +1,4 @@
-import 'package:Xkart/controllers/slider_controller/slider_controller.dart';
+import 'package:Xkart/view/slider/slider_controller/slider_controller.dart';
 import 'package:Xkart/test.dart';
 import 'package:Xkart/util/constants/app_colors.dart';
 import 'package:Xkart/util/constants/simmers/banner_shimmer.dart';

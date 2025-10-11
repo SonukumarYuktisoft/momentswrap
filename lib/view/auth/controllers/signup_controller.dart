@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:Xkart/models/auth_model/login_model.dart';
+import 'package:Xkart/view/auth/models/login_model.dart';
 import 'package:Xkart/routes/app_routes.dart';
 import 'package:Xkart/services/api_services.dart';
 import 'package:dio/dio.dart' as dio;

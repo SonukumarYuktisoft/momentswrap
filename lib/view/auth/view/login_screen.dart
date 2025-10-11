@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:Xkart/controllers/auth_controller/login_controller.dart';
+import 'package:Xkart/view/auth/controllers/login_controller.dart';
 import 'package:Xkart/routes/app_routes.dart';
 import 'package:Xkart/util/common/coustom_curve.dart';
 import 'package:Xkart/util/constants/app_colors.dart';
