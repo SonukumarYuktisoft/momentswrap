@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:Xkart/view/add_to_cart_screen/controller/cart_controller.dart';
 import 'package:Xkart/routes/app_routes.dart';
 import 'package:Xkart/util/constants/app_colors.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 
 class BuildAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -20,79 +23,93 @@ class BuildAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final CartController cartController = Get.put(CartController());
 
-    return AppBar(
-      leadingWidth: 50,
-      centerTitle: true,
-      automaticallyImplyLeading: false, // Flutter default back ko disable kiya
-      leading: showBack
-          ? (leadingIcon ??
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                  onPressed: () => Get.back(),
-                ))
-          : null,
-      toolbarHeight: 70,
-      title: Text(
-        title,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: AppColors.primaryForegroundColor,
-        ),
-      ),
-      backgroundColor: AppColors.primaryColor,
-      foregroundColor: AppColors.primaryForegroundColor,
-      elevation: 0,
-      actions: [
-        // 🔍 Search Icon
-        IconButton(
-          icon: Icon(Icons.search, color: AppColors.primaryForegroundColor),
-          onPressed: () {
-            Get.toNamed(AppRoutes.searchScreen);
-          },
-        ),
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(kToolbarHeight),
 
-        // 🛒 Cart Icon with Badge
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: Obx(() {
-            final itemCount = cartController.totalItems;
-            return Stack(
-              alignment: Alignment.topRight,
-              children: [
-                IconButton(
-                  icon: Icon(
-                    Icons.shopping_cart,
-                    color: AppColors.primaryForegroundColor,
-                  ),
-                  onPressed: () {
-                    Get.toNamed(AppRoutes.cartScreen);
-                  },
-                ),
-                if (itemCount > 0)
-                  Positioned(
-                    right: 6,
-                    top: 6,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
+      child: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20),
+        ),
+        child: AppBar(
+          leadingWidth: 50,
+          centerTitle: true,
+          automaticallyImplyLeading:
+              false, // Flutter default back ko disable kiya
+          leading: showBack
+              ? (leadingIcon ??
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                      onPressed: () => Get.back(),
+                    ))
+              : null,
+          toolbarHeight: 70,
+          title: Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppColors.primaryForegroundColor,
+            ),
+          ),
+          backgroundColor: AppColors.primaryColor,
+          foregroundColor: AppColors.primaryForegroundColor,
+          elevation: 0,
+          actions: [
+            // 🔍 Search Icon
+            IconButton(
+              icon: Icon(
+                CupertinoIcons.search,
+                color: AppColors.primaryForegroundColor,
+              ),
+              onPressed: () {
+                Get.toNamed(AppRoutes.searchScreen);
+              },
+            ),
+
+            // 🛒 Cart Icon with Badge
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Obx(() {
+                final itemCount = cartController.totalItems;
+                return Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    IconButton(
+                      icon: const FaIcon(
+                        FontAwesomeIcons.cartShopping,
+                        color: AppColors.primaryForegroundColor,
                       ),
-                      child: Text(
-                        '$itemCount',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.cartScreen);
+                      },
+                    ),
+                    if (itemCount > 0)
+                      Positioned(
+                        right: 6,
+                        top: 6,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            '$itemCount',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-              ],
-            );
-          }),
+                  ],
+                );
+              }),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 

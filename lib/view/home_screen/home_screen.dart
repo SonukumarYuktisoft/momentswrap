@@ -3,6 +3,7 @@ import 'package:Xkart/util/constants/simmers/category_shimmer.dart';
 import 'package:Xkart/view/slider/home_slider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:Xkart/view/add_to_cart_screen/controller/cart_controller.dart';
 import 'package:Xkart/controllers/location_controller/location_controller.dart';
@@ -40,117 +41,120 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppColors.primaryColor,
-        leadingWidth: 120,
-        leading: Container(
-          padding: EdgeInsets.symmetric(horizontal: 8),
-          child: Row(
-            children: [
-              // 👤 Profile Icon
-              Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  color: AppColors.secondaryColor.withOpacity(0.2),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.primaryForegroundColor.withOpacity(0.3),
-                    width: 1,
-                  ),
-                ),
-                child: Icon(
-                  Icons.person,
-                  color: AppColors.primaryForegroundColor,
-                  size: 18,
-                ),
-              ),
-
-              SizedBox(width: 8),
-
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: ClipRRect(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20), // 👈 bottom corners rounded
+          ),
+          child: AppBar(
+            elevation: 0,
+            backgroundColor: AppColors.primaryColor,
+            leadingWidth: 120,
+            leading: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
                 children: [
-                  Text(
-                    'Hi,',
-                    style: TextStyle(
-                      color: AppColors.primaryForegroundColor.withOpacity(0.8),
-                      fontSize: 10,
-                      fontWeight: FontWeight.w400,
+                  // 👤 Profile Icon
+                  Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: AppColors.secondaryColor.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: AppColors.primaryForegroundColor.withOpacity(
+                          0.3,
+                        ),
+                        width: 1,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.person,
+                      color: AppColors.primaryForegroundColor,
+                      size: 18,
                     ),
                   ),
 
-                  SizedBox(height: 2),
+                  SizedBox(width: 8),
 
-                  Obx(() {
-                    String firstName = profileController.firstName ?? 'User';
-                    String displayName = firstName.length > 5
-                        ? firstName.substring(0, 5)
-                        : firstName;
-                    return Text(
-                      displayName,
-                      style: TextStyle(
-                        color: AppColors.primaryForegroundColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Hi,',
+                        style: TextStyle(
+                          color: AppColors.primaryForegroundColor.withOpacity(
+                            0.8,
+                          ),
+                          fontSize: 10,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
-                      overflow: TextOverflow.ellipsis,
-                    );
-                  }),
+                      SizedBox(height: 2),
+                      Obx(() {
+                        String firstName =
+                            profileController.firstName ?? 'User';
+                        String displayName = firstName.length > 5
+                            ? firstName.substring(0, 5)
+                            : firstName;
+                        return Text(
+                          displayName,
+                          style: TextStyle(
+                            color: AppColors.primaryForegroundColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        );
+                      }),
+                    ],
+                  ),
                 ],
               ),
-            ],
-          ),
-        ),
-
-        title: Text(
-          'Moments Wrap',
-          style: TextStyle(
-            color: AppColors.primaryForegroundColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        centerTitle: true,
-        iconTheme: IconThemeData(color: AppColors.primaryForegroundColor),
-        actions: [
-          Container(
-            margin: EdgeInsets.only(right: 8),
-            child: Row(
-              children: [
-                Obx(() {
-                  return profileController.isLoggedIn.value
-                      ? IconButton(
-                          onPressed: () {
-                            profileController.logOut();
-                          },
-                          icon: Icon(
-                            Icons.logout,
-                            color: AppColors.primaryForegroundColor,
-                          ),
-                        )
-                      : _buildIconButton(
-                          icon: Icons.login,
-                          onTap: () => Get.toNamed(AppRoutes.loginScreen),
-                        );
-                }),
-
-                // _buildIconButton(
-                //   icon: Icons.notifications_outlined,
-                //   onTap: () => Get.toNamed(AppRoutes.notificationsScreen),
-                // ),
-                // SizedBox(width: 8),
-                // _buildIconButton(
-                //   icon: Icons.location_on_outlined,
-                //   onTap: () async => await locationController.getAddress(),
-                // ),
-              ],
             ),
+
+            title: Text(
+              'Moments Wrap',
+              style: TextStyle(
+                color: AppColors.primaryForegroundColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            centerTitle: true,
+            iconTheme: IconThemeData(color: AppColors.primaryForegroundColor),
+
+            // actions: [
+            //   Container(
+            //     margin: EdgeInsets.only(right: 8),
+            //     child: Row(
+            //       children: [
+            //         Obx(() {
+            //           return profileController.isLoggedIn.value
+            //               ? IconButton(
+            //                   onPressed: () {
+            //                     profileController.logOut();
+            //                   },
+            //                   icon: Icon(
+            //                     Icons.logout,
+            //                     color: AppColors.primaryForegroundColor,
+            //                   ),
+            //                 )
+            //               : _buildIconButton(
+            //                   icon: Icons.login,
+            //                   onTap: () => Get.toNamed(AppRoutes.loginScreen),
+            //                 );
+            //         }),
+            //       ],
+            //     ),
+            //   ),
+            // ],
           ),
-        ],
+        ),
       ),
+
       body: SafeArea(
         child: Stack(
           children: [
@@ -267,14 +271,14 @@ Widget _buildPinnedSearchBar() {
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
-            Icon(Icons.search, color: Colors.grey[600], size: 20),
+            FaIcon(FontAwesomeIcons.search, color: Colors.grey[600], size: 20),
             SizedBox(width: 12),
             Text(
               "Search for products...",
               style: TextStyle(color: Colors.grey[600], fontSize: 16),
             ),
             Spacer(),
-            Icon(Icons.camera_alt_outlined, color: Colors.grey[600], size: 20),
+            FaIcon(FontAwesomeIcons.camera, color: Colors.grey[600], size: 20),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:Xkart/view/profile_screen/profile_controller/profile_controller.dart';
 import 'package:Xkart/routes/app_routes.dart';
@@ -6,6 +7,7 @@ import 'package:Xkart/util/common/auth_utils.dart';
 import 'package:Xkart/util/constants/app_colors.dart';
 import 'package:Xkart/util/constants/app_sizes.dart';
 import 'package:Xkart/view/reviews_screen/my_reviews_screen.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
   const ProfileScreen({super.key});
@@ -96,7 +98,7 @@ class ProfileScreen extends GetView<ProfileController> {
                           child: Column(
                             children: [
                               _buildModernProfileItem(
-                                icon: Icons.edit_outlined,
+                                icon: FontAwesomeIcons.edit,
                                 title: "Edit Profile",
                                 subtitle: "Update your information",
                                 color: AppColors.infoColor,
@@ -108,7 +110,7 @@ class ProfileScreen extends GetView<ProfileController> {
                               _buildModernDivider(),
 
                               _buildModernProfileItem(
-                                icon: Icons.shopping_bag_outlined,
+                                icon: FontAwesomeIcons.boxOpen,
                                 title: "My Orders",
                                 subtitle: "Track your purchases",
                                 color: AppColors.secondaryColor,
@@ -120,7 +122,7 @@ class ProfileScreen extends GetView<ProfileController> {
                               _buildModernDivider(),
 
                               _buildModernProfileItem(
-                                icon: Icons.refresh_outlined,
+                                icon: FontAwesomeIcons.rotate,
                                 title: "Refresh Profile",
                                 subtitle: "Update profile data",
                                 color: AppColors.successColor,
@@ -157,7 +159,7 @@ class ProfileScreen extends GetView<ProfileController> {
                                 child: Row(
                                   children: [
                                     Icon(
-                                      Icons.warning_outlined,
+                                      FontAwesomeIcons.triangleExclamation,
                                       color: AppColors.errorColor,
                                       size: 20,
                                     ),
@@ -176,7 +178,7 @@ class ProfileScreen extends GetView<ProfileController> {
 
                               Obx(
                                 () => _buildModernProfileItem(
-                                  icon: Icons.delete_forever_outlined,
+                                  icon: FontAwesomeIcons.userXmark,
                                   title: "Delete Account",
                                   subtitle: "Permanently remove your account",
                                   color: AppColors.errorColor,
@@ -204,7 +206,7 @@ class ProfileScreen extends GetView<ProfileController> {
                               _buildModernDivider(),
 
                               _buildModernProfileItem(
-                                icon: Icons.logout_outlined,
+                                icon: FontAwesomeIcons.rightFromBracket,
                                 title: "Log Out",
                                 subtitle: "Sign out of your account",
                                 color: AppColors.warningColor,
@@ -260,7 +262,7 @@ class ProfileScreen extends GetView<ProfileController> {
                               ),
 
                               _buildModernProfileItem(
-                                icon: Icons.rate_review_outlined,
+                                icon: FontAwesomeIcons.solidStar,
                                 title: "My Reviews",
                                 subtitle: "View and manage your reviews",
                                 color: AppColors.secondaryColor,
@@ -563,7 +565,7 @@ class ProfileScreen extends GetView<ProfileController> {
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Icon(
-                            Icons.arrow_forward_ios,
+                            FontAwesomeIcons.chevronRight,
                             size: 14,
                             color: AppColors.primaryColor,
                           ),
@@ -571,7 +573,7 @@ class ProfileScreen extends GetView<ProfileController> {
                       : Container(
                           padding: EdgeInsets.all(4),
                           child: Icon(
-                            Icons.arrow_forward_ios,
+                            FontAwesomeIcons.lock,
                             size: 14,
                             color: Colors.grey[400],
                           ),

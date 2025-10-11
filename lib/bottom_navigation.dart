@@ -1,8 +1,6 @@
+import 'package:Xkart/util/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-
-import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:Xkart/view/add_to_cart_screen/view/add_to_cart_screen.dart';
 import 'package:Xkart/view/events_screen/events_screens.dart';
@@ -33,27 +31,58 @@ class BottomNavigation extends StatelessWidget {
     return Scaffold(
       body: Obx(() => c.pages[c.index.value]),
       bottomNavigationBar: Obx(
-        () => BottomNavigationBar(
-          currentIndex: c.index.value,
-          onTap: c.setIndex,
-          selectedItemColor: Colors.pink,
-          unselectedItemColor: Colors.grey,
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_rounded),
-              label: 'Home',
+        () => Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(
+              color: const Color.fromARGB(255, 0, 0, 0),
+              width: 1,
             ),
-            BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Events'),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart_rounded),
-              label: 'Cart',
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(20), // 👈 Rounded top corners
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_rounded),
-              label: 'Profile',
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, -3),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(20), // 👈 Same rounding here too
             ),
-          ],
+            child: BottomNavigationBar(
+              backgroundColor: Colors.white,
+              currentIndex: c.index.value,
+              onTap: c.setIndex,
+              selectedItemColor: AppColors.primaryColor,
+              unselectedItemColor: Colors.grey,
+              type: BottomNavigationBarType.fixed,
+              items: const [
+                BottomNavigationBarItem(
+                  icon: FaIcon(FontAwesomeIcons.house),
+
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: FaIcon(FontAwesomeIcons.calendarDays),
+
+                  label: 'Events',
+                ),
+                BottomNavigationBarItem(
+                  icon: FaIcon(FontAwesomeIcons.cartShopping),
+                  label: 'Cart',
+                ),
+                BottomNavigationBarItem(
+                  icon: FaIcon(FontAwesomeIcons.user),
+
+                  label: 'Profile',
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

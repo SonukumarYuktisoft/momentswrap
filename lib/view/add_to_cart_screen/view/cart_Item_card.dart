@@ -238,6 +238,7 @@
 //   }
 // }
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:Xkart/view/add_to_cart_screen/controller/cart_controller.dart';
 
@@ -354,7 +355,7 @@ class _CartItemCardState extends State<CartItemCard> {
                     return Row(
                       children: [
                         _QuantityButton(
-                          icon: Icons.remove,
+                          icon: FontAwesomeIcons.minus,
                           onPressed: () {
                             cartController.decreaseLocalQuantity(
                               widget.cartItemId,
@@ -436,8 +437,8 @@ class _CartItemCardState extends State<CartItemCard> {
                               widget.onDelete?.call();
                             }
                           },
-                          icon: Icon(
-                            Icons.delete_outline,
+                          icon: FaIcon(
+                            FontAwesomeIcons.trash,
                             color: Colors.red[400],
                           ),
                         );

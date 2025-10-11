@@ -752,6 +752,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:Xkart/view/add_to_cart_screen/controller/cart_controller.dart';
 import 'package:Xkart/view/order_screen/controller/order_controller.dart';
@@ -761,6 +762,7 @@ import 'package:Xkart/util/constants/app_sizes.dart';
 import 'package:Xkart/util/helpers/date_time_helper.dart';
 import 'package:Xkart/util/helpers/helper_functions.dart';
 import 'package:Xkart/view/add_to_cart_screen/view/cart_Item_card.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 
 class AddToCartScreen extends StatefulWidget {
   const AddToCartScreen({super.key});
@@ -795,54 +797,65 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      appBar: AppBar(
-        title: Text(
-          'Shopping Cart',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: AppColors.textColor,
+      backgroundColor: Colors.transparent,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(24),
+            bottomRight: Radius.circular(24),
+          ),
+          child: AppBar(
+            title: Text(
+              'Shopping Cart',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.primaryForegroundColor,
+              ),
+            ),
+            backgroundColor: AppColors.primaryColor,
+            foregroundColor: AppColors.textColor,
+            elevation: 0,
+            // leading: Container(
+            //   margin: EdgeInsets.all(8),
+            //   decoration: BoxDecoration(
+            //     color: AppColors.primaryLight,
+            //     borderRadius: BorderRadius.circular(8),
+            //   ),
+            //   child: IconButton(
+            //     icon: Icon(
+            //       Icons.arrow_back_ios_new,
+            //       color: AppColors.primaryColor,
+            //       size: 20,
+            //     ),
+            //     onPressed: () => Get.back(),
+            //   ),
+            // ),
+            actions: [
+              Obx(() {
+                final itemCount = cartController.totalItems;
+                return Container(
+                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    // gradient: ,
+                    color: AppColors.primaryForegroundColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '$itemCount items',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: AppColors.primaryColor,
+                    ),
+                  ),
+                );
+              }),
+            ],
           ),
         ),
-        backgroundColor: AppColors.accentColor,
-        foregroundColor: AppColors.textColor,
-        elevation: 0,
-        // leading: Container(
-        //   margin: EdgeInsets.all(8),
-        //   decoration: BoxDecoration(
-        //     color: AppColors.primaryLight,
-        //     borderRadius: BorderRadius.circular(8),
-        //   ),
-        //   child: IconButton(
-        //     icon: Icon(
-        //       Icons.arrow_back_ios_new,
-        //       color: AppColors.primaryColor,
-        //       size: 20,
-        //     ),
-        //     onPressed: () => Get.back(),
-        //   ),
-        // ),
-        actions: [
-          Obx(() {
-            final itemCount = cartController.totalItems;
-            return Container(
-              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                gradient: AppColors.secondaryGradient,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                '$itemCount items',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                  color: AppColors.accentColor,
-                ),
-              ),
-            );
-          }),
-        ],
       ),
       body: Obx(() {
         if (cartController.isCartLoading.value) {
@@ -1164,7 +1177,7 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
-                      Icons.shopping_cart_checkout,
+                      FontAwesomeIcons.wallet,
                       color: AppColors.primaryColor,
                       size: 24,
                     ),
@@ -1226,7 +1239,7 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
                               color: AppColors.accentColor,
                             ),
                           )
-                        : const Icon(Icons.flash_on_outlined),
+                        : const Icon(FontAwesomeIcons.bagShopping),
                     label: Text(
                       placeOrderController.isPlacingOrder.value
                           ? "Processing..."
@@ -1256,7 +1269,8 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        Icons.info_outline,
+                        // Icons.info_outline,
+                        FontAwesomeIcons.circleInfo,
                         size: 16,
                         color: AppColors.secondaryColor,
                       ),
@@ -1403,7 +1417,7 @@ class _ModernCartItemCardState extends State<ModernCartItemCard> {
                   return Row(
                     children: [
                       _ModernQuantityButton(
-                        icon: Icons.remove,
+                        icon: FontAwesomeIcons.minus,
                         onPressed: () {
                           // cartController.decreaseLocalQuantity(
                           //   widget.cartItemId,
@@ -1435,7 +1449,7 @@ class _ModernCartItemCardState extends State<ModernCartItemCard> {
                       ),
                       const SizedBox(width: 16),
                       _ModernQuantityButton(
-                        icon: Icons.add,
+                        icon: FontAwesomeIcons.plus,
                         onPressed: () {
                           // cartController.increaseLocalQuantity(
                           //   widget.cartItemId,
@@ -1502,7 +1516,7 @@ class _ModernCartItemCardState extends State<ModernCartItemCard> {
                             }
                           },
                           icon: Icon(
-                            Icons.delete_outline,
+                            FontAwesomeIcons.trash,
                             color: AppColors.errorColor,
                             size: 20,
                           ),

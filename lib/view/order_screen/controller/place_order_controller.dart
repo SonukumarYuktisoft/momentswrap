@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:Xkart/view/add_to_cart_screen/controller/cart_controller.dart';
@@ -124,7 +125,7 @@ class PlaceOrderController extends GetxController {
         child: AlertDialog(
           title: Row(
             children: [
-              Icon(Icons.shopping_cart_checkout, color: AppColors.primaryColor),
+              Icon(FontAwesomeIcons.shoppingBag, color: AppColors.primaryColor),
               SizedBox(width: 8),
               Obx(
                 () =>
@@ -179,7 +180,7 @@ class PlaceOrderController extends GetxController {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : Text(
-                      style: TextStyle(color: AppColors.cardBackground),
+                        style: TextStyle(color: AppColors.cardBackground),
                         currentStep.value == STEP_PAYMENT
                             ? (orderType.value == 'cart'
                                   ? 'Place Order'
@@ -209,7 +210,11 @@ class PlaceOrderController extends GetxController {
                   : Colors.grey.shade300,
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.location_on, color: Colors.white, size: 16),
+            child: Icon(
+              FontAwesomeIcons.location,
+              color: Colors.white,
+              size: 16,
+            ),
           ),
 
           // Line connector
@@ -232,7 +237,11 @@ class PlaceOrderController extends GetxController {
                   : Colors.grey.shade300,
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.payment, color: Colors.white, size: 16),
+            child: Icon(
+              FontAwesomeIcons.creditCard,
+              color: Colors.white,
+              size: 16,
+            ),
           ),
         ],
       );
@@ -254,7 +263,10 @@ class PlaceOrderController extends GetxController {
         Obx(() {
           return Card(
             child: ListTile(
-              leading: Icon(Icons.my_location, color: AppColors.primaryColor),
+              leading: Icon(
+                FontAwesomeIcons.location,
+                color: AppColors.primaryColor,
+              ),
               title: Text('Current Location'),
               subtitle: locationController.address.value.isNotEmpty
                   ? Text(
@@ -273,7 +285,10 @@ class PlaceOrderController extends GetxController {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     ),
                   IconButton(
-                    icon: Icon(Icons.edit),
+                    icon: Icon(
+                      FontAwesomeIcons.edit,
+                      color: AppColors.primaryColor,
+                    ),
                     onPressed: () => _showAddressForm(isCurrentLocation: true),
                   ),
                 ],
@@ -308,11 +323,14 @@ class PlaceOrderController extends GetxController {
           if (profileAddresses.isEmpty) {
             return Card(
               child: ListTile(
-                leading: Icon(Icons.home, color: Colors.grey),
+                leading: Icon(FontAwesomeIcons.house, color: Colors.grey),
                 title: Text('No Saved Address'),
                 subtitle: Text('Add an address to your profile'),
                 trailing: IconButton(
-                  icon: Icon(Icons.add),
+                  icon: Icon(
+                    FontAwesomeIcons.plus,
+                    color: AppColors.primaryColor,
+                  ),
                   onPressed: () => Get.toNamed(AppRoutes.editProfileScreen),
                 ),
               ),
@@ -324,7 +342,10 @@ class PlaceOrderController extends GetxController {
               final index = profileAddresses.indexOf(address);
               return Card(
                 child: ListTile(
-                  leading: Icon(Icons.home, color: AppColors.primaryColor),
+                  leading: Icon(
+                    FontAwesomeIcons.home,
+                    color: AppColors.primaryColor,
+                  ),
                   title: Text(address['fullName'] ?? 'Saved Address'),
                   subtitle: Text(
                     '${address['addressLine1']}, ${address['city']}, ${address['state']} ${address['postalCode']}',
@@ -332,7 +353,7 @@ class PlaceOrderController extends GetxController {
                     overflow: TextOverflow.ellipsis,
                   ),
                   trailing: IconButton(
-                    icon: Icon(Icons.edit),
+                    icon: Icon(FontAwesomeIcons.edit),
                     onPressed: () => _showAddressForm(
                       existingAddress: address,
                       addressIndex: index,
@@ -693,7 +714,6 @@ class PlaceOrderController extends GetxController {
         actions: [
           TextButton(onPressed: () => Get.back(), child: Text('Cancel')),
           ElevatedButton(
-            
             onPressed: () async {
               final newAddress = {
                 'fullName': nameController.text,

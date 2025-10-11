@@ -1,5 +1,7 @@
 import 'package:Xkart/util/common/build_app_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:Xkart/view/order_screen/controller/place_order_controller.dart';
 import 'package:Xkart/routes/app_routes.dart';
@@ -746,8 +748,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             shape: BoxShape.circle,
                           ),
                           child: IconButton(
-                            icon: Icon(
-                              Icons.share_outlined,
+                            icon: FaIcon(
+                              FontAwesomeIcons.share,
                               color: AppColors.primaryForegroundColor,
                             ),
                             onPressed: () {
@@ -2021,8 +2023,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             color: AppColors.accentColor,
                           ),
                         )
-                      : Icon(
-                          Icons.shopping_cart_outlined,
+                      : FaIcon(
+                          FontAwesomeIcons.cartPlus,
                           size: 20,
                           color: AppColors.accentColor,
                         ),
@@ -2083,8 +2085,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             color: AppColors.accentColor,
                           ),
                         )
-                      : Icon(
-                          Icons.flash_on_outlined,
+                      : FaIcon(
+                          FontAwesomeIcons.bolt,
                           size: 20,
                           color: AppColors.accentColor,
                         ),
